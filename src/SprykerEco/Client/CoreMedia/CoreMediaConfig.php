@@ -39,7 +39,7 @@ class CoreMediaConfig extends AbstractBundleConfig
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function getLocaleMapping(): array
     {

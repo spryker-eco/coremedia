@@ -142,7 +142,7 @@ class UrlConfiguration implements UrlConfigurationInterface
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     protected function getLocaleMapping(): array
     {
