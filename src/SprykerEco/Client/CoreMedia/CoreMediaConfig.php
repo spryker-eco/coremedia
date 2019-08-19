@@ -33,7 +33,7 @@ class CoreMediaConfig extends AbstractBundleConfig
     /**
      * @return string[]
      */
-    public function getStoreMapping(): array
+    public function getApplicationStoreMapping(): array
     {
         return [];
     }
@@ -41,7 +41,7 @@ class CoreMediaConfig extends AbstractBundleConfig
     /**
      * @return string[][]
      */
-    public function getLocaleMapping(): array
+    public function getApplicationStoreLocaleMapping(): array
     {
         return [];
     }

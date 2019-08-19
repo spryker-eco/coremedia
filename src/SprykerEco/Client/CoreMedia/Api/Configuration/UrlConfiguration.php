@@ -25,9 +25,8 @@ class UrlConfiguration implements UrlConfigurationInterface
     /**
      * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
      */
-    public function __construct(
-        CoreMediaConfig $config
-    ) {
+    public function __construct(CoreMediaConfig $config)
+    {
         $this->config = $config;
     }
 
@@ -138,7 +137,7 @@ class UrlConfiguration implements UrlConfigurationInterface
      */
     protected function getStoreMapping(): array
     {
-        return $this->config->getStoreMapping();
+        return $this->config->getApplicationStoreMapping();
     }
 
     /**
@@ -146,7 +145,7 @@ class UrlConfiguration implements UrlConfigurationInterface
      */
     protected function getLocaleMapping(): array
     {
-        return $this->config->getLocaleMapping();
+        return $this->config->getApplicationStoreLocaleMapping();
     }
 
     /**

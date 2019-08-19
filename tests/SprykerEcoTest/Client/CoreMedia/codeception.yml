@@ -1,0 +1,25 @@
+namespace: SprykerEcoTest\Client\CoreMedia
+
+paths:
+    tests: .
+    data: ../../../_data
+    support: _support
+    log: ../../../_output
+
+coverage:
+    enabled: true
+    remote: false
+    whitelist: { include: ['../../../../src/*'] }
+
+suites:
+    Client:
+        path: .
+        class_name: CoreMediaClientTester
+        modules:
+            enabled:
+                - \SprykerTest\Shared\Testify\Helper\Environment
+                - \SprykerTest\Shared\Testify\Helper\LocatorHelper:
+                      projectNamespaces:
+                          - 'SprykerEco'
+                          - 'SprykerEcoTest'
+                - \SprykerEcoTest\Client\CoreMedia\Helper\CoreMediaHelper
