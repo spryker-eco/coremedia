@@ -36,8 +36,8 @@ class CoreMediaCmsSlotPlugin extends AbstractPlugin implements CmsSlotPluginInte
             $this->getCoreMediaFragmentRequestTransfer($cmsSlotRequestTransfer)
         );
 
-        return $cmsSlotDataTransfer->setFragmentData(
-            $this->getFragmentDataFromCoreMediaApiResponseTransfer($coreMediaApiResponseTransfer)
+        return $cmsSlotDataTransfer->setContent(
+            $this->getContentFromCoreMediaApiResponseTransfer($coreMediaApiResponseTransfer)
         );
     }
 
@@ -46,7 +46,7 @@ class CoreMediaCmsSlotPlugin extends AbstractPlugin implements CmsSlotPluginInte
      *
      * @return string
      */
-    protected function getFragmentDataFromCoreMediaApiResponseTransfer(CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer): string
+    protected function getContentFromCoreMediaApiResponseTransfer(CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer): string
     {
         if ($coreMediaApiResponseTransfer->getStatus() === static::CORE_MEDIA_API_RESPONSE_STATUS_FAIL) {
             return '';

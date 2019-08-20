@@ -50,7 +50,7 @@ class UrlConfigurationTest extends Unit
         $url = $urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
 
         $this->assertEquals('https://test.coremedia.com/blueprint/servlet/service/fragment/test-store/en-GB/' .
-            'params;pageId=test-page?fragmentKey=externalRef=test-cms-slot-key;productId=111;categoryId=;' .
+            'params;pageId=test-page;externalRef=test-cms-slot-key;productId=111;categoryId=222;' .
             'view=asDefaultFragment;placement=header', $url);
     }
 
