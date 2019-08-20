@@ -1,5 +1,7 @@
 architecture-sniffer:
   priority: 2
+  ignoreErrors:
+    - '#SprykerEco\\Client\\CoreMedia\\Api\\CoreMediaApiClientInterface[a-zA-Z\s:()]+\@api#'
 
 code-sniffer:
   level: 2

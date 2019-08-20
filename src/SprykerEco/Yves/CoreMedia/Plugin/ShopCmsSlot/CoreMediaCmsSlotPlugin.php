@@ -9,8 +9,10 @@ namespace SprykerEco\Yves\CoreMedia\Plugin\ShopCmsSlot;
 
 use Generated\Shared\Transfer\CmsSlotDataTransfer;
 use Generated\Shared\Transfer\CmsSlotRequestTransfer;
+use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 use Spryker\Yves\Kernel\AbstractPlugin;
+use SprykerEco\Client\CoreMedia\Api\Exception\MissingRequestParameterException;
 use SprykerShop\Yves\ShopCmsSlotExtension\Dependency\Plugin\CmsSlotPluginInterface;
 
 /**
@@ -18,6 +20,9 @@ use SprykerShop\Yves\ShopCmsSlotExtension\Dependency\Plugin\CmsSlotPluginInterfa
  */
 class CoreMediaCmsSlotPlugin extends AbstractPlugin implements CmsSlotPluginInterface
 {
+    protected const CORE_MEDIA_API_RESPONSE_STATUS_FAIL = false;
+    protected const PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION = 'The "%s" param is missing in the request to CoreMedia.';
+
     /**
      * @param \Generated\Shared\Transfer\CmsSlotRequestTransfer $cmsSlotRequestTransfer
      *
@@ -30,9 +35,24 @@ class CoreMediaCmsSlotPlugin extends AbstractPlugin implements CmsSlotPluginInte
         $coreMediaApiResponseTransfer = $this->getClient()->getDocumentFragment(
             $this->getCoreMediaFragmentRequestTransfer($cmsSlotRequestTransfer)
         );
-        $cmsSlotDataTransfer->setFragmentData($coreMediaApiResponseTransfer->getData());
 
-        return $cmsSlotDataTransfer;
+        return $cmsSlotDataTransfer->setFragmentData(
+            $this->getFragmentDataFromCoreMediaApiResponseTransfer($coreMediaApiResponseTransfer)
+        );
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     *
+     * @return string
+     */
+    protected function getFragmentDataFromCoreMediaApiResponseTransfer(CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer): string
+    {
+        if ($coreMediaApiResponseTransfer->getStatus() === static::CORE_MEDIA_API_RESPONSE_STATUS_FAIL) {
+            return '';
+        }
+
+        return $coreMediaApiResponseTransfer->getData();
     }
 
     /**
@@ -43,27 +63,92 @@ class CoreMediaCmsSlotPlugin extends AbstractPlugin implements CmsSlotPluginInte
     protected function getCoreMediaFragmentRequestTransfer(
         CmsSlotRequestTransfer $cmsSlotRequestTransfer
     ): CoreMediaFragmentRequestTransfer {
+        $coreMediaFragmentRequestTransfer = new CoreMediaFragmentRequestTransfer();
+        $coreMediaFragmentRequestTransfer = $this->mapCoreMediaFragmentRequestTransferMandatoryProperties(
+            $coreMediaFragmentRequestTransfer,
+            $cmsSlotRequestTransfer
+        );
+        $coreMediaFragmentRequestTransfer = $this->mapCoreMediaFragmentRequestTransferOptionalProperties(
+            $coreMediaFragmentRequestTransfer,
+            $cmsSlotRequestTransfer
+        );
+
+        return $coreMediaFragmentRequestTransfer;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
+     * @param \Generated\Shared\Transfer\CmsSlotRequestTransfer $cmsSlotRequestTransfer
+     *
+     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\MissingRequestParameterException
+     *
+     * @return \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer
+     */
+    protected function mapCoreMediaFragmentRequestTransferMandatoryProperties(
+        CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer,
+        CmsSlotRequestTransfer $cmsSlotRequestTransfer
+    ): CoreMediaFragmentRequestTransfer {
         $requestParameters = $cmsSlotRequestTransfer->getParams();
 
-        $coreMediaFragmentRequestTransfer = new CoreMediaFragmentRequestTransfer();
-        $coreMediaFragmentRequestTransfer->setExternalRef($cmsSlotRequestTransfer->getKey());
+        if (!isset($requestParameters[CoreMediaFragmentRequestTransfer::STORE])) {
+            throw new MissingRequestParameterException(
+                sprintf(static::PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION, CoreMediaFragmentRequestTransfer::STORE)
+            );
+        }
+
+        if (!isset($requestParameters[CoreMediaFragmentRequestTransfer::LOCALE])) {
+            throw new MissingRequestParameterException(
+                sprintf(static::PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION, CoreMediaFragmentRequestTransfer::LOCALE)
+            );
+        }
 
         /** @var \Generated\Shared\Transfer\StoreTransfer $storeTransfer */
-        $storeTransfer = $requestParameters['store'];
+        $storeTransfer = $requestParameters[CoreMediaFragmentRequestTransfer::STORE];
         $coreMediaFragmentRequestTransfer->setStore($storeTransfer->getName());
-        $coreMediaFragmentRequestTransfer->setLocale($requestParameters['locale']);
+        $coreMediaFragmentRequestTransfer->setLocale($requestParameters[CoreMediaFragmentRequestTransfer::LOCALE]);
 
-        if (isset($requestParameters['productId'])) {
-            $coreMediaFragmentRequestTransfer->setProductId($requestParameters['productId']);
+        return $coreMediaFragmentRequestTransfer;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
+     * @param \Generated\Shared\Transfer\CmsSlotRequestTransfer $cmsSlotRequestTransfer
+     *
+     * @return \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer
+     */
+    protected function mapCoreMediaFragmentRequestTransferOptionalProperties(
+        CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer,
+        CmsSlotRequestTransfer $cmsSlotRequestTransfer
+    ): CoreMediaFragmentRequestTransfer {
+        $requestParameters = $cmsSlotRequestTransfer->getParams();
+        $mainParameter = null;
+
+        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::PAGE_ID])) {
+            $coreMediaFragmentRequestTransfer->setPageId($requestParameters[CoreMediaFragmentRequestTransfer::PAGE_ID]);
+            $mainParameter = CoreMediaFragmentRequestTransfer::PAGE_ID;
         }
 
-        if (!$coreMediaFragmentRequestTransfer->getProductId() && isset($requestParameters['categoryId'])) {
-            $coreMediaFragmentRequestTransfer->setCategoryId($requestParameters['categoryId']);
+        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::PRODUCT_ID]) && !$mainParameter) {
+            $coreMediaFragmentRequestTransfer->setProductId($requestParameters[CoreMediaFragmentRequestTransfer::PRODUCT_ID]);
+            $mainParameter = CoreMediaFragmentRequestTransfer::PRODUCT_ID;
         }
 
-        $coreMediaFragmentRequestTransfer->setPageId($requestParameters['pageId']);
-        $coreMediaFragmentRequestTransfer->setPlacement($requestParameters['placement']);
-        $coreMediaFragmentRequestTransfer->setView($requestParameters['view']);
+        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::CATEGORY_ID]) && !$mainParameter) {
+            $coreMediaFragmentRequestTransfer->setCategoryId($requestParameters[CoreMediaFragmentRequestTransfer::CATEGORY_ID]);
+            $mainParameter = CoreMediaFragmentRequestTransfer::CATEGORY_ID;
+        }
+
+        if ($cmsSlotRequestTransfer->getCmsSlotKey() && !$mainParameter) {
+            $coreMediaFragmentRequestTransfer->setExternalRef($cmsSlotRequestTransfer->getCmsSlotKey());
+        }
+
+        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::PLACEMENT])) {
+            $coreMediaFragmentRequestTransfer->setPlacement($requestParameters[CoreMediaFragmentRequestTransfer::PLACEMENT]);
+        }
+
+        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::VIEW])) {
+            $coreMediaFragmentRequestTransfer->setView($requestParameters[CoreMediaFragmentRequestTransfer::VIEW]);
+        }
 
         return $coreMediaFragmentRequestTransfer;
     }

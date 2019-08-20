@@ -13,9 +13,7 @@ use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 
 class UrlConfiguration implements UrlConfigurationInterface
 {
-    protected const API_URL_PATTERN = '%s%s';
     protected const HTTP_QUERY_KEY_VALUE_PATTERN = '%s=%s';
-    protected const QUERY_PATH_FOR_FRAGMENT_REQUEST_PATTERN = '%s/%s/params;%s?fragmentKey=%s';
 
     /**
      * @var \SprykerEco\Client\CoreMedia\CoreMediaConfig
@@ -55,18 +53,12 @@ class UrlConfiguration implements UrlConfigurationInterface
     ): string {
         $storeId = $this->getStoreIdByStoreName($coreMediaFragmentRequestTransfer->getStore());
         $locale = $this->getLocaleByStoreIdAndLocaleName($storeId, $coreMediaFragmentRequestTransfer->getLocale());
-        $pageId = $this->getQueryKeyValueString(
-            CoreMediaFragmentRequestTransfer::PAGE_ID,
-            $coreMediaFragmentRequestTransfer->getPageId()
-        );
-
         $queryParams = $this->getQueryParamsFromCoreMediaFragmentRequestTransfer($coreMediaFragmentRequestTransfer);
 
         return sprintf(
-            static::QUERY_PATH_FOR_FRAGMENT_REQUEST_PATTERN,
+            '%s/%s/params;%s',
             $storeId,
             $locale,
-            $pageId,
             implode(';', $queryParams)
         );
     }
@@ -79,13 +71,11 @@ class UrlConfiguration implements UrlConfigurationInterface
     protected function getQueryParamsFromCoreMediaFragmentRequestTransfer(
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
     ): array {
-        $categoryId = $coreMediaFragmentRequestTransfer->getCategoryId();
-
-        if ($coreMediaFragmentRequestTransfer->getProductId()) {
-            $categoryId = null;
-        }
-
         $queryParams = [
+            $this->getQueryKeyValueString(
+                CoreMediaFragmentRequestTransfer::PAGE_ID,
+                $coreMediaFragmentRequestTransfer->getPageId()
+            ),
             $this->getQueryKeyValueString(
                 CoreMediaFragmentRequestTransfer::EXTERNAL_REF,
                 $coreMediaFragmentRequestTransfer->getExternalRef()
@@ -96,7 +86,7 @@ class UrlConfiguration implements UrlConfigurationInterface
             ),
             $this->getQueryKeyValueString(
                 CoreMediaFragmentRequestTransfer::CATEGORY_ID,
-                $categoryId
+                $coreMediaFragmentRequestTransfer->getCategoryId()
             ),
             $this->getQueryKeyValueString(
                 CoreMediaFragmentRequestTransfer::VIEW,
@@ -118,7 +108,7 @@ class UrlConfiguration implements UrlConfigurationInterface
      */
     protected function getStoreIdByStoreName(string $storeName): string
     {
-        return $this->getStoreMapping()[$storeName];
+        return $this->config->getApplicationStoreMapping()[$storeName];
     }
 
     /**
@@ -129,23 +119,7 @@ class UrlConfiguration implements UrlConfigurationInterface
      */
     protected function getLocaleByStoreIdAndLocaleName(string $storeId, string $localeName): string
     {
-        return $this->getLocaleMapping()[$storeId][$localeName];
-    }
-
-    /**
-     * @return string[]
-     */
-    protected function getStoreMapping(): array
-    {
-        return $this->config->getApplicationStoreMapping();
-    }
-
-    /**
-     * @return string[][]
-     */
-    protected function getLocaleMapping(): array
-    {
-        return $this->config->getApplicationStoreLocaleMapping();
+        return $this->config->getApplicationStoreLocaleMapping()[$storeId][$localeName];
     }
 
     /**
@@ -161,7 +135,7 @@ class UrlConfiguration implements UrlConfigurationInterface
         }
 
         if ($value === null) {
-            return sprintf(static::HTTP_QUERY_KEY_VALUE_PATTERN, $key, '');
+            return '';
         }
 
         if (is_scalar($value)) {
@@ -178,7 +152,7 @@ class UrlConfiguration implements UrlConfigurationInterface
      */
     protected function buildCoreMediaApiUrl(string $urlPath): string
     {
-        return sprintf(static::API_URL_PATTERN, $this->getCoreMediaHost(), $urlPath);
+        return $this->getCoreMediaHost() . $urlPath;
     }
 
     /**

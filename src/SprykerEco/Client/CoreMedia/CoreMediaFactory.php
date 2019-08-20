@@ -12,8 +12,8 @@ use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilder;
 use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilderInterface;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfiguration;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
-use SprykerEco\Client\CoreMedia\Api\CoreMediaApi;
-use SprykerEco\Client\CoreMedia\Api\CoreMediaApiInterface;
+use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClient;
+use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutor;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
@@ -24,11 +24,11 @@ use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
 class CoreMediaFactory extends AbstractFactory
 {
     /**
-     * @return \SprykerEco\Client\CoreMedia\Api\CoreMediaApiInterface
+     * @return \SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface
      */
-    public function createCoreMediaApi(): CoreMediaApiInterface
+    public function createCoreMediaApiClient(): CoreMediaApiClientInterface
     {
-        return new CoreMediaApi(
+        return new CoreMediaApiClient(
             $this->createCoreMediaApiRequestBuilder(),
             $this->createCoreMediaApiRequestExecutor(),
             $this->createUrlConfiguration()

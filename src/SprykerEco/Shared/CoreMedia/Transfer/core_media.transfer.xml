@@ -7,6 +7,11 @@
         <property name="fragmentData" type="string"/>
     </transfer>
 
+    <transfer name="CmsSlotRequestTransfer">
+        <property name="cmsSlotKey" type="string"/>
+        <property name="params" type="array"/>
+    </transfer>
+
     <transfer name="CoreMediaApiResponse">
         <property name="status" type="bool"/>
         <property name="message" type="string"/>

@@ -15,7 +15,7 @@ interface CoreMediaClientInterface
     /**
      * Specification:
      * - Makes a request from the CoreMediaFragmentRequestTransfer.
-     * - Sends the request to CoreMedia instance to receive a document fragment.
+     * - Sends the request to CoreMedia REST API server to receive a document fragment.
      * - Returns a string representation of the current requested fragment.
      *
      * @api

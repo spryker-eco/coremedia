@@ -18,14 +18,14 @@ class RequestExecutor implements RequestExecutorInterface
     /**
      * @var \SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface
      */
-    protected $client;
+    protected $httpClient;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface $client
+     * @param \SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface $httpClient
      */
-    public function __construct(CoreMediaToGuzzleInterface $client)
+    public function __construct(CoreMediaToGuzzleInterface $httpClient)
     {
-        $this->client = $client;
+        $this->httpClient = $httpClient;
     }
 
     /**
@@ -39,37 +39,15 @@ class RequestExecutor implements RequestExecutorInterface
         UrlConfigurationInterface $urlConfiguration
     ): CoreMediaApiResponseTransfer {
         try {
-            $response = $this->client->send($request);
+            $response = $this->httpClient->send($request);
         } catch (RuntimeException $runtimeException) {
-            return $this->createErrorResponseTransfer($runtimeException->getMessage());
+            return (new CoreMediaApiResponseTransfer())
+                ->setStatus(false)
+                ->setMessage($runtimeException->getMessage());
         }
 
-        $responseBody = $response->getBody()->getContents();
-
-        return $this->createSuccessResponseTransfer($responseBody);
-    }
-
-    /**
-     * @param string $responseBody
-     *
-     * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
-     */
-    protected function createSuccessResponseTransfer(string $responseBody): CoreMediaApiResponseTransfer
-    {
         return (new CoreMediaApiResponseTransfer())
             ->setStatus(true)
-            ->setData($responseBody);
-    }
-
-    /**
-     * @param string $message
-     *
-     * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
-     */
-    protected function createErrorResponseTransfer(string $message): CoreMediaApiResponseTransfer
-    {
-        return (new CoreMediaApiResponseTransfer())
-            ->setStatus(false)
-            ->setMessage($message);
+            ->setData($response->getBody()->getContents());
     }
 }
