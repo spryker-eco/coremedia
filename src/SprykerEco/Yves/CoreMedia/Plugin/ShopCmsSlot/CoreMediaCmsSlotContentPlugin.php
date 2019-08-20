@@ -13,12 +13,12 @@ use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 use Spryker\Yves\Kernel\AbstractPlugin;
 use SprykerEco\Client\CoreMedia\Api\Exception\MissingRequestParameterException;
-use SprykerShop\Yves\ShopCmsSlotExtension\Dependency\Plugin\CmsSlotPluginInterface;
+use SprykerShop\Yves\ShopCmsSlotExtension\Dependency\Plugin\CmsSlotContentPluginInterface;
 
 /**
  * @method \SprykerEco\Client\CoreMedia\CoreMediaClient getClient()
  */
-class CoreMediaCmsSlotPlugin extends AbstractPlugin implements CmsSlotPluginInterface
+class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotContentPluginInterface
 {
     protected const CORE_MEDIA_API_RESPONSE_STATUS_FAIL = false;
     protected const PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION = 'The "%s" param is missing in the request to CoreMedia.';
