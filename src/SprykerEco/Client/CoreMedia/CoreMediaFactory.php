@@ -49,7 +49,8 @@ class CoreMediaFactory extends AbstractFactory
     public function createCoreMediaApiRequestExecutor(): RequestExecutorInterface
     {
         return new RequestExecutor(
-            $this->getGuzzleClient()
+            $this->getGuzzleClient(),
+            $this->getConfig()
         );
     }
 

@@ -10,7 +10,9 @@ namespace SprykerEco\Client\CoreMedia\Api\Executor;
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Psr\Http\Message\RequestInterface;
 use RuntimeException;
+use Spryker\Shared\ErrorHandler\ErrorLogger;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
+use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
 
 class RequestExecutor implements RequestExecutorInterface
@@ -21,11 +23,18 @@ class RequestExecutor implements RequestExecutorInterface
     protected $httpClient;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface $httpClient
+     * @var \SprykerEco\Client\CoreMedia\CoreMediaConfig
      */
-    public function __construct(CoreMediaToGuzzleInterface $httpClient)
+    protected $config;
+
+    /**
+     * @param \SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface $httpClient
+     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
+     */
+    public function __construct(CoreMediaToGuzzleInterface $httpClient, CoreMediaConfig $config)
     {
         $this->httpClient = $httpClient;
+        $this->config = $config;
     }
 
     /**
@@ -41,13 +50,16 @@ class RequestExecutor implements RequestExecutorInterface
         try {
             $response = $this->httpClient->send($request);
         } catch (RuntimeException $runtimeException) {
+            if ($this->config->isDebugModeEnabled()) {
+                ErrorLogger::getInstance()->log($runtimeException);
+            }
+
             return (new CoreMediaApiResponseTransfer())
-                ->setStatus(false)
-                ->setMessage($runtimeException->getMessage());
+                ->setIsSuccessful(false);
         }
 
         return (new CoreMediaApiResponseTransfer())
-            ->setStatus(true)
+            ->setIsSuccessful(true)
             ->setData($response->getBody()->getContents());
     }
 }

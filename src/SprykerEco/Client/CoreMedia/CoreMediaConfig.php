@@ -23,6 +23,14 @@ class CoreMediaConfig extends AbstractBundleConfig
     }
 
     /**
+     * @return bool
+     */
+    public function isDebugModeEnabled(): bool
+    {
+        return $this->get(CoreMediaConstants::ENABLE_DEBUG, false);
+    }
+
+    /**
      * @return string
      */
     public function getFragmentBasePath(): string
@@ -31,6 +39,11 @@ class CoreMediaConfig extends AbstractBundleConfig
     }
 
     /**
+     * [
+     *     'ApplicationStoreName1' => 'CoreMediaStoreName1',
+     *     ...
+     * ]
+     *
      * @return string[]
      */
     public function getApplicationStoreMapping(): array
@@ -39,6 +52,11 @@ class CoreMediaConfig extends AbstractBundleConfig
     }
 
     /**
+     * [
+     *     'CoreMediaStoreName1` => ['en_US' => 'en-GB', 'de_DE' => 'de-DE'],
+     *     ...
+     * ]
+     *
      * @return string[][]
      */
     public function getApplicationStoreLocaleMapping(): array

@@ -13,8 +13,7 @@
     </transfer>
 
     <transfer name="CoreMediaApiResponse">
-        <property name="status" type="bool"/>
-        <property name="message" type="string"/>
+        <property name="isSuccessful" type="bool"/>
         <property name="data" type="string"/>
     </transfer>
 

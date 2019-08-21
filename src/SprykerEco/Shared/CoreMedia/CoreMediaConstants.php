@@ -13,4 +13,5 @@ namespace SprykerEco\Shared\CoreMedia;
 interface CoreMediaConstants
 {
     public const CORE_MEDIA_HOST = 'CORE_MEDIA:CORE_MEDIA_HOST';
+    public const ENABLE_DEBUG = 'CORE_MEDIA:ENABLE_DEBUG';
 }

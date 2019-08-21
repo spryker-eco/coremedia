@@ -20,7 +20,6 @@ use SprykerShop\Yves\ShopCmsSlotExtension\Dependency\Plugin\CmsSlotContentPlugin
  */
 class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotContentPluginInterface
 {
-    protected const CORE_MEDIA_API_RESPONSE_STATUS_FAIL = false;
     protected const PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION = 'The "%s" param is missing in the request to CoreMedia.';
 
     /**
@@ -46,9 +45,10 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
      *
      * @return string
      */
-    protected function getContentFromCoreMediaApiResponseTransfer(CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer): string
-    {
-        if ($coreMediaApiResponseTransfer->getStatus() === static::CORE_MEDIA_API_RESPONSE_STATUS_FAIL) {
+    protected function getContentFromCoreMediaApiResponseTransfer(
+        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+    ): string {
+        if (!$coreMediaApiResponseTransfer->getIsSuccessful()) {
             return '';
         }
 
