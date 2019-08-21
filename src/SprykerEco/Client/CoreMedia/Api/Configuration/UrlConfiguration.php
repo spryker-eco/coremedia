@@ -8,7 +8,7 @@
 namespace SprykerEco\Client\CoreMedia\Api\Configuration;
 
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
-use SprykerEco\Client\CoreMedia\Api\Exception\InvalidHostException;
+use SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 
 class UrlConfiguration implements UrlConfigurationInterface
@@ -59,7 +59,7 @@ class UrlConfiguration implements UrlConfigurationInterface
             '%s/%s/params;%s',
             $storeId,
             $locale,
-            implode(';', $queryParams)
+            implode(';', array_filter($queryParams))
         );
     }
 
@@ -104,22 +104,50 @@ class UrlConfiguration implements UrlConfigurationInterface
     /**
      * @param string $storeName
      *
+     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException
+     *
      * @return string
      */
     protected function getStoreIdByStoreName(string $storeName): string
     {
-        return $this->config->getApplicationStoreMapping()[$storeName];
+        $applicationStoreMapping = $this->config->getApplicationStoreMapping();
+
+        if (!isset($applicationStoreMapping[$storeName])) {
+            throw new UrlConfigurationException('Cannot find storeId by store name "%s" in application store mapping.');
+        }
+
+        return $applicationStoreMapping[$storeName];
     }
 
     /**
      * @param string $storeId
      * @param string $localeName
      *
+     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException
+     *
      * @return string
      */
     protected function getLocaleByStoreIdAndLocaleName(string $storeId, string $localeName): string
     {
-        return $this->config->getApplicationStoreLocaleMapping()[$storeId][$localeName];
+        $applicationStoreLocaleMapping = $this->config->getApplicationStoreLocaleMapping();
+
+        if (!isset($applicationStoreLocaleMapping[$storeId])) {
+            throw new UrlConfigurationException(
+                sprintf('Not defined storeId "%s" in application store locale mapping.', $storeId)
+            );
+        }
+
+        if (!isset($applicationStoreLocaleMapping[$storeId][$localeName])) {
+            throw new UrlConfigurationException(
+                sprintf(
+                    'Cannot find locale by locale name "%s" for storeId "%s" in application store locale mapping.',
+                    $localeName,
+                    $storeId
+                )
+            );
+        }
+
+        return $applicationStoreLocaleMapping[$storeId][$localeName];
     }
 
     /**
@@ -156,7 +184,7 @@ class UrlConfiguration implements UrlConfigurationInterface
     }
 
     /**
-     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\InvalidHostException
+     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException
      *
      * @return string
      */
@@ -165,7 +193,7 @@ class UrlConfiguration implements UrlConfigurationInterface
         $coreMediaHost = $this->config->getCoreMediaHost();
 
         if (!$coreMediaHost) {
-            throw new InvalidHostException('Please specify the CoreMedia host.');
+            throw new UrlConfigurationException('Please specify the CoreMedia host.');
         }
 
         return $coreMediaHost;

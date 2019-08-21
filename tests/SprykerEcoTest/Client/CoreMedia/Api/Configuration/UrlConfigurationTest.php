@@ -9,6 +9,7 @@ namespace SprykerEcoTest\Client\CoreMedia\Api\Configuration;
 
 use Codeception\Test\Unit;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
+use SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\CoreMediaFactory;
 
@@ -32,7 +33,7 @@ class UrlConfigurationTest extends Unit
     /**
      * @return void
      */
-    public function testUrlConfigurationProvidesCorrectUrlForApiCall(): void
+    public function testUrlConfigurationProvidesCorrectUrlForApiRequest(): void
     {
         $coreMediaFragmentRequestTransfer = $this->tester->getCoreMediaFragmentRequestTransfer([
             CoreMediaFragmentRequestTransfer::STORE => 'DE',
@@ -52,6 +53,76 @@ class UrlConfigurationTest extends Unit
         $this->assertEquals('https://test.coremedia.com/blueprint/servlet/service/fragment/test-store/en-GB/' .
             'params;pageId=test-page;externalRef=test-cms-slot-key;productId=111;categoryId=222;' .
             'view=asDefaultFragment;placement=header', $url);
+    }
+
+    /**
+     * @return void
+     */
+    public function testUrlConfigurationProvidesCorrectUrlOnNullParametersProvided(): void
+    {
+        $coreMediaFragmentRequestTransfer = $this->tester->getCoreMediaFragmentRequestTransfer([
+            CoreMediaFragmentRequestTransfer::STORE => 'DE',
+            CoreMediaFragmentRequestTransfer::LOCALE => 'en_US',
+            CoreMediaFragmentRequestTransfer::PRODUCT_ID => null,
+            CoreMediaFragmentRequestTransfer::CATEGORY_ID => 222,
+            CoreMediaFragmentRequestTransfer::PAGE_ID => null,
+            CoreMediaFragmentRequestTransfer::PLACEMENT => null,
+            CoreMediaFragmentRequestTransfer::EXTERNAL_REF => 'test-cms-slot-key',
+            CoreMediaFragmentRequestTransfer::VIEW => null,
+        ]);
+
+        $coreMediaFactoryMock = $this->getCoreMediaFactoryMock();
+        $urlConfiguration = $coreMediaFactoryMock->createUrlConfiguration();
+        $url = $urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
+
+        $this->assertEquals('https://test.coremedia.com/blueprint/servlet/service/fragment/test-store/en-GB/' .
+            'params;externalRef=test-cms-slot-key;categoryId=222', $url);
+    }
+
+    /**
+     * @return void
+     */
+    public function testUrlConfigurationFailsOnIncorrectStoreProvided(): void
+    {
+        $coreMediaFragmentRequestTransfer = $this->tester->getCoreMediaFragmentRequestTransfer([
+            CoreMediaFragmentRequestTransfer::STORE => 'wrong-store',
+            CoreMediaFragmentRequestTransfer::LOCALE => 'en_US',
+            CoreMediaFragmentRequestTransfer::PRODUCT_ID => 111,
+            CoreMediaFragmentRequestTransfer::CATEGORY_ID => 222,
+            CoreMediaFragmentRequestTransfer::PAGE_ID => 'test-page',
+            CoreMediaFragmentRequestTransfer::PLACEMENT => 'header',
+            CoreMediaFragmentRequestTransfer::EXTERNAL_REF => 'test-cms-slot-key',
+            CoreMediaFragmentRequestTransfer::VIEW => 'asDefaultFragment',
+        ]);
+
+        $coreMediaFactoryMock = $this->getCoreMediaFactoryMock();
+        $urlConfiguration = $coreMediaFactoryMock->createUrlConfiguration();
+
+        $this->expectException(UrlConfigurationException::class);
+        $urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
+    }
+
+    /**
+     * @return void
+     */
+    public function testUrlConfigurationFailsOnIncorrectLocaleProvided(): void
+    {
+        $coreMediaFragmentRequestTransfer = $this->tester->getCoreMediaFragmentRequestTransfer([
+            CoreMediaFragmentRequestTransfer::STORE => 'DE',
+            CoreMediaFragmentRequestTransfer::LOCALE => 'wrong_locale',
+            CoreMediaFragmentRequestTransfer::PRODUCT_ID => 111,
+            CoreMediaFragmentRequestTransfer::CATEGORY_ID => 222,
+            CoreMediaFragmentRequestTransfer::PAGE_ID => 'test-page',
+            CoreMediaFragmentRequestTransfer::PLACEMENT => 'header',
+            CoreMediaFragmentRequestTransfer::EXTERNAL_REF => 'test-cms-slot-key',
+            CoreMediaFragmentRequestTransfer::VIEW => 'asDefaultFragment',
+        ]);
+
+        $coreMediaFactoryMock = $this->getCoreMediaFactoryMock();
+        $urlConfiguration = $coreMediaFactoryMock->createUrlConfiguration();
+
+        $this->expectException(UrlConfigurationException::class);
+        $urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
     }
 
     /**
