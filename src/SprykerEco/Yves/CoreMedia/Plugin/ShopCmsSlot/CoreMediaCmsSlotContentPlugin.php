@@ -8,7 +8,7 @@
 namespace SprykerEco\Yves\CoreMedia\Plugin\ShopCmsSlot;
 
 use Generated\Shared\Transfer\CmsSlotDataTransfer;
-use Generated\Shared\Transfer\CmsSlotRequestTransfer;
+use Generated\Shared\Transfer\CmsSlotContentRequestTransfer;
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 use Spryker\Yves\Kernel\AbstractPlugin;
@@ -23,16 +23,16 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
     protected const PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION = 'The "%s" param is missing in the request to CoreMedia.';
 
     /**
-     * @param \Generated\Shared\Transfer\CmsSlotRequestTransfer $cmsSlotRequestTransfer
+     * @param \Generated\Shared\Transfer\CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
      *
      * @return \Generated\Shared\Transfer\CmsSlotDataTransfer
      */
-    public function getSlotContent(CmsSlotRequestTransfer $cmsSlotRequestTransfer): CmsSlotDataTransfer
+    public function getSlotContent(CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer): CmsSlotDataTransfer
     {
         $cmsSlotDataTransfer = new CmsSlotDataTransfer();
 
         $coreMediaApiResponseTransfer = $this->getClient()->getDocumentFragment(
-            $this->getCoreMediaFragmentRequestTransfer($cmsSlotRequestTransfer)
+            $this->getCoreMediaFragmentRequestTransfer($cmsSlotContentRequestTransfer)
         );
 
         return $cmsSlotDataTransfer->setContent(
@@ -56,21 +56,21 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CmsSlotRequestTransfer $cmsSlotRequestTransfer
+     * @param \Generated\Shared\Transfer\CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
      *
      * @return \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer
      */
     protected function getCoreMediaFragmentRequestTransfer(
-        CmsSlotRequestTransfer $cmsSlotRequestTransfer
+        CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
     ): CoreMediaFragmentRequestTransfer {
         $coreMediaFragmentRequestTransfer = new CoreMediaFragmentRequestTransfer();
         $coreMediaFragmentRequestTransfer = $this->mapCoreMediaFragmentRequestTransferMandatoryProperties(
             $coreMediaFragmentRequestTransfer,
-            $cmsSlotRequestTransfer
+            $cmsSlotContentRequestTransfer
         );
         $coreMediaFragmentRequestTransfer = $this->mapCoreMediaFragmentRequestTransferOptionalProperties(
             $coreMediaFragmentRequestTransfer,
-            $cmsSlotRequestTransfer
+            $cmsSlotContentRequestTransfer
         );
 
         return $coreMediaFragmentRequestTransfer;
@@ -78,7 +78,7 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
 
     /**
      * @param \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
-     * @param \Generated\Shared\Transfer\CmsSlotRequestTransfer $cmsSlotRequestTransfer
+     * @param \Generated\Shared\Transfer\CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
      *
      * @throws \SprykerEco\Client\CoreMedia\Api\Exception\MissingRequestParameterException
      *
@@ -86,9 +86,9 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
      */
     protected function mapCoreMediaFragmentRequestTransferMandatoryProperties(
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer,
-        CmsSlotRequestTransfer $cmsSlotRequestTransfer
+        CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
     ): CoreMediaFragmentRequestTransfer {
-        $requestParameters = $cmsSlotRequestTransfer->getParams();
+        $requestParameters = $cmsSlotContentRequestTransfer->getParams();
 
         if (!isset($requestParameters[CoreMediaFragmentRequestTransfer::STORE])) {
             throw new MissingRequestParameterException(
@@ -112,15 +112,15 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
 
     /**
      * @param \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
-     * @param \Generated\Shared\Transfer\CmsSlotRequestTransfer $cmsSlotRequestTransfer
+     * @param \Generated\Shared\Transfer\CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
      *
      * @return \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer
      */
     protected function mapCoreMediaFragmentRequestTransferOptionalProperties(
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer,
-        CmsSlotRequestTransfer $cmsSlotRequestTransfer
+        CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
     ): CoreMediaFragmentRequestTransfer {
-        $requestParameters = $cmsSlotRequestTransfer->getParams();
+        $requestParameters = $cmsSlotContentRequestTransfer->getParams();
         $mainParameter = null;
 
         if (isset($requestParameters[CoreMediaFragmentRequestTransfer::PAGE_ID])) {
@@ -138,8 +138,8 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
             $mainParameter = CoreMediaFragmentRequestTransfer::CATEGORY_ID;
         }
 
-        if ($cmsSlotRequestTransfer->getCmsSlotKey() && !$mainParameter) {
-            $coreMediaFragmentRequestTransfer->setExternalRef($cmsSlotRequestTransfer->getCmsSlotKey());
+        if ($cmsSlotContentRequestTransfer->getCmsSlotKey() && !$mainParameter) {
+            $coreMediaFragmentRequestTransfer->setExternalRef($cmsSlotContentRequestTransfer->getCmsSlotKey());
         }
 
         if (isset($requestParameters[CoreMediaFragmentRequestTransfer::PLACEMENT])) {
