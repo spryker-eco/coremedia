@@ -1,13 +1,13 @@
 # CoreMedia Module
-[![Build Status](https://travis-ci.org/spryker-eco/core-media.svg)](https://travis-ci.org/spryker-eco/core-media)
-[![Coverage Status](https://coveralls.io/repos/github/spryker-eco/core-media/badge.svg)](https://coveralls.io/github/spryker-eco/core-media)
+[![Build Status](https://travis-ci.org/spryker-eco/coremedia.svg)](https://travis-ci.org/spryker-eco/coremedia)
+[![Coverage Status](https://coveralls.io/repos/github/spryker-eco/coremedia/badge.svg)](https://coveralls.io/github/spryker-eco/coremedia)
 
 Provides the collection of calls to CoreMedia API.
 
 ## Installation
 
 ```
-composer require spryker-eco/core-media
+composer require spryker-eco/coremedia
 ```
 
 ## Documentation

@@ -1,3 +1,3 @@
 # CoreMedia Changelog
 
-[Release Changelog](https://github.com/spryker-eco/core-media/releases)
+[Release Changelog](https://github.com/spryker-eco/coremedia/releases)
