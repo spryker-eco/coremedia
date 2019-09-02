@@ -22,6 +22,8 @@ class CoreMediaClient extends AbstractClient implements CoreMediaClientInterface
      * @api
      *
      * @param \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
+     *
+     * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
      */
     public function getDocumentFragment(
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
