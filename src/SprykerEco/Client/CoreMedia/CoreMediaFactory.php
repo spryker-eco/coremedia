@@ -17,6 +17,10 @@ use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutor;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
+use SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparator;
+use SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparatorInterface;
+use SprykerEco\Client\CoreMedia\Stub\CoreMediaStub;
+use SprykerEco\Client\CoreMedia\Stub\CoreMediaStubInterface;
 
 /**
  * @method \SprykerEco\Client\CoreMedia\CoreMediaConfig getConfig()
@@ -70,5 +74,24 @@ class CoreMediaFactory extends AbstractFactory
     public function getGuzzleClient(): CoreMediaToGuzzleInterface
     {
         return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_GUZZLE);
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Stub\CoreMediaStubInterface
+     */
+    public function createCoreMediaStub(): CoreMediaStubInterface
+    {
+        return new CoreMediaStub(
+            $this->createCoreMediaApiClient(),
+            $this->createCoreMediaApiResponsePreparator()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparatorInterface
+     */
+    public function createCoreMediaApiResponsePreparator(): CoreMediaApiResponsePreparatorInterface
+    {
+        return new CoreMediaApiResponsePreparator();
     }
 }
