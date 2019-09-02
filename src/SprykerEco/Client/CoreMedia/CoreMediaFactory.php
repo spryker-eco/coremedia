@@ -17,8 +17,13 @@ use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutor;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
 use SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparator;
 use SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparatorInterface;
+use SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParser;
+use SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface;
+use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface;
+use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaPlaceholderResolver;
 use SprykerEco\Client\CoreMedia\Stub\CoreMediaStub;
 use SprykerEco\Client\CoreMedia\Stub\CoreMediaStubInterface;
 
@@ -69,14 +74,6 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface
-     */
-    public function getGuzzleClient(): CoreMediaToGuzzleInterface
-    {
-        return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_GUZZLE);
-    }
-
-    /**
      * @return \SprykerEco\Client\CoreMedia\Stub\CoreMediaStubInterface
      */
     public function createCoreMediaStub(): CoreMediaStubInterface
@@ -92,6 +89,54 @@ class CoreMediaFactory extends AbstractFactory
      */
     public function createCoreMediaApiResponsePreparator(): CoreMediaApiResponsePreparatorInterface
     {
-        return new CoreMediaApiResponsePreparator();
+        return new CoreMediaApiResponsePreparator(
+            $this->getCoreMediaApiResponseResolvers()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface[]
+     */
+    public function getCoreMediaApiResponseResolvers(): array
+    {
+        return [
+            $this->createCoreMediaPlaceholderResolver(),
+        ];
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface
+     */
+    public function createCoreMediaPlaceholderResolver(): CoreMediaApiResponseResolverInterface
+    {
+        return new CoreMediaPlaceholderResolver(
+            $this->createCoreMediaPlaceholderParser()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface
+     */
+    public function createCoreMediaPlaceholderParser(): CoreMediaPlaceholderParserInterface
+    {
+        return new CoreMediaPlaceholderParser(
+            $this->getUtilEncodingService()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface
+     */
+    public function getGuzzleClient(): CoreMediaToGuzzleInterface
+    {
+        return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_GUZZLE);
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface
+     */
+    public function getUtilEncodingService(): CoreMediaToUtilEncodingServiceInterface
+    {
+        return $this->getProvidedDependency(CoreMediaDependencyProvider::SERVICE_UTIL_ENCODING);
     }
 }

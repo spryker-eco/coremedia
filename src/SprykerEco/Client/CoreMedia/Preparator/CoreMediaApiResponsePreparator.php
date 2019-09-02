@@ -12,6 +12,19 @@ use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 class CoreMediaApiResponsePreparator implements CoreMediaApiResponsePreparatorInterface
 {
     /**
+     * @var \SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface[]
+     */
+    protected $coreMediaApiResponseResolvers;
+
+    /**
+     * @param \SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface[] $coreMediaApiResponseResolvers
+     */
+    public function __construct(array $coreMediaApiResponseResolvers)
+    {
+        $this->coreMediaApiResponseResolvers = $coreMediaApiResponseResolvers;
+    }
+
+    /**
      * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
      *
      * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
@@ -19,6 +32,10 @@ class CoreMediaApiResponsePreparator implements CoreMediaApiResponsePreparatorIn
     public function prepare(
         CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
     ): CoreMediaApiResponseTransfer {
+        foreach ($this->coreMediaApiResponseResolvers as $coreMediaApiResponseResolver) {
+            $coreMediaApiResponseTransfer = $coreMediaApiResponseResolver->resolve($coreMediaApiResponseTransfer);
+        }
+
         return $coreMediaApiResponseTransfer;
     }
 }

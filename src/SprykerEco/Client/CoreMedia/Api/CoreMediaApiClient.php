@@ -60,6 +60,12 @@ class CoreMediaApiClient implements CoreMediaApiClientInterface
             $this->urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer)
         );
 
+        return (new CoreMediaApiResponseTransfer())->setIsSuccessful(true)->setData('<a href="<!--CM
+{"objectType":"product","renderType":"url","productId":"778091231"}
+CM-->"><!--CM
+{"objectType":"product","renderType":"url","productId":"12321321321"}
+CM-->');
+
         return $this->requestExecutor->execute($request, $this->urlConfiguration);
     }
 }

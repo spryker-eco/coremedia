@@ -11,10 +11,12 @@ use GuzzleHttp\Client;
 use Spryker\Client\Kernel\AbstractDependencyProvider;
 use Spryker\Client\Kernel\Container;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleBridge;
+use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceBridge;
 
 class CoreMediaDependencyProvider extends AbstractDependencyProvider
 {
     public const CLIENT_GUZZLE = 'CLIENT_GUZZLE';
+    public const SERVICE_UTIL_ENCODING = 'SERVICE_UTIL_ENCODING';
 
     /**
      * @param \Spryker\Client\Kernel\Container $container
@@ -24,6 +26,7 @@ class CoreMediaDependencyProvider extends AbstractDependencyProvider
     public function provideServiceLayerDependencies(Container $container): Container
     {
         $container = $this->addGuzzleClient($container);
+        $container = $this->addUtilEncodingService($container);
 
         return $container;
     }
@@ -35,8 +38,24 @@ class CoreMediaDependencyProvider extends AbstractDependencyProvider
      */
     protected function addGuzzleClient(Container $container): Container
     {
-        $container->set(static::CLIENT_GUZZLE, function (Container $container) {
+        $container->set(static::CLIENT_GUZZLE, function () {
             return new CoreMediaToGuzzleBridge(new Client());
+        });
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Client\Kernel\Container $container
+     *
+     * @return \Spryker\Client\Kernel\Container
+     */
+    protected function addUtilEncodingService(Container $container): Container
+    {
+        $container->set(static::SERVICE_UTIL_ENCODING, function (Container $container) {
+            return new CoreMediaToUtilEncodingServiceBridge(
+                $container->getLocator()->utilEncoding()->service()
+            );
         });
 
         return $container;

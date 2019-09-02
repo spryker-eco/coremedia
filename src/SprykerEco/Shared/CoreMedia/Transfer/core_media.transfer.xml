@@ -31,4 +31,13 @@
         <property name="name" type="string"/>
     </transfer>
 
+    <transfer name="CoreMediaPlaceholder">
+        <property name="placeholderBody" type="string"/>
+        <property name="placeholderReplacement" type="string"/>
+        <property name="objectType" type="string"/>
+        <property name="renderType" type="string"/>
+        <property name="productId" type="string"/>
+        <property name="categoryId" type="string"/>
+    </transfer>
+
 </transfers>
