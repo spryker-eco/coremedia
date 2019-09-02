@@ -7,6 +7,9 @@ use SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInte
 
 class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterface
 {
+    /**
+     * @var \SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface
+     */
     protected $coreMediaPlaceholderParser;
 
     public function __construct(
@@ -24,7 +27,7 @@ class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterf
     {
         $coreMediaPlaceholderTransfers = $this->coreMediaPlaceholderParser->parse($coreMediaApiResponseTransfer->getData());
 
-        if (!$coreMediaPlaceholderTransfers) {
+        if (count($coreMediaPlaceholderTransfers) === 0) {
             return $coreMediaApiResponseTransfer;
         }
 

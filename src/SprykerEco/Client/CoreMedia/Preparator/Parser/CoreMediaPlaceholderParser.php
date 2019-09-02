@@ -40,16 +40,22 @@ class CoreMediaPlaceholderParser implements CoreMediaPlaceholderParserInterface
             $results
         );
 
-        if ($results[static::PREG_MATCH_PLACEHOLDER_KEY]) {
-            foreach ($results[static::PREG_MATCH_PLACEHOLDER_KEY] as $placeholder) {
-                $placeholderData = $this->utilEncodingService->decodeJson($placeholder, static::JSON_DECODE_ASSOC);
+        $coreMediaPlaceholders = [];
 
-                $coreMediaPlaceholderTransfer = (new CoreMediaPlaceholderTransfer())
-                    ->fromArray($placeholderData, true)
-                    ->setPlaceholderBody($placeholder);
-            }
+        if (!$results[static::PREG_MATCH_PLACEHOLDER_KEY]) {
+            return $coreMediaPlaceholders;
         }
 
-        return [];
+        foreach ($results[static::PREG_MATCH_PLACEHOLDER_KEY] as $placeholder) {
+            $placeholderData = $this->utilEncodingService->decodeJson($placeholder, static::JSON_DECODE_ASSOC);
+
+            $coreMediaPlaceholderTransfer = (new CoreMediaPlaceholderTransfer())
+                ->fromArray($placeholderData, true)
+                ->setPlaceholderBody($placeholder);
+
+            $coreMediaPlaceholders[] = $coreMediaPlaceholderTransfer;
+        }
+
+        return $coreMediaPlaceholders;
     }
 }
