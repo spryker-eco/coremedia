@@ -13,8 +13,12 @@ interface CoreMediaApiResponseResolverInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     * @param string $locale
      *
      * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
      */
-    public function resolve(CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer): CoreMediaApiResponseTransfer;
+    public function resolve(
+        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
+        string $locale
+    ): CoreMediaApiResponseTransfer;
 }

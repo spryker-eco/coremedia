@@ -37,11 +37,14 @@ class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterf
 
     /**
      * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     * @param string $locale
      *
      * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
      */
-    public function resolve(CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer): CoreMediaApiResponseTransfer
-    {
+    public function resolve(
+        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
+        string $locale
+    ): CoreMediaApiResponseTransfer {
         $coreMediaPlaceholderTransfers = $this->coreMediaPlaceholderParser->parse($coreMediaApiResponseTransfer->getData());
 
         if (!$coreMediaPlaceholderTransfers) {
@@ -50,7 +53,8 @@ class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterf
 
         foreach ($coreMediaPlaceholderTransfers as $coreMediaPlaceholderTransfer) {
             $coreMediaPlaceholderTransfer = $this->executeCoreMediaPlaceholderPostProcessor(
-                $coreMediaPlaceholderTransfer
+                $coreMediaPlaceholderTransfer,
+                $locale
             );
             $coreMediaApiResponseTransfer = $this->replacePlaceholderBodyWithReplacement(
                 $coreMediaApiResponseTransfer,
@@ -82,15 +86,17 @@ class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterf
 
     /**
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param string $locale
      *
      * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
      */
     protected function executeCoreMediaPlaceholderPostProcessor(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        string $locale
     ): CoreMediaPlaceholderTransfer {
         foreach ($this->coreMediaPlaceholderPostProcessors as $coreMediaPlaceholderPostProcessor) {
             if ($coreMediaPlaceholderPostProcessor->isApplicable($coreMediaPlaceholderTransfer)) {
-                return $coreMediaPlaceholderPostProcessor->addReplacement($coreMediaPlaceholderTransfer);
+                return $coreMediaPlaceholderPostProcessor->addReplacement($coreMediaPlaceholderTransfer, $locale);
             }
         }
 

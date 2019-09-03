@@ -26,14 +26,16 @@ class CoreMediaApiResponsePreparator implements CoreMediaApiResponsePreparatorIn
 
     /**
      * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     * @param string $locale
      *
      * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
      */
     public function prepare(
-        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
+        string $locale
     ): CoreMediaApiResponseTransfer {
         foreach ($this->coreMediaApiResponseResolvers as $coreMediaApiResponseResolver) {
-            $coreMediaApiResponseTransfer = $coreMediaApiResponseResolver->resolve($coreMediaApiResponseTransfer);
+            $coreMediaApiResponseTransfer = $coreMediaApiResponseResolver->resolve($coreMediaApiResponseTransfer, $locale);
         }
 
         return $coreMediaApiResponseTransfer;

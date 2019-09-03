@@ -20,10 +20,12 @@ interface CoreMediaPlaceholderPostProcessorInterface
 
     /**
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param string $locale
      *
      * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
      */
     public function addReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        string $locale
     ): CoreMediaPlaceholderTransfer;
 }

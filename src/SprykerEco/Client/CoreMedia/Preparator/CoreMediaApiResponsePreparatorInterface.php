@@ -13,10 +13,12 @@ interface CoreMediaApiResponsePreparatorInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     * @param string $locale
      *
      * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
      */
     public function prepare(
-        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
+        string $locale
     ): CoreMediaApiResponseTransfer;
 }

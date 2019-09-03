@@ -46,6 +46,6 @@ class CoreMediaStub implements CoreMediaStubInterface
     ): CoreMediaApiResponseTransfer {
         $coreMediaApiResponseTransfer = $this->coreMediaApiClient->getDocumentFragment($coreMediaFragmentRequestTransfer);
 
-        return $this->coreMediaApiResponsePreparator->prepare($coreMediaApiResponseTransfer);
+        return $this->coreMediaApiResponsePreparator->prepare($coreMediaApiResponseTransfer, $coreMediaFragmentRequestTransfer->getLocale());
     }
 }

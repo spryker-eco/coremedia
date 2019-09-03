@@ -16,12 +16,15 @@ use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClient;
 use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutor;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
 use SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparator;
 use SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparatorInterface;
 use SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParser;
 use SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface;
+use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface;
+use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\ProductUrlCoreMediaPlaceholderPostProcessor;
 use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface;
 use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaPlaceholderResolver;
 use SprykerEco\Client\CoreMedia\Stub\CoreMediaStub;
@@ -126,11 +129,23 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
+     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface
+     */
+    public function createProductUrlCoreMediaPlaceholderPostProcessor(): CoreMediaPlaceholderPostProcessorInterface
+    {
+        return new ProductUrlCoreMediaPlaceholderPostProcessor(
+            $this->getProductStorageClient()
+        );
+    }
+
+    /**
      * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface[]
      */
     public function getCoreMediaPlaceholderPostProcessors(): array
     {
-        return [];
+        return [
+            $this->createProductUrlCoreMediaPlaceholderPostProcessor(),
+        ];
     }
 
     /**
@@ -147,5 +162,13 @@ class CoreMediaFactory extends AbstractFactory
     public function getUtilEncodingService(): CoreMediaToUtilEncodingServiceInterface
     {
         return $this->getProvidedDependency(CoreMediaDependencyProvider::SERVICE_UTIL_ENCODING);
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface
+     */
+    public function getProductStorageClient(): CoreMediaToProductStorageClientInterface
+    {
+        return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_PRODUCT_STORAGE);
     }
 }
