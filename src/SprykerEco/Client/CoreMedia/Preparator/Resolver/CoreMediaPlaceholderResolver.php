@@ -61,6 +61,12 @@ class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterf
         return $coreMediaApiResponseTransfer;
     }
 
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     *
+     * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
+     */
     protected function replacePlaceholderBodyWithReplacement(
         CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
