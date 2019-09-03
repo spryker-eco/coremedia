@@ -109,7 +109,9 @@ class UrlConfiguration implements UrlConfigurationInterface
         $applicationStoreMapping = $this->config->getApplicationStoreMapping();
 
         if (!isset($applicationStoreMapping[$storeName])) {
-            throw new UrlConfigurationException('Cannot find storeId by store name "%s" in application store mapping.');
+            throw new UrlConfigurationException(
+                sprintf('Cannot find storeId by store name "%s" in application store mapping.', $storeName)
+            );
         }
 
         return $applicationStoreMapping[$storeName];
