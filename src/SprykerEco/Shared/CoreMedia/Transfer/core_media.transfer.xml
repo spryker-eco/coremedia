@@ -24,7 +24,6 @@
         <property name="categoryId" type="string"/>
         <property name="pageId" type="string"/>
         <property name="placement" type="string"/>
-        <property name="externalRef" type="string"/>
         <property name="view" type="string"/>
     </transfer>
 

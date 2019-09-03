@@ -42,7 +42,6 @@ class UrlConfigurationTest extends Unit
             CoreMediaFragmentRequestTransfer::CATEGORY_ID => 222,
             CoreMediaFragmentRequestTransfer::PAGE_ID => 'test-page',
             CoreMediaFragmentRequestTransfer::PLACEMENT => 'header',
-            CoreMediaFragmentRequestTransfer::EXTERNAL_REF => 'test-cms-slot-key',
             CoreMediaFragmentRequestTransfer::VIEW => 'asDefaultFragment',
         ]);
 
@@ -51,7 +50,7 @@ class UrlConfigurationTest extends Unit
         $url = $urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
 
         $this->assertEquals('https://test.coremedia.com/blueprint/servlet/service/fragment/test-store/en-GB/' .
-            'params;pageId=test-page;externalRef=test-cms-slot-key;productId=111;categoryId=222;' .
+            'params;pageId=test-page;productId=111;categoryId=222;' .
             'view=asDefaultFragment;placement=header', $url);
     }
 
@@ -67,7 +66,6 @@ class UrlConfigurationTest extends Unit
             CoreMediaFragmentRequestTransfer::CATEGORY_ID => 222,
             CoreMediaFragmentRequestTransfer::PAGE_ID => null,
             CoreMediaFragmentRequestTransfer::PLACEMENT => null,
-            CoreMediaFragmentRequestTransfer::EXTERNAL_REF => 'test-cms-slot-key',
             CoreMediaFragmentRequestTransfer::VIEW => null,
         ]);
 
@@ -76,7 +74,7 @@ class UrlConfigurationTest extends Unit
         $url = $urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
 
         $this->assertEquals('https://test.coremedia.com/blueprint/servlet/service/fragment/test-store/en-GB/' .
-            'params;externalRef=test-cms-slot-key;categoryId=222', $url);
+            'params;categoryId=222', $url);
     }
 
     /**
@@ -91,7 +89,6 @@ class UrlConfigurationTest extends Unit
             CoreMediaFragmentRequestTransfer::CATEGORY_ID => 222,
             CoreMediaFragmentRequestTransfer::PAGE_ID => 'test-page',
             CoreMediaFragmentRequestTransfer::PLACEMENT => 'header',
-            CoreMediaFragmentRequestTransfer::EXTERNAL_REF => 'test-cms-slot-key',
             CoreMediaFragmentRequestTransfer::VIEW => 'asDefaultFragment',
         ]);
 
@@ -114,7 +111,6 @@ class UrlConfigurationTest extends Unit
             CoreMediaFragmentRequestTransfer::CATEGORY_ID => 222,
             CoreMediaFragmentRequestTransfer::PAGE_ID => 'test-page',
             CoreMediaFragmentRequestTransfer::PLACEMENT => 'header',
-            CoreMediaFragmentRequestTransfer::EXTERNAL_REF => 'test-cms-slot-key',
             CoreMediaFragmentRequestTransfer::VIEW => 'asDefaultFragment',
         ]);
 

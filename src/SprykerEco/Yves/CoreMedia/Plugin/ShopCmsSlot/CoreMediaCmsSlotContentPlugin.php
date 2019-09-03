@@ -125,11 +125,6 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
         $requestParameters = $cmsSlotContentRequestTransfer->getParams();
         $mainParameter = null;
 
-        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::EXTERNAL_REF])) {
-            $coreMediaFragmentRequestTransfer->setExternalRef($requestParameters[CoreMediaFragmentRequestTransfer::EXTERNAL_REF]);
-            $mainParameter = CoreMediaFragmentRequestTransfer::EXTERNAL_REF;
-        }
-
         if (isset($requestParameters[CoreMediaFragmentRequestTransfer::CATEGORY_ID]) && !$mainParameter) {
             $coreMediaFragmentRequestTransfer->setCategoryId($requestParameters[CoreMediaFragmentRequestTransfer::CATEGORY_ID]);
             $mainParameter = CoreMediaFragmentRequestTransfer::CATEGORY_ID;

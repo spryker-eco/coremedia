@@ -77,10 +77,6 @@ class UrlConfiguration implements UrlConfigurationInterface
                 $coreMediaFragmentRequestTransfer->getPageId()
             ),
             $this->getQueryKeyValueString(
-                CoreMediaFragmentRequestTransfer::EXTERNAL_REF,
-                $coreMediaFragmentRequestTransfer->getExternalRef()
-            ),
-            $this->getQueryKeyValueString(
                 CoreMediaFragmentRequestTransfer::PRODUCT_ID,
                 $coreMediaFragmentRequestTransfer->getProductId()
             ),
