@@ -110,7 +110,8 @@ class CoreMediaFactory extends AbstractFactory
     public function createCoreMediaPlaceholderResolver(): CoreMediaApiResponseResolverInterface
     {
         return new CoreMediaPlaceholderResolver(
-            $this->createCoreMediaPlaceholderParser()
+            $this->createCoreMediaPlaceholderParser(),
+            $this->getCoreMediaPlaceholderPostProcessors()
         );
     }
 
@@ -122,6 +123,14 @@ class CoreMediaFactory extends AbstractFactory
         return new CoreMediaPlaceholderParser(
             $this->getUtilEncodingService()
         );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface[]
+     */
+    public function getCoreMediaPlaceholderPostProcessors(): array
+    {
+        return [];
     }
 
     /**

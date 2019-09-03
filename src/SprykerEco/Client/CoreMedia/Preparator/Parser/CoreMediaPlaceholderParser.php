@@ -1,7 +1,8 @@
 <?php
+
 /**
- * This file is part of the Spryker Suite.
- * For full license information, please view the LICENSE file that was distributed with this source code.
+ * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
+ * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
 namespace SprykerEco\Client\CoreMedia\Preparator\Parser;
@@ -46,12 +47,17 @@ class CoreMediaPlaceholderParser implements CoreMediaPlaceholderParserInterface
             return $coreMediaPlaceholders;
         }
 
-        foreach ($results[static::PREG_MATCH_PLACEHOLDER_KEY] as $placeholder) {
-            $placeholderData = $this->utilEncodingService->decodeJson($placeholder, static::JSON_DECODE_ASSOC);
+        $placeholderBodies = array_unique($results[static::PREG_MATCH_PLACEHOLDER_KEY]);
+
+        foreach ($placeholderBodies as $placeholderBody) {
+            $placeholderData = $this->utilEncodingService->decodeJson(
+                html_entity_decode($placeholderBody, ENT_QUOTES, 'UTF-8'),
+                static::JSON_DECODE_ASSOC
+            );
 
             $coreMediaPlaceholderTransfer = (new CoreMediaPlaceholderTransfer())
                 ->fromArray($placeholderData, true)
-                ->setPlaceholderBody($placeholder);
+                ->setPlaceholderBody($placeholderBody);
 
             $coreMediaPlaceholders[] = $coreMediaPlaceholderTransfer;
         }
