@@ -58,11 +58,11 @@ class RequestExecutor implements RequestExecutorInterface
                 ->setIsSuccessful(false);
         }
 
-        $testProductSku = '018';
+        $testProductSku = '8';
 
         return (new CoreMediaApiResponseTransfer())
             ->setIsSuccessful(true)
-            ->setData($response->getBody()->getContents() . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;' . $testProductSku . '&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;" target="_self" class="cm-cta__button cm-cta-button " role="button">TEST ' . $testProductSku . '</a>');
+            ->setData($response->getBody()->getContents() . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;' . $testProductSku . '&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;" target="_self" class="cm-cta__button cm-cta-button " role="button">TEST ' . $testProductSku . '</a>');
             //->setData($response->getBody()->getContents());
     }
 }

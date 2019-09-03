@@ -8,26 +8,24 @@
 namespace SprykerEco\Client\CoreMedia\Preparator\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
 
-class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholderPostProcessorInterface
+class CategoryUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholderPostProcessorInterface
 {
-    protected const PLACEHOLDER_OBJECT_TYPE = 'product';
+    protected const PLACEHOLDER_OBJECT_TYPE = 'category';
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
-    protected const PRODUCT_ABSTRACT_MAPPING_TYPE = 'sku';
-    protected const PRODUCT_ABSTRACT_DATA_KEY_URL = 'url';
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface
+     * @var \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface
      */
-    protected $productStorageClient;
+    protected $categoryStorageClient;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface $productStorageClient
+     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface $categoryStorageClient
      */
-    public function __construct(CoreMediaToProductStorageClientInterface $productStorageClient)
+    public function __construct(CoreMediaToCategoryStorageClientInterface $categoryStorageClient)
     {
-        $this->productStorageClient = $productStorageClient;
+        $this->categoryStorageClient = $categoryStorageClient;
     }
 
     /**
@@ -51,16 +49,16 @@ class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholde
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): CoreMediaPlaceholderTransfer {
-        $abstractProductUrl = $this->getAbstractProductUrlByCoreMediaPlaceholderTransfer(
+        $categoryUrl = $this->getCategoryUrlByCoreMediaPlaceholderTransfer(
             $coreMediaPlaceholderTransfer,
             $locale
         );
 
-        if (!$abstractProductUrl) {
+        if (!$categoryUrl) {
             return $coreMediaPlaceholderTransfer;
         }
 
-        $coreMediaPlaceholderTransfer->setPlaceholderReplacement($abstractProductUrl);
+        $coreMediaPlaceholderTransfer->setPlaceholderReplacement($categoryUrl);
 
         return $coreMediaPlaceholderTransfer;
     }
@@ -71,18 +69,17 @@ class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholde
      *
      * @return string|null
      */
-    protected function getAbstractProductUrlByCoreMediaPlaceholderTransfer(
+    protected function getCategoryUrlByCoreMediaPlaceholderTransfer(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
-        $coreMediaPlaceholderTransfer->requireProductId();
+        $coreMediaPlaceholderTransfer->requireCategoryId();
 
-        $abstractProductData = $this->productStorageClient->findProductAbstractStorageDataByMapping(
-            static::PRODUCT_ABSTRACT_MAPPING_TYPE,
-            $coreMediaPlaceholderTransfer->getProductId(),
+        $categoryNodeStorageTransfer = $this->categoryStorageClient->getCategoryNodeById(
+            (int)$coreMediaPlaceholderTransfer->getCategoryId(),
             $locale
         );
 
-        return $abstractProductData[static::PRODUCT_ABSTRACT_DATA_KEY_URL] ?? null;
+        return $categoryNodeStorageTransfer->getUrl();
     }
 }
