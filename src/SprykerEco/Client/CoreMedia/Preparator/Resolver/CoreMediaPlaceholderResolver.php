@@ -10,6 +10,7 @@ namespace SprykerEco\Client\CoreMedia\Preparator\Resolver;
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 use SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface;
+use SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface;
 
 class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterface
 {
@@ -24,15 +25,23 @@ class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterf
     protected $coreMediaPlaceholderPostProcessors;
 
     /**
+     * @var \SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface
+     */
+    protected $coreMediaPlaceholderReplacer;
+
+    /**
      * @param \SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface $coreMediaPlaceholderParser
-     * @param \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface[] $coreMediaPlaceholderPostProcessors
+     * @param array $coreMediaPlaceholderPostProcessors
+     * @param \SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface $coreMediaPlaceholderReplacer
      */
     public function __construct(
         CoreMediaPlaceholderParserInterface $coreMediaPlaceholderParser,
-        array $coreMediaPlaceholderPostProcessors
+        array $coreMediaPlaceholderPostProcessors,
+        CoreMediaPlaceholderReplacerInterface $coreMediaPlaceholderReplacer
     ) {
         $this->coreMediaPlaceholderParser = $coreMediaPlaceholderParser;
         $this->coreMediaPlaceholderPostProcessors = $coreMediaPlaceholderPostProcessors;
+        $this->coreMediaPlaceholderReplacer = $coreMediaPlaceholderReplacer;
     }
 
     /**
@@ -56,30 +65,13 @@ class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterf
                 $coreMediaPlaceholderTransfer,
                 $locale
             );
-            $coreMediaApiResponseTransfer = $this->replacePlaceholderBodyWithReplacement(
-                $coreMediaApiResponseTransfer,
-                $coreMediaPlaceholderTransfer
+            $coreMediaApiResponseTransfer->setData(
+                $this->coreMediaPlaceholderReplacer->replace(
+                    $coreMediaApiResponseTransfer->getData(),
+                    $coreMediaPlaceholderTransfer
+                )
             );
         }
-
-        return $coreMediaApiResponseTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
-     *
-     * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
-     */
-    protected function replacePlaceholderBodyWithReplacement(
-        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
-    ): CoreMediaApiResponseTransfer {
-        if (!$coreMediaPlaceholderTransfer->getPlaceholderReplacement()) {
-            return $coreMediaApiResponseTransfer;
-        }
-
-        // replace
 
         return $coreMediaApiResponseTransfer;
     }

@@ -27,6 +27,8 @@ use SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInte
 use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CategoryUrlCoreMediaPlaceholderPostProcessor;
 use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface;
 use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\ProductUrlCoreMediaPlaceholderPostProcessor;
+use SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacer;
+use SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface;
 use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface;
 use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaPlaceholderResolver;
 use SprykerEco\Client\CoreMedia\Stub\CoreMediaStub;
@@ -116,7 +118,8 @@ class CoreMediaFactory extends AbstractFactory
     {
         return new CoreMediaPlaceholderResolver(
             $this->createCoreMediaPlaceholderParser(),
-            $this->getCoreMediaPlaceholderPostProcessors()
+            $this->getCoreMediaPlaceholderPostProcessors(),
+            $this->createCoreMediaPlaceholderReplacer()
         );
     }
 
@@ -128,6 +131,14 @@ class CoreMediaFactory extends AbstractFactory
         return new CoreMediaPlaceholderParser(
             $this->getUtilEncodingService()
         );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface
+     */
+    public function createCoreMediaPlaceholderReplacer(): CoreMediaPlaceholderReplacerInterface
+    {
+        return new CoreMediaPlaceholderReplacer();
     }
 
     /**

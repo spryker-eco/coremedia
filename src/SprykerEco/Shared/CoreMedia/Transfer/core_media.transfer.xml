@@ -40,4 +40,8 @@
         <property name="categoryId" type="string"/>
     </transfer>
 
+    <transfer name="CategoryNodeStorage">
+        <property name="url" type="string"/>
+    </transfer>
+
 </transfers>

@@ -47,17 +47,17 @@ class CoreMediaPlaceholderParser implements CoreMediaPlaceholderParserInterface
             return $coreMediaPlaceholders;
         }
 
-        $placeholderBodies = array_unique($results[static::PREG_MATCH_PLACEHOLDER_KEY]);
+        $placeholdersData = array_unique($results[static::PREG_MATCH_PLACEHOLDER_KEY]);
 
-        foreach ($placeholderBodies as $placeholderBody) {
+        foreach ($placeholdersData as $placeholderKey => $placeholderData) {
             $placeholderData = $this->utilEncodingService->decodeJson(
-                html_entity_decode($placeholderBody, ENT_QUOTES, 'UTF-8'),
+                html_entity_decode($placeholderData, ENT_QUOTES, 'UTF-8'),
                 static::JSON_DECODE_ASSOC
             );
 
             $coreMediaPlaceholderTransfer = (new CoreMediaPlaceholderTransfer())
                 ->fromArray($placeholderData, true)
-                ->setPlaceholderBody($placeholderBody);
+                ->setPlaceholderBody($results[0][$placeholderKey]);
 
             $coreMediaPlaceholders[] = $coreMediaPlaceholderTransfer;
         }
