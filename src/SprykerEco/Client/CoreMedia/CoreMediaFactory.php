@@ -31,6 +31,8 @@ use SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacer
 use SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface;
 use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface;
 use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaPlaceholderResolver;
+use SprykerEco\Client\CoreMedia\Reader\CategoryStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReader;
 use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReader;
@@ -182,6 +184,16 @@ class CoreMediaFactory extends AbstractFactory
     public function createCategoryUrlCoreMediaPlaceholderPostProcessor(): CoreMediaPlaceholderPostProcessorInterface
     {
         return new CategoryUrlCoreMediaPlaceholderPostProcessor(
+            $this->createCategoryStorageReader()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface
+     */
+    public function createCategoryStorageReader(): CategoryStorageReaderInterface
+    {
+        return new CategoryStorageReader(
             $this->getCategoryStorageClient()
         );
     }

@@ -61,16 +61,16 @@ class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholde
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): CoreMediaPlaceholderTransfer {
-        $abstractProductUrl = $this->getProductUrlByCoreMediaPlaceholderTransfer(
+        $productUrl = $this->getProductUrlByCoreMediaPlaceholderTransfer(
             $coreMediaPlaceholderTransfer,
             $locale
         );
 
-        if (!$abstractProductUrl) {
+        if (!$productUrl) {
             return $coreMediaPlaceholderTransfer;
         }
 
-        $coreMediaPlaceholderTransfer->setPlaceholderReplacement($abstractProductUrl);
+        $coreMediaPlaceholderTransfer->setPlaceholderReplacement($productUrl);
 
         return $coreMediaPlaceholderTransfer;
     }
@@ -85,6 +85,10 @@ class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholde
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
+        if (!$coreMediaPlaceholderTransfer->getProductId()) {
+            return null;
+        }
+
         $abstractProductUrl = $this->getAbstractProductUrl(
             $coreMediaPlaceholderTransfer,
             $locale

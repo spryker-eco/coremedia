@@ -8,7 +8,7 @@
 namespace SprykerEco\Client\CoreMedia\Preparator\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
+use SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface;
 
 class CategoryUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholderPostProcessorInterface
 {
@@ -16,16 +16,16 @@ class CategoryUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlacehold
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface
+     * @var \SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface
      */
-    protected $categoryStorageClient;
+    protected $categoryStorageReader;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface $categoryStorageClient
+     * @param \SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface $categoryStorageReader
      */
-    public function __construct(CoreMediaToCategoryStorageClientInterface $categoryStorageClient)
+    public function __construct(CategoryStorageReaderInterface $categoryStorageReader)
     {
-        $this->categoryStorageClient = $categoryStorageClient;
+        $this->categoryStorageReader = $categoryStorageReader;
     }
 
     /**
@@ -73,9 +73,11 @@ class CategoryUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlacehold
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
-        $coreMediaPlaceholderTransfer->requireCategoryId();
+        if (!$coreMediaPlaceholderTransfer->getCategoryId()) {
+            return null;
+        }
 
-        $categoryNodeStorageTransfer = $this->categoryStorageClient->getCategoryNodeById(
+        $categoryNodeStorageTransfer = $this->categoryStorageReader->getCategoryNodeById(
             (int)$coreMediaPlaceholderTransfer->getCategoryId(),
             $locale
         );
