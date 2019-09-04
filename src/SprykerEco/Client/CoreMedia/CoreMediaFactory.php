@@ -31,6 +31,10 @@ use SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacer
 use SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface;
 use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface;
 use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaPlaceholderResolver;
+use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Stub\CoreMediaStub;
 use SprykerEco\Client\CoreMedia\Stub\CoreMediaStubInterface;
 
@@ -147,6 +151,27 @@ class CoreMediaFactory extends AbstractFactory
     public function createProductUrlCoreMediaPlaceholderPostProcessor(): CoreMediaPlaceholderPostProcessorInterface
     {
         return new ProductUrlCoreMediaPlaceholderPostProcessor(
+            $this->createProductAbstractStorageReader(),
+            $this->createProductConcreteStorageReader()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface
+     */
+    public function createProductAbstractStorageReader(): ProductAbstractStorageReaderInterface
+    {
+        return new ProductAbstractStorageReader(
+            $this->getProductStorageClient()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface
+     */
+    public function createProductConcreteStorageReader(): ProductConcreteStorageReaderInterface
+    {
+        return new ProductConcreteStorageReader(
             $this->getProductStorageClient()
         );
     }

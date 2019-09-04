@@ -58,13 +58,15 @@ class RequestExecutor implements RequestExecutorInterface
                 ->setIsSuccessful(false);
         }
 
-        $testProductSku = '018';
+        $testProductASku = '018';
+        $testProductCSku = '135_29836399';
         $testCategoryId = '8';
 
         return (new CoreMediaApiResponseTransfer())
             ->setIsSuccessful(true)
             ->setData($response->getBody()->getContents()
-                . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;' . $testProductSku . '&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;" target="_self" class="cm-cta__button cm-cta-button " role="button">TEST PRODUCT ' . $testProductSku . '</a>'
+                . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;' . $testProductASku . '&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;" target="_self" class="cm-cta__button cm-cta-button " role="button">TEST PRODUCT A ' . $testProductASku . '</a> '
+                . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;' . $testProductCSku . '&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;" target="_self" class="cm-cta__button cm-cta-button " role="button">TEST PRODUCT C ' . $testProductCSku . '</a> '
                 . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;' . $testCategoryId . '&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;" target="_self" class="cm-cta__button cm-cta-button " role="button">TEST CAT ' . $testCategoryId . '</a>');
             //->setData($response->getBody()->getContents());
     }

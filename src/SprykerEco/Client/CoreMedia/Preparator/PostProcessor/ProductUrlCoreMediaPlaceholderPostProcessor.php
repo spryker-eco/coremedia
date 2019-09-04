@@ -8,26 +8,36 @@
 namespace SprykerEco\Client\CoreMedia\Preparator\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
+use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface;
 
 class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholderPostProcessorInterface
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'product';
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
-    protected const PRODUCT_ABSTRACT_MAPPING_TYPE = 'sku';
     protected const PRODUCT_ABSTRACT_DATA_KEY_URL = 'url';
+    protected const PRODUCT_CONCRETE_DATA_KEY_URL = 'url';
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface
+     * @var \SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface
      */
-    protected $productStorageClient;
+    protected $productAbstractStorageReader;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface $productStorageClient
+     * @var \SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface
      */
-    public function __construct(CoreMediaToProductStorageClientInterface $productStorageClient)
-    {
-        $this->productStorageClient = $productStorageClient;
+    protected $productConcreteStorageReader;
+
+    /**
+     * @param \SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface $productAbstractStorageReader
+     * @param \SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface $productConcreteStorageReader
+     */
+    public function __construct(
+        ProductAbstractStorageReaderInterface $productAbstractStorageReader,
+        ProductConcreteStorageReaderInterface $productConcreteStorageReader
+    ) {
+        $this->productAbstractStorageReader = $productAbstractStorageReader;
+        $this->productConcreteStorageReader = $productConcreteStorageReader;
     }
 
     /**
@@ -51,7 +61,7 @@ class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholde
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): CoreMediaPlaceholderTransfer {
-        $abstractProductUrl = $this->getAbstractProductUrlByCoreMediaPlaceholderTransfer(
+        $abstractProductUrl = $this->getProductUrlByCoreMediaPlaceholderTransfer(
             $coreMediaPlaceholderTransfer,
             $locale
         );
@@ -71,18 +81,58 @@ class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholde
      *
      * @return string|null
      */
-    protected function getAbstractProductUrlByCoreMediaPlaceholderTransfer(
+    protected function getProductUrlByCoreMediaPlaceholderTransfer(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
-        $coreMediaPlaceholderTransfer->requireProductId();
+        $abstractProductUrl = $this->getAbstractProductUrl(
+            $coreMediaPlaceholderTransfer,
+            $locale
+        );
 
-        $abstractProductData = $this->productStorageClient->findProductAbstractStorageDataByMapping(
-            static::PRODUCT_ABSTRACT_MAPPING_TYPE,
+        if ($abstractProductUrl) {
+            return $abstractProductUrl;
+        }
+
+        return $this->getConcreteProductUrl(
+            $coreMediaPlaceholderTransfer,
+            $locale
+        );
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param string $locale
+     *
+     * @return string|null
+     */
+    protected function getAbstractProductUrl(
+        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        string $locale
+    ): ?string {
+        $abstractProductData = $this->productAbstractStorageReader->getProductAbstractData(
             $coreMediaPlaceholderTransfer->getProductId(),
             $locale
         );
 
         return $abstractProductData[static::PRODUCT_ABSTRACT_DATA_KEY_URL] ?? null;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param string $locale
+     *
+     * @return string|null
+     */
+    protected function getConcreteProductUrl(
+        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        string $locale
+    ): ?string {
+        $concreteProductData = $this->productConcreteStorageReader->getProductConcreteData(
+            $coreMediaPlaceholderTransfer->getProductId(),
+            $locale
+        );
+
+        return $concreteProductData[static::PRODUCT_CONCRETE_DATA_KEY_URL] ?? null;
     }
 }
