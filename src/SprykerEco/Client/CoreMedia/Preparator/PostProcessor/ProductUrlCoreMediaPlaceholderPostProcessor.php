@@ -30,16 +30,16 @@ class ProductUrlCoreMediaPlaceholderPostProcessor extends AbstractCoreMediaPlace
     protected $productConcreteStorageReader;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $coreMediaConfig
+     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
      * @param \SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface $productAbstractStorageReader
      * @param \SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface $productConcreteStorageReader
      */
     public function __construct(
-        CoreMediaConfig $coreMediaConfig,
+        CoreMediaConfig $config,
         ProductAbstractStorageReaderInterface $productAbstractStorageReader,
         ProductConcreteStorageReaderInterface $productConcreteStorageReader
     ) {
-        parent::__construct($coreMediaConfig);
+        parent::__construct($config);
 
         $this->productAbstractStorageReader = $productAbstractStorageReader;
         $this->productConcreteStorageReader = $productConcreteStorageReader;

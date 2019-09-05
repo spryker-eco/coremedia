@@ -17,14 +17,40 @@ abstract class AbstractCoreMediaPlaceholderPostProcessor implements CoreMediaPla
     /**
      * @var \SprykerEco\Client\CoreMedia\CoreMediaConfig
      */
-    protected $coreMediaConfig;
+    protected $config;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $coreMediaConfig
+     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
      */
-    public function __construct(CoreMediaConfig $coreMediaConfig)
+    public function __construct(CoreMediaConfig $config)
     {
-        $this->coreMediaConfig = $coreMediaConfig;
+        $this->config = $config;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param string $locale
+     *
+     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
+     */
+    public function addReplacement(
+        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        string $locale
+    ): CoreMediaPlaceholderTransfer {
+        $placeholderReplacement = $this->getPlaceholderReplacement(
+            $coreMediaPlaceholderTransfer,
+            $locale
+        );
+
+        if (!$placeholderReplacement) {
+            $this->handleIncorrectPlaceholderData($coreMediaPlaceholderTransfer, $locale);
+
+            return $this->setFallbackPlaceholderReplacement($coreMediaPlaceholderTransfer);
+        }
+
+        $coreMediaPlaceholderTransfer->setPlaceholderReplacement($placeholderReplacement);
+
+        return $coreMediaPlaceholderTransfer;
     }
 
     /**
@@ -53,35 +79,22 @@ abstract class AbstractCoreMediaPlaceholderPostProcessor implements CoreMediaPla
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
-     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
+     * @return void
      */
-    public function addReplacement(
+    protected function handleIncorrectPlaceholderData(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
-    ): CoreMediaPlaceholderTransfer {
-        $placeholderReplacement = $this->getPlaceholderReplacement(
-            $coreMediaPlaceholderTransfer,
-            $locale
-        );
+    ): void {
+        if ($this->config->isDebugModeEnabled()) {
+            $dataException = new InvalidPlaceholderDataException(
+                sprintf(
+                    "Cannot obtain placeholder replacement for:\n[Placeholder]: %s\n[Locale]: %s",
+                    $coreMediaPlaceholderTransfer->getPlaceholderBody(),
+                    $locale
+                )
+            );
 
-        if (!$placeholderReplacement) {
-            if ($this->coreMediaConfig->isDebugModeEnabled()) {
-                $dataException = new InvalidPlaceholderDataException(
-                    sprintf(
-                        "Cannot obtain placeholder replacement for:\n[Placeholder]: %s\n[Locale]: %s",
-                        $coreMediaPlaceholderTransfer->getPlaceholderBody(),
-                        $locale
-                    )
-                );
-
-                ErrorLogger::getInstance()->log($dataException);
-            }
-
-            return $this->setFallbackPlaceholderReplacement($coreMediaPlaceholderTransfer);
+            ErrorLogger::getInstance()->log($dataException);
         }
-
-        $coreMediaPlaceholderTransfer->setPlaceholderReplacement($placeholderReplacement);
-
-        return $coreMediaPlaceholderTransfer;
     }
 }

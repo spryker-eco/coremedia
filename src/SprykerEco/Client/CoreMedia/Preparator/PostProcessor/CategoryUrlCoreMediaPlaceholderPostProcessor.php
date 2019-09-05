@@ -22,14 +22,14 @@ class CategoryUrlCoreMediaPlaceholderPostProcessor extends AbstractCoreMediaPlac
     protected $categoryStorageReader;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $coreMediaConfig
+     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
      * @param \SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface $categoryStorageReader
      */
     public function __construct(
-        CoreMediaConfig $coreMediaConfig,
+        CoreMediaConfig $config,
         CategoryStorageReaderInterface $categoryStorageReader
     ) {
-        parent::__construct($coreMediaConfig);
+        parent::__construct($config);
 
         $this->categoryStorageReader = $categoryStorageReader;
     }
