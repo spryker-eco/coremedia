@@ -11,7 +11,7 @@ use Generated\Shared\Transfer\CmsSlotContentRequestTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 use SprykerEco\Client\CoreMedia\Api\Exception\MissingRequestParameterException;
 
-class CoreMediaMapper implements CoreMediaMapperInterface
+class RequestMapper implements RequestMapperInterface
 {
     protected const PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION = 'The "%s" param is missing in the request to CoreMedia.';
 
@@ -44,27 +44,10 @@ class CoreMediaMapper implements CoreMediaMapperInterface
         /** @var \Generated\Shared\Transfer\StoreTransfer $storeTransfer */
         $storeTransfer = $requestParameters[CoreMediaFragmentRequestTransfer::STORE];
         $coreMediaFragmentRequestTransfer->setStore($storeTransfer->getName());
-        $coreMediaFragmentRequestTransfer->setLocale($requestParameters[CoreMediaFragmentRequestTransfer::LOCALE]);
 
-        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::CATEGORY_ID])) {
-            $coreMediaFragmentRequestTransfer->setCategoryId($requestParameters[CoreMediaFragmentRequestTransfer::CATEGORY_ID]);
-        }
-
-        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::PRODUCT_ID])) {
-            $coreMediaFragmentRequestTransfer->setProductId($requestParameters[CoreMediaFragmentRequestTransfer::PRODUCT_ID]);
-        }
-
-        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::PAGE_ID])) {
-            $coreMediaFragmentRequestTransfer->setPageId($requestParameters[CoreMediaFragmentRequestTransfer::PAGE_ID]);
-        }
-
-        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::PLACEMENT])) {
-            $coreMediaFragmentRequestTransfer->setPlacement($requestParameters[CoreMediaFragmentRequestTransfer::PLACEMENT]);
-        }
-
-        if (isset($requestParameters[CoreMediaFragmentRequestTransfer::VIEW])) {
-            $coreMediaFragmentRequestTransfer->setView($requestParameters[CoreMediaFragmentRequestTransfer::VIEW]);
-        }
+        $requestData = $requestParameters;
+        unset($requestData['store']);
+        $coreMediaFragmentRequestTransfer->fromArray($requestData, true);
 
         return $coreMediaFragmentRequestTransfer;
     }

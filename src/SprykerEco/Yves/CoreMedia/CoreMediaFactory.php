@@ -8,16 +8,16 @@
 namespace SprykerEco\Yves\CoreMedia;
 
 use Spryker\Yves\Kernel\AbstractFactory;
-use SprykerEco\Yves\CoreMedia\Mapper\CoreMediaMapper;
-use SprykerEco\Yves\CoreMedia\Mapper\CoreMediaMapperInterface;
+use SprykerEco\Yves\CoreMedia\Mapper\RequestMapper;
+use SprykerEco\Yves\CoreMedia\Mapper\RequestMapperInterface;
 
 class CoreMediaFactory extends AbstractFactory
 {
     /**
-     * @return \SprykerEco\Yves\CoreMedia\Mapper\CoreMediaMapperInterface
+     * @return \SprykerEco\Yves\CoreMedia\Mapper\RequestMapperInterface
      */
-    public function createCoreMediaMapper(): CoreMediaMapperInterface
+    public function createRequestMapper(): RequestMapperInterface
     {
-        return new CoreMediaMapper();
+        return new RequestMapper();
     }
 }

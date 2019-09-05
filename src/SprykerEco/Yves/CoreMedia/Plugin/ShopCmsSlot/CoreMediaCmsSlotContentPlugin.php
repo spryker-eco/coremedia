@@ -62,7 +62,7 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
         CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
     ): CoreMediaFragmentRequestTransfer {
         return $this->getFactory()
-            ->createCoreMediaMapper()
+            ->createRequestMapper()
             ->mapCmsSlotContentRequestToCoreMediaFragmentRequest($cmsSlotContentRequestTransfer);
     }
 }

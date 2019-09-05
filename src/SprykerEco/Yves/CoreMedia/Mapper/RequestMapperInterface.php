@@ -10,7 +10,7 @@ namespace SprykerEco\Yves\CoreMedia\Mapper;
 use Generated\Shared\Transfer\CmsSlotContentRequestTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 
-interface CoreMediaMapperInterface
+interface RequestMapperInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
