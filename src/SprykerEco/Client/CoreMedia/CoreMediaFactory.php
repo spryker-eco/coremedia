@@ -153,6 +153,7 @@ class CoreMediaFactory extends AbstractFactory
     public function createProductUrlCoreMediaPlaceholderPostProcessor(): CoreMediaPlaceholderPostProcessorInterface
     {
         return new ProductUrlCoreMediaPlaceholderPostProcessor(
+            $this->getConfig(),
             $this->createProductAbstractStorageReader(),
             $this->createProductConcreteStorageReader()
         );
@@ -184,6 +185,7 @@ class CoreMediaFactory extends AbstractFactory
     public function createCategoryUrlCoreMediaPlaceholderPostProcessor(): CoreMediaPlaceholderPostProcessorInterface
     {
         return new CategoryUrlCoreMediaPlaceholderPostProcessor(
+            $this->getConfig(),
             $this->createCategoryStorageReader()
         );
     }

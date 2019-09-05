@@ -8,9 +8,10 @@
 namespace SprykerEco\Client\CoreMedia\Preparator\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface;
 
-class CategoryUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholderPostProcessorInterface
+class CategoryUrlCoreMediaPlaceholderPostProcessor extends AbstractCoreMediaPlaceholderPostProcessor
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'category';
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
@@ -21,10 +22,15 @@ class CategoryUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlacehold
     protected $categoryStorageReader;
 
     /**
+     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $coreMediaConfig
      * @param \SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface $categoryStorageReader
      */
-    public function __construct(CategoryStorageReaderInterface $categoryStorageReader)
-    {
+    public function __construct(
+        CoreMediaConfig $coreMediaConfig,
+        CategoryStorageReaderInterface $categoryStorageReader
+    ) {
+        parent::__construct($coreMediaConfig);
+
         $this->categoryStorageReader = $categoryStorageReader;
     }
 
@@ -43,33 +49,9 @@ class CategoryUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlacehold
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
-     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
-     */
-    public function addReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
-        string $locale
-    ): CoreMediaPlaceholderTransfer {
-        $categoryUrl = $this->getCategoryUrlByCoreMediaPlaceholderTransfer(
-            $coreMediaPlaceholderTransfer,
-            $locale
-        );
-
-        if (!$categoryUrl) {
-            return $coreMediaPlaceholderTransfer;
-        }
-
-        $coreMediaPlaceholderTransfer->setPlaceholderReplacement($categoryUrl);
-
-        return $coreMediaPlaceholderTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
-     * @param string $locale
-     *
      * @return string|null
      */
-    protected function getCategoryUrlByCoreMediaPlaceholderTransfer(
+    protected function getPlaceholderReplacement(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {

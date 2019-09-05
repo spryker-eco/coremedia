@@ -8,10 +8,11 @@
 namespace SprykerEco\Client\CoreMedia\Preparator\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface;
 
-class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholderPostProcessorInterface
+class ProductUrlCoreMediaPlaceholderPostProcessor extends AbstractCoreMediaPlaceholderPostProcessor
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'product';
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
@@ -29,13 +30,17 @@ class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholde
     protected $productConcreteStorageReader;
 
     /**
+     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $coreMediaConfig
      * @param \SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface $productAbstractStorageReader
      * @param \SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface $productConcreteStorageReader
      */
     public function __construct(
+        CoreMediaConfig $coreMediaConfig,
         ProductAbstractStorageReaderInterface $productAbstractStorageReader,
         ProductConcreteStorageReaderInterface $productConcreteStorageReader
     ) {
+        parent::__construct($coreMediaConfig);
+
         $this->productAbstractStorageReader = $productAbstractStorageReader;
         $this->productConcreteStorageReader = $productConcreteStorageReader;
     }
@@ -55,33 +60,9 @@ class ProductUrlCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholde
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
-     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
-     */
-    public function addReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
-        string $locale
-    ): CoreMediaPlaceholderTransfer {
-        $productUrl = $this->getProductUrlByCoreMediaPlaceholderTransfer(
-            $coreMediaPlaceholderTransfer,
-            $locale
-        );
-
-        if (!$productUrl) {
-            return $coreMediaPlaceholderTransfer;
-        }
-
-        $coreMediaPlaceholderTransfer->setPlaceholderReplacement($productUrl);
-
-        return $coreMediaPlaceholderTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
-     * @param string $locale
-     *
      * @return string|null
      */
-    protected function getProductUrlByCoreMediaPlaceholderTransfer(
+    protected function getPlaceholderReplacement(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
