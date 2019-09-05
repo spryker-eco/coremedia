@@ -8,12 +8,12 @@
 namespace SprykerEco\Client\CoreMedia;
 
 use Spryker\Client\Kernel\AbstractFactory;
+use SprykerEco\Client\CoreMedia\Api\ApiClient;
+use SprykerEco\Client\CoreMedia\Api\ApiClientInterface;
 use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilder;
 use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilderInterface;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfiguration;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
-use SprykerEco\Client\CoreMedia\Api\ApiClient;
-use SprykerEco\Client\CoreMedia\Api\ApiClientInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutor;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
