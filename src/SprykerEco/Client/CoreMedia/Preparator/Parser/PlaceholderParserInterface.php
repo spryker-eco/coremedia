@@ -7,7 +7,7 @@
 
 namespace SprykerEco\Client\CoreMedia\Preparator\Parser;
 
-interface CoreMediaPlaceholderParserInterface
+interface PlaceholderParserInterface
 {
     /**
      * @param string $content

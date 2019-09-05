@@ -234,13 +234,13 @@ class CoreMediaClientTest extends Unit
     ): CoreMediaFactory {
         $coreMediaFactoryMock = $this->getMockBuilder(CoreMediaFactory::class)
             ->setMethods([
-                'createCoreMediaApiRequestExecutor',
+                'createApiRequestExecutor',
                 'getConfig',
                 'getUtilEncodingService',
                 'getProductStorageClient',
                 'getCategoryStorageClient',
             ])->getMock();
-        $coreMediaFactoryMock->method('createCoreMediaApiRequestExecutor')->willReturn($requestExecutor);
+        $coreMediaFactoryMock->method('createApiRequestExecutor')->willReturn($requestExecutor);
         $coreMediaFactoryMock->method('getConfig')->willReturn(
             $this->getCoreMediaConfigMock()
         );

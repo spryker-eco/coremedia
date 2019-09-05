@@ -9,39 +9,39 @@ namespace SprykerEco\Client\CoreMedia\Preparator\Resolver;
 
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface;
-use SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface;
+use SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParserInterface;
+use SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface;
 
-class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterface
+class PlaceholderResolver implements ApiResponseResolverInterface
 {
     /**
-     * @var \SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface
+     * @var \SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParserInterface
      */
-    protected $coreMediaPlaceholderParser;
+    protected $placeholderParser;
 
     /**
-     * @var array|\SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface[]
+     * @var array|\SprykerEco\Client\CoreMedia\Preparator\PostProcessor\PlaceholderPostProcessorInterface[]
      */
-    protected $coreMediaPlaceholderPostProcessors;
+    protected $placeholderPostProcessors;
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface
+     * @var \SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface
      */
-    protected $coreMediaPlaceholderReplacer;
+    protected $placeholderReplacer;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface $coreMediaPlaceholderParser
-     * @param array $coreMediaPlaceholderPostProcessors
-     * @param \SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface $coreMediaPlaceholderReplacer
+     * @param \SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParserInterface $placeholderParser
+     * @param array $placeholderPostProcessors
+     * @param \SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface $placeholderReplacer
      */
     public function __construct(
-        CoreMediaPlaceholderParserInterface $coreMediaPlaceholderParser,
-        array $coreMediaPlaceholderPostProcessors,
-        CoreMediaPlaceholderReplacerInterface $coreMediaPlaceholderReplacer
+        PlaceholderParserInterface $placeholderParser,
+        array $placeholderPostProcessors,
+        PlaceholderReplacerInterface $placeholderReplacer
     ) {
-        $this->coreMediaPlaceholderParser = $coreMediaPlaceholderParser;
-        $this->coreMediaPlaceholderPostProcessors = $coreMediaPlaceholderPostProcessors;
-        $this->coreMediaPlaceholderReplacer = $coreMediaPlaceholderReplacer;
+        $this->placeholderParser = $placeholderParser;
+        $this->placeholderPostProcessors = $placeholderPostProcessors;
+        $this->placeholderReplacer = $placeholderReplacer;
     }
 
     /**
@@ -54,7 +54,7 @@ class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterf
         CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
         string $locale
     ): CoreMediaApiResponseTransfer {
-        $coreMediaPlaceholderTransfers = $this->coreMediaPlaceholderParser->parse($coreMediaApiResponseTransfer->getData());
+        $coreMediaPlaceholderTransfers = $this->placeholderParser->parse($coreMediaApiResponseTransfer->getData());
 
         if (!$coreMediaPlaceholderTransfers) {
             return $coreMediaApiResponseTransfer;
@@ -66,7 +66,7 @@ class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterf
                 $locale
             );
             $coreMediaApiResponseTransfer->setData(
-                $this->coreMediaPlaceholderReplacer->replace(
+                $this->placeholderReplacer->replace(
                     $coreMediaApiResponseTransfer->getData(),
                     $coreMediaPlaceholderTransfer
                 )
@@ -86,9 +86,9 @@ class CoreMediaPlaceholderResolver implements CoreMediaApiResponseResolverInterf
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): CoreMediaPlaceholderTransfer {
-        foreach ($this->coreMediaPlaceholderPostProcessors as $coreMediaPlaceholderPostProcessor) {
-            if ($coreMediaPlaceholderPostProcessor->isApplicable($coreMediaPlaceholderTransfer)) {
-                return $coreMediaPlaceholderPostProcessor->addReplacement($coreMediaPlaceholderTransfer, $locale);
+        foreach ($this->placeholderPostProcessors as $placeholderPostProcessor) {
+            if ($placeholderPostProcessor->isApplicable($coreMediaPlaceholderTransfer)) {
+                return $placeholderPostProcessor->addReplacement($coreMediaPlaceholderTransfer, $locale);
             }
         }
 

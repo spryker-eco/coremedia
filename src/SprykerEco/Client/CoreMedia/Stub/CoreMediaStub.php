@@ -9,31 +9,31 @@ namespace SprykerEco\Client\CoreMedia\Stub;
 
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
-use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface;
-use SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparatorInterface;
+use SprykerEco\Client\CoreMedia\Api\ApiClientInterface;
+use SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparatorInterface;
 
 class CoreMediaStub implements CoreMediaStubInterface
 {
     /**
-     * @var \SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface
+     * @var \SprykerEco\Client\CoreMedia\Api\ApiClientInterface
      */
-    protected $coreMediaApiClient;
+    protected $apiClient;
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparatorInterface
+     * @var \SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparatorInterface
      */
-    protected $coreMediaApiResponsePreparator;
+    protected $apiResponsePreparator;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface $coreMediaApiClient
-     * @param \SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparatorInterface $coreMediaApiResponsePreparator
+     * @param \SprykerEco\Client\CoreMedia\Api\ApiClientInterface $apiClient
+     * @param \SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparatorInterface $apiResponsePreparator
      */
     public function __construct(
-        CoreMediaApiClientInterface $coreMediaApiClient,
-        CoreMediaApiResponsePreparatorInterface $coreMediaApiResponsePreparator
+        ApiClientInterface $apiClient,
+        ApiResponsePreparatorInterface $apiResponsePreparator
     ) {
-        $this->coreMediaApiClient = $coreMediaApiClient;
-        $this->coreMediaApiResponsePreparator = $coreMediaApiResponsePreparator;
+        $this->apiClient = $apiClient;
+        $this->apiResponsePreparator = $apiResponsePreparator;
     }
 
     /**
@@ -44,8 +44,8 @@ class CoreMediaStub implements CoreMediaStubInterface
     public function getDocumentFragment(
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
     ): CoreMediaApiResponseTransfer {
-        $coreMediaApiResponseTransfer = $this->coreMediaApiClient->getDocumentFragment($coreMediaFragmentRequestTransfer);
+        $coreMediaApiResponseTransfer = $this->apiClient->getDocumentFragment($coreMediaFragmentRequestTransfer);
 
-        return $this->coreMediaApiResponsePreparator->prepare($coreMediaApiResponseTransfer, $coreMediaFragmentRequestTransfer->getLocale());
+        return $this->apiResponsePreparator->prepare($coreMediaApiResponseTransfer, $coreMediaFragmentRequestTransfer->getLocale());
     }
 }

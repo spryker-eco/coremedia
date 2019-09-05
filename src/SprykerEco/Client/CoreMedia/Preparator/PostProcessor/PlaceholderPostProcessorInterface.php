@@ -9,7 +9,7 @@ namespace SprykerEco\Client\CoreMedia\Preparator\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 
-interface CoreMediaPlaceholderPostProcessorInterface
+interface PlaceholderPostProcessorInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer

@@ -9,7 +9,7 @@ namespace SprykerEco\Client\CoreMedia\Preparator\Replacer;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 
-interface CoreMediaPlaceholderReplacerInterface
+interface PlaceholderReplacerInterface
 {
     /**
      * @param string $content

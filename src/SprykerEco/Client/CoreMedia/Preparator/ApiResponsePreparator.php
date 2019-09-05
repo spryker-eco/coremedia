@@ -9,19 +9,19 @@ namespace SprykerEco\Client\CoreMedia\Preparator;
 
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 
-class CoreMediaApiResponsePreparator implements CoreMediaApiResponsePreparatorInterface
+class ApiResponsePreparator implements ApiResponsePreparatorInterface
 {
     /**
-     * @var \SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface[]
+     * @var \SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface[]
      */
-    protected $coreMediaApiResponseResolvers;
+    protected $apiResponseResolvers;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface[] $coreMediaApiResponseResolvers
+     * @param \SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface[] $apiResponseResolvers
      */
-    public function __construct(array $coreMediaApiResponseResolvers)
+    public function __construct(array $apiResponseResolvers)
     {
-        $this->coreMediaApiResponseResolvers = $coreMediaApiResponseResolvers;
+        $this->apiResponseResolvers = $apiResponseResolvers;
     }
 
     /**
@@ -34,8 +34,8 @@ class CoreMediaApiResponsePreparator implements CoreMediaApiResponsePreparatorIn
         CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
         string $locale
     ): CoreMediaApiResponseTransfer {
-        foreach ($this->coreMediaApiResponseResolvers as $coreMediaApiResponseResolver) {
-            $coreMediaApiResponseTransfer = $coreMediaApiResponseResolver->resolve($coreMediaApiResponseTransfer, $locale);
+        foreach ($this->apiResponseResolvers as $apiResponseResolver) {
+            $coreMediaApiResponseTransfer = $apiResponseResolver->resolve($coreMediaApiResponseTransfer, $locale);
         }
 
         return $coreMediaApiResponseTransfer;

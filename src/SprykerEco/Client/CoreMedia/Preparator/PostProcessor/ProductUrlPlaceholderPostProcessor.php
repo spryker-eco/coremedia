@@ -12,7 +12,7 @@ use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface;
 
-class ProductUrlCoreMediaPlaceholderPostProcessor extends AbstractCoreMediaPlaceholderPostProcessor
+class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'product';
     protected const PLACEHOLDER_RENDER_TYPE = 'url';

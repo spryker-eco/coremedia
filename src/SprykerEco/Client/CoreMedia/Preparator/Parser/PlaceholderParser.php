@@ -10,7 +10,7 @@ namespace SprykerEco\Client\CoreMedia\Preparator\Parser;
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
 
-class CoreMediaPlaceholderParser implements CoreMediaPlaceholderParserInterface
+class PlaceholderParser implements PlaceholderParserInterface
 {
     protected const PREG_MATCH_PLACEHOLDER_KEY = 'placeholder';
     protected const JSON_DECODE_ASSOC = true;

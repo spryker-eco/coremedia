@@ -12,25 +12,25 @@ use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilder;
 use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilderInterface;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfiguration;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
-use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClient;
-use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface;
+use SprykerEco\Client\CoreMedia\Api\ApiClient;
+use SprykerEco\Client\CoreMedia\Api\ApiClientInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutor;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
-use SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparator;
-use SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparatorInterface;
-use SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParser;
-use SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface;
-use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CategoryUrlCoreMediaPlaceholderPostProcessor;
-use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface;
-use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\ProductUrlCoreMediaPlaceholderPostProcessor;
-use SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacer;
-use SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface;
-use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface;
-use SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaPlaceholderResolver;
+use SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparator;
+use SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparatorInterface;
+use SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParser;
+use SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParserInterface;
+use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CategoryUrlPlaceholderPostProcessor;
+use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\PlaceholderPostProcessorInterface;
+use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\ProductUrlPlaceholderPostProcessor;
+use SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacer;
+use SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface;
+use SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface;
+use SprykerEco\Client\CoreMedia\Preparator\Resolver\PlaceholderResolver;
 use SprykerEco\Client\CoreMedia\Reader\CategoryStorageReader;
 use SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReader;
@@ -46,13 +46,13 @@ use SprykerEco\Client\CoreMedia\Stub\CoreMediaStubInterface;
 class CoreMediaFactory extends AbstractFactory
 {
     /**
-     * @return \SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface
+     * @return \SprykerEco\Client\CoreMedia\Api\ApiClientInterface
      */
-    public function createCoreMediaApiClient(): CoreMediaApiClientInterface
+    public function createApiClient(): ApiClientInterface
     {
-        return new CoreMediaApiClient(
-            $this->createCoreMediaApiRequestBuilder(),
-            $this->createCoreMediaApiRequestExecutor(),
+        return new ApiClient(
+            $this->createApiRequestBuilder(),
+            $this->createApiRequestExecutor(),
             $this->createUrlConfiguration()
         );
     }
@@ -60,7 +60,7 @@ class CoreMediaFactory extends AbstractFactory
     /**
      * @return \SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilderInterface
      */
-    public function createCoreMediaApiRequestBuilder(): RequestBuilderInterface
+    public function createApiRequestBuilder(): RequestBuilderInterface
     {
         return new RequestBuilder();
     }
@@ -68,7 +68,7 @@ class CoreMediaFactory extends AbstractFactory
     /**
      * @return \SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface
      */
-    public function createCoreMediaApiRequestExecutor(): RequestExecutorInterface
+    public function createApiRequestExecutor(): RequestExecutorInterface
     {
         return new RequestExecutor(
             $this->getGuzzleClient(),
@@ -92,67 +92,67 @@ class CoreMediaFactory extends AbstractFactory
     public function createCoreMediaStub(): CoreMediaStubInterface
     {
         return new CoreMediaStub(
-            $this->createCoreMediaApiClient(),
-            $this->createCoreMediaApiResponsePreparator()
+            $this->createApiClient(),
+            $this->createApiResponsePreparator()
         );
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\CoreMediaApiResponsePreparatorInterface
+     * @return \SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparatorInterface
      */
-    public function createCoreMediaApiResponsePreparator(): CoreMediaApiResponsePreparatorInterface
+    public function createApiResponsePreparator(): ApiResponsePreparatorInterface
     {
-        return new CoreMediaApiResponsePreparator(
-            $this->getCoreMediaApiResponseResolvers()
+        return new ApiResponsePreparator(
+            $this->getApiResponseResolvers()
         );
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface[]
+     * @return \SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface[]
      */
-    public function getCoreMediaApiResponseResolvers(): array
+    public function getApiResponseResolvers(): array
     {
         return [
-            $this->createCoreMediaPlaceholderResolver(),
+            $this->createPlaceholderResolver(),
         ];
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\Resolver\CoreMediaApiResponseResolverInterface
+     * @return \SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface
      */
-    public function createCoreMediaPlaceholderResolver(): CoreMediaApiResponseResolverInterface
+    public function createPlaceholderResolver(): ApiResponseResolverInterface
     {
-        return new CoreMediaPlaceholderResolver(
-            $this->createCoreMediaPlaceholderParser(),
-            $this->getCoreMediaPlaceholderPostProcessors(),
-            $this->createCoreMediaPlaceholderReplacer()
+        return new PlaceholderResolver(
+            $this->createPlaceholderParser(),
+            $this->getPlaceholderPostProcessors(),
+            $this->createPlaceholderReplacer()
         );
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\Parser\CoreMediaPlaceholderParserInterface
+     * @return \SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParserInterface
      */
-    public function createCoreMediaPlaceholderParser(): CoreMediaPlaceholderParserInterface
+    public function createPlaceholderParser(): PlaceholderParserInterface
     {
-        return new CoreMediaPlaceholderParser(
+        return new PlaceholderParser(
             $this->getUtilEncodingService()
         );
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\Replacer\CoreMediaPlaceholderReplacerInterface
+     * @return \SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface
      */
-    public function createCoreMediaPlaceholderReplacer(): CoreMediaPlaceholderReplacerInterface
+    public function createPlaceholderReplacer(): PlaceholderReplacerInterface
     {
-        return new CoreMediaPlaceholderReplacer();
+        return new PlaceholderReplacer();
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface
+     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\PlaceholderPostProcessorInterface
      */
-    public function createProductUrlCoreMediaPlaceholderPostProcessor(): CoreMediaPlaceholderPostProcessorInterface
+    public function createProductUrlPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
     {
-        return new ProductUrlCoreMediaPlaceholderPostProcessor(
+        return new ProductUrlPlaceholderPostProcessor(
             $this->getConfig(),
             $this->createProductAbstractStorageReader(),
             $this->createProductConcreteStorageReader()
@@ -180,11 +180,11 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface
+     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\PlaceholderPostProcessorInterface
      */
-    public function createCategoryUrlCoreMediaPlaceholderPostProcessor(): CoreMediaPlaceholderPostProcessorInterface
+    public function createCategoryUrlPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
     {
-        return new CategoryUrlCoreMediaPlaceholderPostProcessor(
+        return new CategoryUrlPlaceholderPostProcessor(
             $this->getConfig(),
             $this->createCategoryStorageReader()
         );
@@ -201,13 +201,13 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CoreMediaPlaceholderPostProcessorInterface[]
+     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\PlaceholderPostProcessorInterface[]
      */
-    public function getCoreMediaPlaceholderPostProcessors(): array
+    public function getPlaceholderPostProcessors(): array
     {
         return [
-            $this->createProductUrlCoreMediaPlaceholderPostProcessor(),
-            $this->createCategoryUrlCoreMediaPlaceholderPostProcessor(),
+            $this->createProductUrlPlaceholderPostProcessor(),
+            $this->createCategoryUrlPlaceholderPostProcessor(),
         ];
     }
 

@@ -11,7 +11,7 @@ use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface;
 
-class CategoryUrlCoreMediaPlaceholderPostProcessor extends AbstractCoreMediaPlaceholderPostProcessor
+class CategoryUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'category';
     protected const PLACEHOLDER_RENDER_TYPE = 'url';

@@ -12,7 +12,7 @@ use Spryker\Shared\ErrorHandler\ErrorLogger;
 use SprykerEco\Client\CoreMedia\Api\Exception\InvalidPlaceholderDataException;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 
-abstract class AbstractCoreMediaPlaceholderPostProcessor implements CoreMediaPlaceholderPostProcessorInterface
+abstract class AbstractPlaceholderPostProcessor implements PlaceholderPostProcessorInterface
 {
     /**
      * @var \SprykerEco\Client\CoreMedia\CoreMediaConfig

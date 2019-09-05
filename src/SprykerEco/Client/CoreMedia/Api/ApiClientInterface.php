@@ -5,20 +5,19 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Client\CoreMedia\Preparator;
+namespace SprykerEco\Client\CoreMedia\Api;
 
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
+use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 
-interface CoreMediaApiResponsePreparatorInterface
+interface ApiClientInterface
 {
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
-     * @param string $locale
+     * @param \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
      *
      * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
      */
-    public function prepare(
-        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
-        string $locale
+    public function getDocumentFragment(
+        CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
     ): CoreMediaApiResponseTransfer;
 }
