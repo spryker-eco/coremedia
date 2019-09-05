@@ -19,7 +19,7 @@ class CoreMediaPlaceholderReplacer implements CoreMediaPlaceholderReplacerInterf
      */
     public function replace(string $content, CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
     {
-        if (!$coreMediaPlaceholderTransfer->getPlaceholderReplacement()) {
+        if ($coreMediaPlaceholderTransfer->getPlaceholderReplacement() === null) {
             return $content;
         }
 
