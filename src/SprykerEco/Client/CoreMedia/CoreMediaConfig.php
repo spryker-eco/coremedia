@@ -8,6 +8,7 @@
 namespace SprykerEco\Client\CoreMedia;
 
 use Spryker\Zed\Kernel\AbstractBundleConfig;
+use SprykerEco\Shared\CoreMedia\CoreMediaConfig as SharedCoreMediaConfig;
 use SprykerEco\Shared\CoreMedia\CoreMediaConstants;
 
 class CoreMediaConfig extends AbstractBundleConfig
@@ -62,5 +63,13 @@ class CoreMediaConfig extends AbstractBundleConfig
     public function getApplicationStoreLocaleMapping(): array
     {
         return [];
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlaceholderPattern(): string
+    {
+        return '/(?:(?:&lt;|<)!--CM\s*)(?P<' . SharedCoreMediaConfig::PREG_MATCH_PLACEHOLDER_KEY . '>(?:(?!CM--(&gt;|>)).|\s)*)(?:\s*\CM--(?:&gt;|>))/i';
     }
 }

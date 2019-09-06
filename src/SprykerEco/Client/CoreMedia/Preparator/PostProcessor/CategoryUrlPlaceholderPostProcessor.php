@@ -9,7 +9,7 @@ namespace SprykerEco\Client\CoreMedia\Preparator\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
-use SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
 
 class CategoryUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
 {
@@ -17,13 +17,13 @@ class CategoryUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcess
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface
+     * @var \SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface
      */
     protected $categoryStorageReader;
 
     /**
      * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
-     * @param \SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface $categoryStorageReader
+     * @param \SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface $categoryStorageReader
      */
     public function __construct(
         CoreMediaConfig $config,

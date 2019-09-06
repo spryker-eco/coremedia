@@ -37,7 +37,16 @@ class CoreMediaClientTest extends Unit
         'url' => '/en/test-product-concrete-055',
     ];
     protected const CATEGORY_URL = '/en/category-12345';
+
     protected const API_RESPONSE_NONEXISTENT_PLACEHOLDER_OBJECT_TYPE = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;012&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;nonexistent-object-type&quot;} CM--&gt;">Incorrect data</a>';
+
+    protected const API_RESPONSE_CORRECT_DATA = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;012&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product abstract</a> '
+    . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;055_65789012&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product concrete</a> '
+    . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;12345&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>';
+
+    protected const API_RESPONSE_INCORRECT_DATA = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;073&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product abstract</a> '
+    . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;056_1234567&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product concrete</a> '
+    . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;56789&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>';
 
     /**
      * @var \SprykerEcoTest\Client\CoreMedia\CoreMediaClientTester
@@ -45,13 +54,17 @@ class CoreMediaClientTest extends Unit
     protected $tester;
 
     /**
+     * @dataProvider correctApiResponseDataProvider
+     *
+     * @param string $correctApiResponseData
+     *
      * @return void
      */
-    public function testCoreMediaClientProvidesCorrectDataWithReplacedPlaceholders()
+    public function testCoreMediaClientProvidesCorrectDataWithReplacedPlaceholders(string $correctApiResponseData): void
     {
         $unprocessedCoreMediaApiResponseTransfer = $this->tester->getCoreMediaApiResponseTransfer([
             CoreMediaApiResponseTransfer::IS_SUCCESSFUL => true,
-            CoreMediaApiResponseTransfer::DATA => $this->tester->getCorrectCoreMediaApiResponseData(),
+            CoreMediaApiResponseTransfer::DATA => $correctApiResponseData,
         ]);
 
         $categoryNodeStorageTransfer = $this->tester->getCategoryNodeStorageTransfer([
@@ -74,13 +87,18 @@ class CoreMediaClientTest extends Unit
     }
 
     /**
+     * @dataProvider nonexistentPlaceholderObjectTypeApiResponseDataProvider
+     *
+     * @param string $nonexistentPlaceholderObjectTypeApiResponseData
+     *
      * @return void
      */
-    public function testCoreMediaClientReturnsTheSameDataOnIncorrectPlaceholderObjectType()
-    {
+    public function testCoreMediaClientReturnsTheSameDataOnIncorrectPlaceholderObjectType(
+        string $nonexistentPlaceholderObjectTypeApiResponseData
+    ): void {
         $unprocessedCoreMediaApiResponseTransfer = $this->tester->getCoreMediaApiResponseTransfer([
             CoreMediaApiResponseTransfer::IS_SUCCESSFUL => true,
-            CoreMediaApiResponseTransfer::DATA => static::API_RESPONSE_NONEXISTENT_PLACEHOLDER_OBJECT_TYPE,
+            CoreMediaApiResponseTransfer::DATA => $nonexistentPlaceholderObjectTypeApiResponseData,
         ]);
 
         $categoryNodeStorageTransfer = $this->tester->getCategoryNodeStorageTransfer([
@@ -96,18 +114,22 @@ class CoreMediaClientTest extends Unit
 
         $this->assertEquals(
             $coreMediaApiResponseTransfer->getData(),
-            static::API_RESPONSE_NONEXISTENT_PLACEHOLDER_OBJECT_TYPE
+            $nonexistentPlaceholderObjectTypeApiResponseData
         );
     }
 
     /**
+     * @dataProvider incorrectApiResponseDataProvider
+     *
+     * @param string $incorrectApiResponseData
+     *
      * @return void
      */
-    public function testCoreMediaClientFailsOnIncorrectPlaceholdersData()
+    public function testCoreMediaClientFailsOnIncorrectPlaceholdersData(string $incorrectApiResponseData): void
     {
         $unprocessedCoreMediaApiResponseTransfer = $this->tester->getCoreMediaApiResponseTransfer([
             CoreMediaApiResponseTransfer::IS_SUCCESSFUL => true,
-            CoreMediaApiResponseTransfer::DATA => $this->tester->getIncorrectCoreMediaApiResponseData(),
+            CoreMediaApiResponseTransfer::DATA => $incorrectApiResponseData,
         ]);
 
         $categoryNodeStorageTransfer = $this->tester->getCategoryNodeStorageTransfer([]);
@@ -138,7 +160,7 @@ class CoreMediaClientTest extends Unit
         array $productAbstractStorageData,
         array $productConcreteStorageData,
         CategoryNodeStorageTransfer $categoryNodeStorageTransfer
-    ) {
+    ): CoreMediaApiResponseTransfer {
         $requestExecutor = $this->getRequestExecutorMock($unprocessedCoreMediaApiResponseTransfer);
         $productStorageClient = $this->getProductStorageClientMock(
             $productAbstractStorageData,
@@ -290,5 +312,38 @@ class CoreMediaClientTest extends Unit
         $coreMediaFactoryMock->method('execute')->willReturn($coreMediaApiResponseTransfer);
 
         return $coreMediaFactoryMock;
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function correctApiResponseDataProvider(): array
+    {
+        return [
+            [static::API_RESPONSE_CORRECT_DATA],
+            [html_entity_decode(static::API_RESPONSE_CORRECT_DATA)],
+        ];
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function incorrectApiResponseDataProvider(): array
+    {
+        return [
+            [static::API_RESPONSE_INCORRECT_DATA],
+            [html_entity_decode(static::API_RESPONSE_INCORRECT_DATA)],
+        ];
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function nonexistentPlaceholderObjectTypeApiResponseDataProvider(): array
+    {
+        return [
+            [static::API_RESPONSE_NONEXISTENT_PLACEHOLDER_OBJECT_TYPE],
+            [html_entity_decode(static::API_RESPONSE_NONEXISTENT_PLACEHOLDER_OBJECT_TYPE)],
+        ];
     }
 }

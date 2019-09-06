@@ -31,12 +31,12 @@ use SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacer;
 use SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface;
 use SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface;
 use SprykerEco\Client\CoreMedia\Preparator\Resolver\PlaceholderResolver;
-use SprykerEco\Client\CoreMedia\Reader\CategoryStorageReader;
-use SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface;
-use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReader;
-use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface;
-use SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReader;
-use SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Stub\CoreMediaStub;
 use SprykerEco\Client\CoreMedia\Stub\CoreMediaStubInterface;
 
@@ -135,7 +135,8 @@ class CoreMediaFactory extends AbstractFactory
     public function createPlaceholderParser(): PlaceholderParserInterface
     {
         return new PlaceholderParser(
-            $this->getUtilEncodingService()
+            $this->getUtilEncodingService(),
+            $this->getConfig()
         );
     }
 
@@ -160,7 +161,7 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface
+     * @return \SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface
      */
     public function createProductAbstractStorageReader(): ProductAbstractStorageReaderInterface
     {
@@ -170,7 +171,7 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface
+     * @return \SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface
      */
     public function createProductConcreteStorageReader(): ProductConcreteStorageReaderInterface
     {
@@ -191,7 +192,7 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Reader\CategoryStorageReaderInterface
+     * @return \SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface
      */
     public function createCategoryStorageReader(): CategoryStorageReaderInterface
     {

@@ -18,9 +18,9 @@ use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServic
 class CoreMediaDependencyProvider extends AbstractDependencyProvider
 {
     public const CLIENT_GUZZLE = 'CLIENT_GUZZLE';
-    public const SERVICE_UTIL_ENCODING = 'SERVICE_UTIL_ENCODING';
     public const CLIENT_PRODUCT_STORAGE = 'CLIENT_PRODUCT_STORAGE';
     public const CLIENT_CATEGORY_STORAGE = 'CLIENT_CATEGORY_STORAGE';
+    public const SERVICE_UTIL_ENCODING = 'SERVICE_UTIL_ENCODING';
 
     /**
      * @param \Spryker\Client\Kernel\Container $container

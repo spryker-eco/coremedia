@@ -9,30 +9,29 @@ namespace SprykerEco\Client\CoreMedia\Preparator\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
-use SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface;
-use SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface;
 
 class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'product';
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
-    protected const PRODUCT_ABSTRACT_DATA_KEY_URL = 'url';
-    protected const PRODUCT_CONCRETE_DATA_KEY_URL = 'url';
+    protected const PRODUCT_DATA_KEY_URL = 'url';
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface
+     * @var \SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface
      */
     protected $productAbstractStorageReader;
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface
+     * @var \SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface
      */
     protected $productConcreteStorageReader;
 
     /**
      * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
-     * @param \SprykerEco\Client\CoreMedia\Reader\ProductAbstractStorageReaderInterface $productAbstractStorageReader
-     * @param \SprykerEco\Client\CoreMedia\Reader\ProductConcreteStorageReaderInterface $productConcreteStorageReader
+     * @param \SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface $productAbstractStorageReader
+     * @param \SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface $productConcreteStorageReader
      */
     public function __construct(
         CoreMediaConfig $config,
@@ -66,11 +65,24 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
+        return $this->findProductUrl($coreMediaPlaceholderTransfer, $locale);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param string $locale
+     *
+     * @return string|null
+     */
+    protected function findProductUrl(
+        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        string $locale
+    ): ?string {
         if (!$coreMediaPlaceholderTransfer->getProductId()) {
             return null;
         }
 
-        $abstractProductUrl = $this->getAbstractProductUrl(
+        $abstractProductUrl = $this->findAbstractProductUrl(
             $coreMediaPlaceholderTransfer,
             $locale
         );
@@ -79,7 +91,7 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
             return $abstractProductUrl;
         }
 
-        return $this->getConcreteProductUrl(
+        return $this->findConcreteProductUrl(
             $coreMediaPlaceholderTransfer,
             $locale
         );
@@ -91,7 +103,7 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
      *
      * @return string|null
      */
-    protected function getAbstractProductUrl(
+    protected function findAbstractProductUrl(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
@@ -100,7 +112,7 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
             $locale
         );
 
-        return $abstractProductData[static::PRODUCT_ABSTRACT_DATA_KEY_URL] ?? null;
+        return $abstractProductData[static::PRODUCT_DATA_KEY_URL] ?? null;
     }
 
     /**
@@ -109,7 +121,7 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
      *
      * @return string|null
      */
-    protected function getConcreteProductUrl(
+    protected function findConcreteProductUrl(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
@@ -118,6 +130,6 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
             $locale
         );
 
-        return $concreteProductData[static::PRODUCT_CONCRETE_DATA_KEY_URL] ?? null;
+        return $concreteProductData[static::PRODUCT_DATA_KEY_URL] ?? null;
     }
 }

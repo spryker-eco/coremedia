@@ -8,24 +8,32 @@
 namespace SprykerEco\Client\CoreMedia\Preparator\Parser;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
+use SprykerEco\Shared\CoreMedia\CoreMediaConfig as SharedCoreMediaConfig;
 
 class PlaceholderParser implements PlaceholderParserInterface
 {
-    protected const PREG_MATCH_PLACEHOLDER_KEY = 'placeholder';
-    protected const JSON_DECODE_ASSOC = true;
-
     /**
      * @var \SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface
      */
     protected $utilEncodingService;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface $utilEncodingService
+     * @var \SprykerEco\Client\CoreMedia\CoreMediaConfig
      */
-    public function __construct(CoreMediaToUtilEncodingServiceInterface $utilEncodingService)
-    {
+    protected $config;
+
+    /**
+     * @param \SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface $utilEncodingService
+     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
+     */
+    public function __construct(
+        CoreMediaToUtilEncodingServiceInterface $utilEncodingService,
+        CoreMediaConfig $config
+    ) {
         $this->utilEncodingService = $utilEncodingService;
+        $this->config = $config;
     }
 
     /**
@@ -36,32 +44,42 @@ class PlaceholderParser implements PlaceholderParserInterface
     public function parse(string $content): array
     {
         preg_match_all(
-            '/(?:(?:&lt;|<)!--CM\s*)(?P<' . static::PREG_MATCH_PLACEHOLDER_KEY . '>(?:(?!CM--(&gt;|>)).|\s)*)(?:\s*\CM--(?:&gt;|>))/i',
+            $this->config->getPlaceholderPattern(),
             $content,
-            $results
+            $matches
         );
 
-        $coreMediaPlaceholders = [];
+        $placeholders = [];
 
-        if (!$results[static::PREG_MATCH_PLACEHOLDER_KEY]) {
-            return $coreMediaPlaceholders;
+        if (!$matches[SharedCoreMediaConfig::PREG_MATCH_PLACEHOLDER_KEY]) {
+            return $placeholders;
         }
 
-        $placeholdersData = array_unique($results[static::PREG_MATCH_PLACEHOLDER_KEY]);
+        $placeholdersData = array_unique($matches[SharedCoreMediaConfig::PREG_MATCH_PLACEHOLDER_KEY]);
 
         foreach ($placeholdersData as $placeholderKey => $placeholderData) {
-            $placeholderData = $this->utilEncodingService->decodeJson(
-                html_entity_decode($placeholderData, ENT_QUOTES, 'UTF-8'),
-                static::JSON_DECODE_ASSOC
-            );
+            $placeholderData = $this->decodePlaceholderData($placeholderData);
 
             $coreMediaPlaceholderTransfer = (new CoreMediaPlaceholderTransfer())
                 ->fromArray($placeholderData, true)
-                ->setPlaceholderBody($results[0][$placeholderKey]);
+                ->setPlaceholderBody($matches[0][$placeholderKey]);
 
-            $coreMediaPlaceholders[] = $coreMediaPlaceholderTransfer;
+            $placeholders[] = $coreMediaPlaceholderTransfer;
         }
 
-        return $coreMediaPlaceholders;
+        return $placeholders;
+    }
+
+    /**
+     * @param string $placeholderData
+     *
+     * @return array
+     */
+    protected function decodePlaceholderData(string $placeholderData): array
+    {
+        return $this->utilEncodingService->decodeJson(
+            html_entity_decode($placeholderData, ENT_QUOTES, 'UTF-8'),
+            true
+        );
     }
 }
