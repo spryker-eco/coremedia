@@ -60,6 +60,10 @@ class PlaceholderParser implements PlaceholderParserInterface
         foreach ($placeholdersData as $placeholderKey => $placeholderData) {
             $placeholderData = $this->decodePlaceholderData($placeholderData);
 
+            if (!$placeholderData) {
+                continue;
+            }
+
             $coreMediaPlaceholderTransfer = (new CoreMediaPlaceholderTransfer())
                 ->fromArray($placeholderData, true)
                 ->setPlaceholderBody($matches[0][$placeholderKey]);
@@ -73,13 +77,25 @@ class PlaceholderParser implements PlaceholderParserInterface
     /**
      * @param string $placeholderData
      *
-     * @return array
+     * @return array|null
      */
-    protected function decodePlaceholderData(string $placeholderData): array
+    protected function decodePlaceholderData(string $placeholderData): ?array
     {
+        $placeholderData = $this->sanitizePlaceholderData($placeholderData);
+
         return $this->utilEncodingService->decodeJson(
             html_entity_decode($placeholderData, ENT_QUOTES, 'UTF-8'),
             true
         );
+    }
+
+    /**
+     * @param string $placeholderData
+     *
+     * @return string
+     */
+    protected function sanitizePlaceholderData(string $placeholderData): string
+    {
+        return str_replace('\'', '"', $placeholderData);
     }
 }
