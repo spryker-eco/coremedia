@@ -5,19 +5,19 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Client\CoreMedia\Preparator;
+namespace SprykerEco\Client\CoreMedia\ApiResponse;
 
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 
-class ApiResponsePreparator implements ApiResponsePreparatorInterface
+class ApiResponse implements ApiResponseInterface
 {
     /**
-     * @var \SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface[]
+     * @var \SprykerEco\Client\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface[]
      */
     protected $apiResponseResolvers;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface[] $apiResponseResolvers
+     * @param \SprykerEco\Client\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface[] $apiResponseResolvers
      */
     public function __construct(array $apiResponseResolvers)
     {

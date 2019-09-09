@@ -5,11 +5,11 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Client\CoreMedia\Preparator;
+namespace SprykerEco\Client\CoreMedia\ApiResponse\Resolver;
 
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 
-interface ApiResponsePreparatorInterface
+interface ApiResponseResolverInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
@@ -17,7 +17,7 @@ interface ApiResponsePreparatorInterface
      *
      * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
      */
-    public function prepare(
+    public function resolve(
         CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
         string $locale
     ): CoreMediaApiResponseTransfer;

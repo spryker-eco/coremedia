@@ -5,7 +5,7 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Client\CoreMedia\Preparator\PostProcessor;
+namespace SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 

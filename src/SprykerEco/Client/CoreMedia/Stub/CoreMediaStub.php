@@ -10,7 +10,7 @@ namespace SprykerEco\Client\CoreMedia\Stub;
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 use SprykerEco\Client\CoreMedia\Api\ApiClientInterface;
-use SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparatorInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\ApiResponseInterface;
 
 class CoreMediaStub implements CoreMediaStubInterface
 {
@@ -20,20 +20,20 @@ class CoreMediaStub implements CoreMediaStubInterface
     protected $apiClient;
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparatorInterface
+     * @var \SprykerEco\Client\CoreMedia\ApiResponse\ApiResponseInterface
      */
-    protected $apiResponsePreparator;
+    protected $apiResponse;
 
     /**
      * @param \SprykerEco\Client\CoreMedia\Api\ApiClientInterface $apiClient
-     * @param \SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparatorInterface $apiResponsePreparator
+     * @param \SprykerEco\Client\CoreMedia\ApiResponse\ApiResponseInterface $apiResponse
      */
     public function __construct(
         ApiClientInterface $apiClient,
-        ApiResponsePreparatorInterface $apiResponsePreparator
+        ApiResponseInterface $apiResponse
     ) {
         $this->apiClient = $apiClient;
-        $this->apiResponsePreparator = $apiResponsePreparator;
+        $this->apiResponse = $apiResponse;
     }
 
     /**
@@ -46,6 +46,6 @@ class CoreMediaStub implements CoreMediaStubInterface
     ): CoreMediaApiResponseTransfer {
         $coreMediaApiResponseTransfer = $this->apiClient->getDocumentFragment($coreMediaFragmentRequestTransfer);
 
-        return $this->apiResponsePreparator->prepare($coreMediaApiResponseTransfer, $coreMediaFragmentRequestTransfer->getLocale());
+        return $this->apiResponse->prepare($coreMediaApiResponseTransfer, $coreMediaFragmentRequestTransfer->getLocale());
     }
 }

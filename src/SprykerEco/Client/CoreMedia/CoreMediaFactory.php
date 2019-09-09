@@ -16,21 +16,21 @@ use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfiguration;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutor;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\ApiResponse;
+use SprykerEco\Client\CoreMedia\ApiResponse\ApiResponseInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParser;
+use SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\CategoryUrlPlaceholderPostProcessor;
+use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\ProductUrlPlaceholderPostProcessor;
+use SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacer;
+use SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\Resolver\PlaceholderResolver;
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
-use SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparator;
-use SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparatorInterface;
-use SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParser;
-use SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParserInterface;
-use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\CategoryUrlPlaceholderPostProcessor;
-use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\PlaceholderPostProcessorInterface;
-use SprykerEco\Client\CoreMedia\Preparator\PostProcessor\ProductUrlPlaceholderPostProcessor;
-use SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacer;
-use SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface;
-use SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface;
-use SprykerEco\Client\CoreMedia\Preparator\Resolver\PlaceholderResolver;
 use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReader;
 use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReader;
@@ -93,22 +93,22 @@ class CoreMediaFactory extends AbstractFactory
     {
         return new CoreMediaStub(
             $this->createApiClient(),
-            $this->createApiResponsePreparator()
+            $this->createApiResponse()
         );
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\ApiResponsePreparatorInterface
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\ApiResponseInterface
      */
-    public function createApiResponsePreparator(): ApiResponsePreparatorInterface
+    public function createApiResponse(): ApiResponseInterface
     {
-        return new ApiResponsePreparator(
+        return new ApiResponse(
             $this->getApiResponseResolvers()
         );
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface[]
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface[]
      */
     public function getApiResponseResolvers(): array
     {
@@ -118,7 +118,7 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\Resolver\ApiResponseResolverInterface
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface
      */
     public function createPlaceholderResolver(): ApiResponseResolverInterface
     {
@@ -130,7 +130,7 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParserInterface
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface
      */
     public function createPlaceholderParser(): PlaceholderParserInterface
     {
@@ -141,7 +141,7 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface
      */
     public function createPlaceholderReplacer(): PlaceholderReplacerInterface
     {
@@ -149,7 +149,7 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\PlaceholderPostProcessorInterface
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
      */
     public function createProductUrlPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
     {
@@ -181,7 +181,7 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\PlaceholderPostProcessorInterface
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
      */
     public function createCategoryUrlPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
     {
@@ -202,7 +202,7 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Preparator\PostProcessor\PlaceholderPostProcessorInterface[]
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface[]
      */
     public function getPlaceholderPostProcessors(): array
     {

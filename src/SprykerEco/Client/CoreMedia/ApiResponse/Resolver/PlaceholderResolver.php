@@ -5,34 +5,34 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Client\CoreMedia\Preparator\Resolver;
+namespace SprykerEco\Client\CoreMedia\ApiResponse\Resolver;
 
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParserInterface;
-use SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface;
 
 class PlaceholderResolver implements ApiResponseResolverInterface
 {
     /**
-     * @var \SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParserInterface
+     * @var \SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface
      */
     protected $placeholderParser;
 
     /**
-     * @var array|\SprykerEco\Client\CoreMedia\Preparator\PostProcessor\PlaceholderPostProcessorInterface[]
+     * @var array|\SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface[]
      */
     protected $placeholderPostProcessors;
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface
+     * @var \SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface
      */
     protected $placeholderReplacer;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Preparator\Parser\PlaceholderParserInterface $placeholderParser
+     * @param \SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface $placeholderParser
      * @param array $placeholderPostProcessors
-     * @param \SprykerEco\Client\CoreMedia\Preparator\Replacer\PlaceholderReplacerInterface $placeholderReplacer
+     * @param \SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface $placeholderReplacer
      */
     public function __construct(
         PlaceholderParserInterface $placeholderParser,
