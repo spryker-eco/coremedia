@@ -38,6 +38,9 @@
         <property name="renderType" type="string"/>
         <property name="productId" type="string"/>
         <property name="categoryId" type="string"/>
+        <property name="title" type="string"/>
+        <property name="keywords" type="string"/>
+        <property name="description" type="string"/>
     </transfer>
 
     <transfer name="CategoryNodeStorage">

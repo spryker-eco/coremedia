@@ -72,4 +72,12 @@ class CoreMediaConfig extends AbstractBundleConfig
     {
         return '/(?:(?:&lt;|<)!--CM\s*)(?P<' . SharedCoreMediaConfig::PREG_MATCH_PLACEHOLDER_KEY . '>(?:(?!CM--(&gt;|>)).|\s)*)(?:\s*\CM--(?:&gt;|>))/i';
     }
+
+    /**
+     * @return string
+     */
+    public function getMetaTagPattern(): string
+    {
+        return '<meta name="%s" content="%s">';
+    }
 }
