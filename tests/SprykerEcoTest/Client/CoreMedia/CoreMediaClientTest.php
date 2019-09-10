@@ -47,7 +47,8 @@ class CoreMediaClientTest extends Unit
 
     protected const API_RESPONSE_INCORRECT_DATA = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;073&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product abstract</a> '
     . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;056_1234567&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product concrete</a> '
-    . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;56789&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>';
+    . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;56789&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>'
+    . '&lt;!--CM {&quot;renderType&quot;:&quot;metadata&quot;,&quot;objectType&quot;:&quot;page&quot;,&quot;title&quot;:&quot;testTitle&quot;,&quot;description&quot;:&quot;testDescription&quot;,&quot;keywords&quot;:&quot;testKeywords&quot;} CM--&gt;';
 
     /**
      * @var \SprykerEcoTest\Client\CoreMedia\CoreMediaClientTester
@@ -146,6 +147,7 @@ class CoreMediaClientTest extends Unit
         $this->assertEquals(
             $coreMediaApiResponseTransfer->getData(),
             '<a href="">Test product abstract</a> <a href="">Test product concrete</a> <a href="">Test category</a>'
+            . '<meta name="title" content="testTitle"><meta name="description" content="testDescription"><meta name="keywords" content="testKeywords">'
         );
     }
 
