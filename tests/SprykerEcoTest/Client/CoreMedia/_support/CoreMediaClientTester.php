@@ -28,7 +28,11 @@ class CoreMediaClientTester extends Actor
 {
     use _generated\CoreMediaClientTesterActions;
 
-   /**
-    * Define custom actions here
-    */
+    /**
+     * @return \SprykerEco\Client\CoreMedia\CoreMediaClientInterface
+     */
+    public function getCoreMediaClient()
+    {
+        return $this->getLocator()->coreMedia()->client();
+    }
 }

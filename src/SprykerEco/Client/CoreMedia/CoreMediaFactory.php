@@ -8,15 +8,37 @@
 namespace SprykerEco\Client\CoreMedia;
 
 use Spryker\Client\Kernel\AbstractFactory;
+use SprykerEco\Client\CoreMedia\Api\ApiClient;
+use SprykerEco\Client\CoreMedia\Api\ApiClientInterface;
 use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilder;
 use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilderInterface;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfiguration;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
-use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClient;
-use SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutor;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\ApiResponse;
+use SprykerEco\Client\CoreMedia\ApiResponse\ApiResponseInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParser;
+use SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\CategoryUrlPlaceholderPostProcessor;
+use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\ProductUrlPlaceholderPostProcessor;
+use SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacer;
+use SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\Resolver\PlaceholderResolver;
+use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
+use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Stub\CoreMediaStub;
+use SprykerEco\Client\CoreMedia\Stub\CoreMediaStubInterface;
 
 /**
  * @method \SprykerEco\Client\CoreMedia\CoreMediaConfig getConfig()
@@ -24,13 +46,13 @@ use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
 class CoreMediaFactory extends AbstractFactory
 {
     /**
-     * @return \SprykerEco\Client\CoreMedia\Api\CoreMediaApiClientInterface
+     * @return \SprykerEco\Client\CoreMedia\Api\ApiClientInterface
      */
-    public function createCoreMediaApiClient(): CoreMediaApiClientInterface
+    public function createApiClient(): ApiClientInterface
     {
-        return new CoreMediaApiClient(
-            $this->createCoreMediaApiRequestBuilder(),
-            $this->createCoreMediaApiRequestExecutor(),
+        return new ApiClient(
+            $this->createApiRequestBuilder(),
+            $this->createApiRequestExecutor(),
             $this->createUrlConfiguration()
         );
     }
@@ -38,7 +60,7 @@ class CoreMediaFactory extends AbstractFactory
     /**
      * @return \SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilderInterface
      */
-    public function createCoreMediaApiRequestBuilder(): RequestBuilderInterface
+    public function createApiRequestBuilder(): RequestBuilderInterface
     {
         return new RequestBuilder();
     }
@@ -46,7 +68,7 @@ class CoreMediaFactory extends AbstractFactory
     /**
      * @return \SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface
      */
-    public function createCoreMediaApiRequestExecutor(): RequestExecutorInterface
+    public function createApiRequestExecutor(): RequestExecutorInterface
     {
         return new RequestExecutor(
             $this->getGuzzleClient(),
@@ -65,10 +87,160 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
+     * @return \SprykerEco\Client\CoreMedia\Stub\CoreMediaStubInterface
+     */
+    public function createCoreMediaStub(): CoreMediaStubInterface
+    {
+        return new CoreMediaStub(
+            $this->createApiClient(),
+            $this->createApiResponse()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\ApiResponseInterface
+     */
+    public function createApiResponse(): ApiResponseInterface
+    {
+        return new ApiResponse(
+            $this->getApiResponseResolvers()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface[]
+     */
+    public function getApiResponseResolvers(): array
+    {
+        return [
+            $this->createPlaceholderResolver(),
+        ];
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface
+     */
+    public function createPlaceholderResolver(): ApiResponseResolverInterface
+    {
+        return new PlaceholderResolver(
+            $this->createPlaceholderParser(),
+            $this->getPlaceholderPostProcessors(),
+            $this->createPlaceholderReplacer()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface
+     */
+    public function createPlaceholderParser(): PlaceholderParserInterface
+    {
+        return new PlaceholderParser(
+            $this->getUtilEncodingService(),
+            $this->getConfig()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface
+     */
+    public function createPlaceholderReplacer(): PlaceholderReplacerInterface
+    {
+        return new PlaceholderReplacer();
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
+     */
+    public function createProductUrlPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
+    {
+        return new ProductUrlPlaceholderPostProcessor(
+            $this->getConfig(),
+            $this->createProductAbstractStorageReader(),
+            $this->createProductConcreteStorageReader()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface
+     */
+    public function createProductAbstractStorageReader(): ProductAbstractStorageReaderInterface
+    {
+        return new ProductAbstractStorageReader(
+            $this->getProductStorageClient()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface
+     */
+    public function createProductConcreteStorageReader(): ProductConcreteStorageReaderInterface
+    {
+        return new ProductConcreteStorageReader(
+            $this->getProductStorageClient()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
+     */
+    public function createCategoryUrlPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
+    {
+        return new CategoryUrlPlaceholderPostProcessor(
+            $this->getConfig(),
+            $this->createCategoryStorageReader()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface
+     */
+    public function createCategoryStorageReader(): CategoryStorageReaderInterface
+    {
+        return new CategoryStorageReader(
+            $this->getCategoryStorageClient()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface[]
+     */
+    public function getPlaceholderPostProcessors(): array
+    {
+        return [
+            $this->createProductUrlPlaceholderPostProcessor(),
+            $this->createCategoryUrlPlaceholderPostProcessor(),
+        ];
+    }
+
+    /**
      * @return \SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface
      */
     public function getGuzzleClient(): CoreMediaToGuzzleInterface
     {
         return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_GUZZLE);
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface
+     */
+    public function getUtilEncodingService(): CoreMediaToUtilEncodingServiceInterface
+    {
+        return $this->getProvidedDependency(CoreMediaDependencyProvider::SERVICE_UTIL_ENCODING);
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface
+     */
+    public function getProductStorageClient(): CoreMediaToProductStorageClientInterface
+    {
+        return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_PRODUCT_STORAGE);
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface
+     */
+    public function getCategoryStorageClient(): CoreMediaToCategoryStorageClientInterface
+    {
+        return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_CATEGORY_STORAGE);
     }
 }

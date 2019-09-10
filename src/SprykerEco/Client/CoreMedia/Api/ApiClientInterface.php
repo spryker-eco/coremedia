@@ -10,7 +10,7 @@ namespace SprykerEco\Client\CoreMedia\Api;
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 
-interface CoreMediaApiClientInterface
+interface ApiClientInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer

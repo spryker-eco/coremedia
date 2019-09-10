@@ -13,7 +13,7 @@ use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilderInterface;
 use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
 
-class CoreMediaApiClient implements CoreMediaApiClientInterface
+class ApiClient implements ApiClientInterface
 {
     protected const REQUEST_GET_METHOD = 'GET';
 
