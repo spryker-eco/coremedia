@@ -76,7 +76,7 @@ class CoreMediaConfig extends AbstractBundleConfig
     /**
      * @return string
      */
-    public function getMetaTagPattern(): string
+    public function getMetaTagFormat(): string
     {
         return '<meta name="%s" content="%s">';
     }

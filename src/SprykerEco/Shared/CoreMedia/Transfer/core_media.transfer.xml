@@ -41,6 +41,7 @@
         <property name="title" type="string"/>
         <property name="keywords" type="string"/>
         <property name="description" type="string"/>
+        <property name="pageName" type="string"/>
     </transfer>
 
     <transfer name="CategoryNodeStorage">

@@ -37,19 +37,34 @@ class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProces
     ): ?string {
         $metadata = null;
 
-        if ($coreMediaPlaceholderTransfer->getTitle()) {
+        if ($coreMediaPlaceholderTransfer->getTitle() !== null) {
             $metadata .= $this->createMetatag(CoreMediaPlaceholderTransfer::TITLE, $coreMediaPlaceholderTransfer->getTitle());
         }
 
-        if ($coreMediaPlaceholderTransfer->getDescription()) {
+        if ($coreMediaPlaceholderTransfer->getDescription() !== null) {
             $metadata .= $this->createMetatag(CoreMediaPlaceholderTransfer::DESCRIPTION, $coreMediaPlaceholderTransfer->getDescription());
         }
 
-        if ($coreMediaPlaceholderTransfer->getKeywords()) {
+        if ($coreMediaPlaceholderTransfer->getKeywords() !== null) {
             $metadata .= $this->createMetatag(CoreMediaPlaceholderTransfer::KEYWORDS, $coreMediaPlaceholderTransfer->getKeywords());
         }
 
+        if ($coreMediaPlaceholderTransfer->getPageName() !== null) {
+            $metadata .= $this->createMetatag(CoreMediaPlaceholderTransfer::PAGE_NAME, $coreMediaPlaceholderTransfer->getPageName());
+        }
+
         return $metadata;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     *
+     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
+     */
+    protected function setFallbackPlaceholderReplacement(
+        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+    ): CoreMediaPlaceholderTransfer {
+        return $coreMediaPlaceholderTransfer->setPlaceholderReplacement(null);
     }
 
     /**
@@ -58,8 +73,8 @@ class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProces
      *
      * @return string
      */
-    protected function createMetatag(string $metaKey, string $metaValue): string
+    protected function createMetatag(string $metaKey, string $metaValue = ''): string
     {
-        return sprintf($this->config->getMetaTagPattern(), $metaKey, $metaValue);
+        return sprintf($this->config->getMetaTagFormat(), $metaKey, $metaValue);
     }
 }
