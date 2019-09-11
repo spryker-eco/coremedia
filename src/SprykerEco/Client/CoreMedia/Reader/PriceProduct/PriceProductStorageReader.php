@@ -9,7 +9,7 @@ namespace SprykerEco\Client\CoreMedia\Reader\PriceProduct;
 
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface;
 
-class PriceProductAbstractStorageReader implements PriceProductAbstractStorageReaderInterface
+class PriceProductStorageReader implements PriceProductStorageReaderInterface
 {
     /**
      * @var \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface
@@ -20,6 +20,11 @@ class PriceProductAbstractStorageReader implements PriceProductAbstractStorageRe
      * @var \Generated\Shared\Transfer\PriceProductTransfer[][]
      */
     protected static $priceProductAbstractDataCache = [];
+
+    /**
+     * @var \Generated\Shared\Transfer\PriceProductTransfer[][]
+     */
+    protected static $priceProductConcreteDataCache = [];
 
     /**
      * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient
@@ -44,5 +49,23 @@ class PriceProductAbstractStorageReader implements PriceProductAbstractStorageRe
             ->getPriceProductAbstractTransfers($idProductAbstract);
 
         return static::$priceProductAbstractDataCache[$idProductAbstract];
+    }
+
+    /**
+     * @param int $idProductConcrete
+     * @param int $idProductAbstract
+     *
+     * @return \Generated\Shared\Transfer\PriceProductTransfer[]
+     */
+    public function getResolvedPriceProductConcreteTransfers(int $idProductConcrete, int $idProductAbstract): array
+    {
+        if (isset(static::$priceProductConcreteDataCache[$idProductConcrete])) {
+            return static::$priceProductConcreteDataCache[$idProductConcrete];
+        }
+
+        static::$priceProductConcreteDataCache[$idProductConcrete] = $this->priceProductStorageClient
+            ->getResolvedPriceProductConcreteTransfers($idProductConcrete, $idProductAbstract);
+
+        return static::$priceProductConcreteDataCache[$idProductConcrete];
     }
 }

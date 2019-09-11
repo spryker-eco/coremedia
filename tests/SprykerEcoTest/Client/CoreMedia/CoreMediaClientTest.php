@@ -289,7 +289,7 @@ class CoreMediaClientTest extends Unit
                 ]),
             ]),
         ]);
-        $coreMediaToPriceProductStorageClientBridge->method('resolvePriceProductConcrete')->willReturn([
+        $coreMediaToPriceProductStorageClientBridge->method('getResolvedPriceProductConcreteTransfers')->willReturn([
             $this->tester->getPriceProductTransfer([
                 PriceProductTransfer::MONEY_VALUE => $this->tester->getMoneyValueTransfer([
                     MoneyValueTransfer::NET_AMOUNT => static::PRODUCT_CONCRETE_PRICE,

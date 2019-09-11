@@ -38,10 +38,9 @@ class CoreMediaToPriceProductStorageClientBridge implements CoreMediaToPriceProd
      *
      * @return \Generated\Shared\Transfer\PriceProductTransfer[]
      */
-    public function resolvePriceProductConcrete(int $idProductConcrete, int $idProductAbstract): array
+    public function getResolvedPriceProductConcreteTransfers(int $idProductConcrete, int $idProductAbstract): array
     {
-        return $this
-            ->priceProductStorageClient
+        return $this->priceProductStorageClient
             ->getResolvedPriceProductConcreteTransfers(
                 $idProductConcrete,
                 $idProductAbstract

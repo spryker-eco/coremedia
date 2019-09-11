@@ -8,12 +8,9 @@
 namespace SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use Generated\Shared\Transfer\MoneyTransfer;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface;
-use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductAbstractStorageReaderInterface;
-use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductConcreteStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatterInterface;
+use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface;
 
@@ -36,51 +33,35 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
     protected $productConcreteStorageReader;
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductAbstractStorageReaderInterface
+     * @var \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReaderInterface
      */
-    protected $priceProductAbstractStorageReader;
+    protected $priceProductStorageReader;
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductConcreteStorageReaderInterface
+     * @var \SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatterInterface
      */
-    protected $priceProductConcreteStorageReader;
-
-    /**
-     * @var \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface
-     */
-    protected $priceProductClient;
-
-    /**
-     * @var \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface
-     */
-    protected $moneyClient;
+    protected $productPriceFormatter;
 
     /**
      * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
      * @param \SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface $productAbstractStorageReader
      * @param \SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface $productConcreteStorageReader
-     * @param \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductAbstractStorageReaderInterface $priceProductAbstractStorageReader
-     * @param \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductConcreteStorageReaderInterface $priceProductConcreteStorageReader
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface $priceProductClient
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface $moneyClient
+     * @param \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReaderInterface $priceProductStorageReader
+     * @param \SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatterInterface $productPriceFormatter
      */
     public function __construct(
         CoreMediaConfig $config,
         ProductAbstractStorageReaderInterface $productAbstractStorageReader,
         ProductConcreteStorageReaderInterface $productConcreteStorageReader,
-        PriceProductAbstractStorageReaderInterface $priceProductAbstractStorageReader,
-        PriceProductConcreteStorageReaderInterface $priceProductConcreteStorageReader,
-        CoreMediaToPriceProductClientInterface $priceProductClient,
-        CoreMediaToMoneyClientInterface $moneyClient
+        PriceProductStorageReaderInterface $priceProductStorageReader,
+        ProductPriceFormatterInterface $productPriceFormatter
     ) {
         parent::__construct($config);
 
         $this->productAbstractStorageReader = $productAbstractStorageReader;
         $this->productConcreteStorageReader = $productConcreteStorageReader;
-        $this->priceProductAbstractStorageReader = $priceProductAbstractStorageReader;
-        $this->priceProductConcreteStorageReader = $priceProductConcreteStorageReader;
-        $this->priceProductClient = $priceProductClient;
-        $this->moneyClient = $moneyClient;
+        $this->priceProductStorageReader = $priceProductStorageReader;
+        $this->productPriceFormatter = $productPriceFormatter;
     }
 
     /**
@@ -155,10 +136,10 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
             return null;
         }
 
-        $priceProductTransfers = $this->priceProductAbstractStorageReader
+        $priceProductTransfers = $this->priceProductStorageReader
             ->getPriceProductAbstractTransfers($abstractProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]);
 
-        return $this->getFormattedProductPrice($priceProductTransfers);
+        return $this->productPriceFormatter->getFormattedProductPrice($priceProductTransfers);
     }
 
     /**
@@ -176,47 +157,28 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
             $locale
         );
 
-        if (!$concreteProductData || !$this->validateConcreteProductData($concreteProductData)) {
+        if (!$this->validateConcreteProductData($concreteProductData)) {
             return null;
         }
 
-        $priceProductTransfers = $this->priceProductConcreteStorageReader
-            ->resolvePriceProductConcrete(
+        $priceProductTransfers = $this->priceProductStorageReader
+            ->getResolvedPriceProductConcreteTransfers(
                 $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE],
                 $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]
             );
 
-        return $this->getFormattedProductPrice($priceProductTransfers);
+        return $this->productPriceFormatter->getFormattedProductPrice($priceProductTransfers);
     }
 
     /**
-     * @param \Generated\Shared\Transfer\PriceProductTransfer[] $priceProductTransfers
-     *
-     * @return string|null
-     */
-    protected function getFormattedProductPrice(array $priceProductTransfers): ?string
-    {
-        $currentProductPriceTransfer = $this->priceProductClient->resolveProductPriceTransfer($priceProductTransfers);
-
-        if (!$currentProductPriceTransfer->getCurrency() || !$currentProductPriceTransfer->getPrice()) {
-            return null;
-        }
-
-        $moneyTransfer = (new MoneyTransfer())
-            ->setCurrency($currentProductPriceTransfer->getCurrency())
-            ->setAmount((string)$currentProductPriceTransfer->getPrice());
-
-        return $this->moneyClient->formatWithSymbol($moneyTransfer);
-    }
-
-    /**
-     * @param array $concreteProductData
+     * @param array|null $concreteProductData
      *
      * @return bool
      */
-    protected function validateConcreteProductData(array $concreteProductData): bool
+    protected function validateConcreteProductData(?array $concreteProductData): bool
     {
-        return isset($concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE])
+        return $concreteProductData
+            && isset($concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE])
             && isset($concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]);
     }
 }

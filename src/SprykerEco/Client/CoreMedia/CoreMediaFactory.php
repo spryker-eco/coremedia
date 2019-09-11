@@ -36,12 +36,12 @@ use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorage
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
+use SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatter;
+use SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatterInterface;
 use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReader;
 use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
-use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductAbstractStorageReader;
-use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductAbstractStorageReaderInterface;
-use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductConcreteStorageReader;
-use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductConcreteStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReader;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReader;
@@ -210,6 +210,9 @@ class CoreMediaFactory extends AbstractFactory
         );
     }
 
+    /**
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
+     */
     public function createPageMetadataPostProcessor(): PlaceholderPostProcessorInterface
     {
         return new PageMetadataPlaceholderPostProcessor($this->getConfig());
@@ -224,30 +227,29 @@ class CoreMediaFactory extends AbstractFactory
             $this->getConfig(),
             $this->createProductAbstractStorageReader(),
             $this->createProductConcreteStorageReader(),
-            $this->createPriceProductAbstractStorageReader(),
-            $this->createPriceProductConcreteStorageReader(),
+            $this->createPriceProductStorageReader(),
+            $this->createProductPriceFormatter()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReaderInterface
+     */
+    public function createPriceProductStorageReader(): PriceProductStorageReaderInterface
+    {
+        return new PriceProductStorageReader(
+            $this->getPriceProductStorageClient()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatterInterface
+     */
+    public function createProductPriceFormatter(): ProductPriceFormatterInterface
+    {
+        return new ProductPriceFormatter(
             $this->getPriceProductClient(),
             $this->getMoneyClient()
-        );
-    }
-
-    /**
-     * @return \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductAbstractStorageReaderInterface
-     */
-    public function createPriceProductAbstractStorageReader(): PriceProductAbstractStorageReaderInterface
-    {
-        return new PriceProductAbstractStorageReader(
-            $this->getPriceProductStorageClient()
-        );
-    }
-
-    /**
-     * @return \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductConcreteStorageReaderInterface
-     */
-    public function createPriceProductConcreteStorageReader(): PriceProductConcreteStorageReaderInterface
-    {
-        return new PriceProductConcreteStorageReader(
-            $this->getPriceProductStorageClient()
         );
     }
 

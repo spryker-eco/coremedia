@@ -7,13 +7,20 @@
 
 namespace SprykerEco\Client\CoreMedia\Reader\PriceProduct;
 
-interface PriceProductConcreteStorageReaderInterface
+interface PriceProductStorageReaderInterface
 {
+    /**
+     * @param int $idProductAbstract
+     *
+     * @return \Generated\Shared\Transfer\PriceProductTransfer[]
+     */
+    public function getPriceProductAbstractTransfers(int $idProductAbstract): array;
+
     /**
      * @param int $idProductConcrete
      * @param int $idProductAbstract
      *
      * @return \Generated\Shared\Transfer\PriceProductTransfer[]
      */
-    public function resolvePriceProductConcrete(int $idProductConcrete, int $idProductAbstract): array;
+    public function getResolvedPriceProductConcreteTransfers(int $idProductConcrete, int $idProductAbstract): array;
 }
