@@ -142,34 +142,6 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
      *
      * @return string|null
      */
-    protected function findConcreteProductPrice(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
-        string $locale
-    ): ?string {
-        $concreteProductData = $this->productConcreteStorageReader->getProductConcreteData(
-            $coreMediaPlaceholderTransfer->getProductId(),
-            $locale
-        );
-
-        if (!$this->validateConcreteProductData($concreteProductData)) {
-            return null;
-        }
-
-        $priceProductTransfers = $this->priceProductConcreteStorageReader
-            ->resolvePriceProductConcrete(
-                $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE],
-                $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]
-            );
-
-        return $this->getFormattedProductPrice($priceProductTransfers);
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
-     * @param string $locale
-     *
-     * @return string|null
-     */
     protected function findAbstractProductPrice(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
@@ -185,6 +157,34 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
 
         $priceProductTransfers = $this->priceProductAbstractStorageReader
             ->getPriceProductAbstractTransfers($abstractProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]);
+
+        return $this->getFormattedProductPrice($priceProductTransfers);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param string $locale
+     *
+     * @return string|null
+     */
+    protected function findConcreteProductPrice(
+        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        string $locale
+    ): ?string {
+        $concreteProductData = $this->productConcreteStorageReader->getProductConcreteData(
+            $coreMediaPlaceholderTransfer->getProductId(),
+            $locale
+        );
+
+        if (!$concreteProductData || !$this->validateConcreteProductData($concreteProductData)) {
+            return null;
+        }
+
+        $priceProductTransfers = $this->priceProductConcreteStorageReader
+            ->resolvePriceProductConcrete(
+                $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE],
+                $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]
+            );
 
         return $this->getFormattedProductPrice($priceProductTransfers);
     }
@@ -210,11 +210,11 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
     }
 
     /**
-     * @param array|null $concreteProductData
+     * @param array $concreteProductData
      *
      * @return bool
      */
-    protected function validateConcreteProductData(?array $concreteProductData): bool
+    protected function validateConcreteProductData(array $concreteProductData): bool
     {
         return isset($concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE])
             && isset($concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]);
