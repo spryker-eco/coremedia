@@ -56,12 +56,14 @@ class CoreMediaClientTest extends Unit
     protected const API_RESPONSE_CORRECT_DATA = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;012&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product abstract</a> '
     . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;055_65789012&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product concrete</a> '
     . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;12345&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>'
+    . '&lt;!--CM {&quot;renderType&quot;:&quot;metadata&quot;,&quot;objectType&quot;:&quot;page&quot;,&quot;title&quot;:&quot;testMetaTitle&quot;,&quot;description&quot;:&quot;testMetaDescription&quot;,&quot;keywords&quot;:&quot;testMetaKeywords&quot;,&quot;pageName&quot;:&quot;testMetaPageName&quot;} CM--&gt;'
     . 'Product abstract price: &lt;!--CM {&quot;productId&quot;:&quot;013&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;'
     . 'Product concrete price: &lt;!--CM {&quot;productId&quot;:&quot;013_34234&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;';
 
     protected const API_RESPONSE_INCORRECT_DATA = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;073&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product abstract</a> '
     . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;056_1234567&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product concrete</a> '
     . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;56789&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>'
+    . '<!--CM {"renderType":"metadata","objectType":"page","pbe":"pbe","slider":"slider"} CM-->'
     . 'Product abstract price: &lt;!--CM {&quot;productId&quot;:&quot;014&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;'
     . 'Product concrete price: &lt;!--CM {&quot;productId&quot;:&quot;014_34234&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;';
 
@@ -100,6 +102,7 @@ class CoreMediaClientTest extends Unit
             '<a href="/en/test-product-abstract-012">Test product abstract</a> ' .
             '<a href="/en/test-product-concrete-055">Test product concrete</a> ' .
             '<a href="/en/category-12345">Test category</a>' .
+            '<meta name="title" content="testMetaTitle"><meta name="description" content="testMetaDescription"><meta name="keywords" content="testMetaKeywords"><meta name="pageName" content="testMetaPageName">' .
             'Product abstract price: USD1000' .
             'Product concrete price: USD500'
         );
@@ -162,11 +165,10 @@ class CoreMediaClientTest extends Unit
 
         $this->assertEquals(
             $coreMediaApiResponseTransfer->getData(),
-            '<a href="">Test product abstract</a> ' .
-            '<a href="">Test product concrete</a> ' .
-            '<a href="">Test category</a>' .
-            'Product abstract price: ' .
-            'Product concrete price: '
+            '<a href="">Test product abstract</a> <a href="">Test product concrete</a> <a href="">Test category</a>'
+            . '<!--CM {"renderType":"metadata","objectType":"page","pbe":"pbe","slider":"slider"} CM-->'
+            . 'Product abstract price: '
+            . 'Product concrete price: '
         );
     }
 
