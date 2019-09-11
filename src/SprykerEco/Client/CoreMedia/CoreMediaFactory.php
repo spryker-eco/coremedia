@@ -22,17 +22,25 @@ use SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParser;
 use SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface;
 use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\CategoryUrlPlaceholderPostProcessor;
 use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface;
+use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\ProductPricePlaceholderPostProcessor;
 use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\ProductUrlPlaceholderPostProcessor;
 use SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacer;
 use SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface;
 use SprykerEco\Client\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface;
 use SprykerEco\Client\CoreMedia\ApiResponse\Resolver\PlaceholderResolver;
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
 use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReader;
 use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductAbstractStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductAbstractStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductConcreteStorageReader;
+use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductConcreteStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReader;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReader;
@@ -202,6 +210,42 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
+     * @return \SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
+     */
+    public function createProductPricePlaceholderPostProcessor(): PlaceholderPostProcessorInterface
+    {
+        return new ProductPricePlaceholderPostProcessor(
+            $this->getConfig(),
+            $this->createProductAbstractStorageReader(),
+            $this->createProductConcreteStorageReader(),
+            $this->createPriceProductAbstractStorageReader(),
+            $this->createPriceProductConcreteStorageReader(),
+            $this->getPriceProductClient(),
+            $this->getMoneyClient()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductAbstractStorageReaderInterface
+     */
+    public function createPriceProductAbstractStorageReader(): PriceProductAbstractStorageReaderInterface
+    {
+        return new PriceProductAbstractStorageReader(
+            $this->getPriceProductStorageClient()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductConcreteStorageReaderInterface
+     */
+    public function createPriceProductConcreteStorageReader(): PriceProductConcreteStorageReaderInterface
+    {
+        return new PriceProductConcreteStorageReader(
+            $this->getPriceProductStorageClient()
+        );
+    }
+
+    /**
      * @return \SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface[]
      */
     public function getPlaceholderPostProcessors(): array
@@ -209,6 +253,7 @@ class CoreMediaFactory extends AbstractFactory
         return [
             $this->createProductUrlPlaceholderPostProcessor(),
             $this->createCategoryUrlPlaceholderPostProcessor(),
+            $this->createProductPricePlaceholderPostProcessor(),
         ];
     }
 
@@ -242,5 +287,29 @@ class CoreMediaFactory extends AbstractFactory
     public function getCategoryStorageClient(): CoreMediaToCategoryStorageClientInterface
     {
         return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_CATEGORY_STORAGE);
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface
+     */
+    public function getPriceProductStorageClient(): CoreMediaToPriceProductStorageClientInterface
+    {
+        return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_PRICE_PRODUCT_STORAGE);
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface
+     */
+    public function getPriceProductClient(): CoreMediaToPriceProductClientInterface
+    {
+        return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_PRICE_PRODUCT);
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface
+     */
+    public function getMoneyClient(): CoreMediaToMoneyClientInterface
+    {
+        return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_MONEY);
     }
 }

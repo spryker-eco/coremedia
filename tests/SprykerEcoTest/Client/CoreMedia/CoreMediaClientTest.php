@@ -11,10 +11,17 @@ use Codeception\Test\Unit;
 use Generated\Shared\Transfer\CategoryNodeStorageTransfer;
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
+use Generated\Shared\Transfer\CurrentProductPriceTransfer;
+use Generated\Shared\Transfer\MoneyTransfer;
+use Generated\Shared\Transfer\MoneyValueTransfer;
+use Generated\Shared\Transfer\PriceProductTransfer;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\CoreMediaFactory;
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface;
+use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
 
@@ -32,21 +39,31 @@ class CoreMediaClientTest extends Unit
     ];
     protected const PRODUCT_ABSTRACT_STORAGE_DATA = [
         'url' => '/en/test-product-abstract-012',
+        'id_product_abstract' => 1,
     ];
     protected const PRODUCT_CONCRETE_STORAGE_DATA = [
         'url' => '/en/test-product-concrete-055',
+        'id_product_abstract' => 1,
+        'id_product_concrete' => 2,
     ];
     protected const CATEGORY_URL = '/en/category-12345';
+    protected const PRODUCT_ABSTRACT_PRICE = 1000;
+    protected const PRODUCT_CONCRETE_PRICE = 500;
+    protected const CURRENCY_CODE = 'USD';
 
     protected const API_RESPONSE_NONEXISTENT_PLACEHOLDER_OBJECT_TYPE = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;012&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;nonexistent-object-type&quot;} CM--&gt;">Incorrect data</a>';
 
     protected const API_RESPONSE_CORRECT_DATA = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;012&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product abstract</a> '
     . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;055_65789012&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product concrete</a> '
-    . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;12345&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>';
+    . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;12345&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>'
+    . 'Product abstract price: &lt;!--CM {&quot;productId&quot;:&quot;013&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;'
+    . 'Product concrete price: &lt;!--CM {&quot;productId&quot;:&quot;013_34234&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;';
 
     protected const API_RESPONSE_INCORRECT_DATA = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;073&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product abstract</a> '
     . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;056_1234567&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product concrete</a> '
-    . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;56789&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>';
+    . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;56789&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>'
+    . 'Product abstract price: &lt;!--CM {&quot;productId&quot;:&quot;014&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;'
+    . 'Product concrete price: &lt;!--CM {&quot;productId&quot;:&quot;014_34234&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;';
 
     /**
      * @var \SprykerEcoTest\Client\CoreMedia\CoreMediaClientTester
@@ -81,8 +98,10 @@ class CoreMediaClientTest extends Unit
         $this->assertEquals(
             $coreMediaApiResponseTransfer->getData(),
             '<a href="/en/test-product-abstract-012">Test product abstract</a> ' .
-            '<a href="/en/test-product-abstract-012">Test product concrete</a> ' .
-            '<a href="/en/category-12345">Test category</a>'
+            '<a href="/en/test-product-concrete-055">Test product concrete</a> ' .
+            '<a href="/en/category-12345">Test category</a>' .
+            'Product abstract price: USD1000' .
+            'Product concrete price: USD500'
         );
     }
 
@@ -143,7 +162,11 @@ class CoreMediaClientTest extends Unit
 
         $this->assertEquals(
             $coreMediaApiResponseTransfer->getData(),
-            '<a href="">Test product abstract</a> <a href="">Test product concrete</a> <a href="">Test category</a>'
+            '<a href="">Test product abstract</a> ' .
+            '<a href="">Test product concrete</a> ' .
+            '<a href="">Test category</a>' .
+            'Product abstract price: ' .
+            'Product concrete price: '
         );
     }
 
@@ -166,15 +189,20 @@ class CoreMediaClientTest extends Unit
             $productAbstractStorageData,
             $productConcreteStorageData
         );
-
         $categoryStorageClient = $this->getCategoryStorageClientMock($categoryNodeStorageTransfer);
+        $priceProductStorageClient = $this->getPriceProductStorageClientMock();
+        $priceProductClient = $this->getPriceProductClientMock();
+        $moneyClient = $this->getMoneyClientMock();
 
         $coreMediaClient = $this->tester->getCoreMediaClient();
         $coreMediaClient->setFactory(
             $this->getCoreMediaFactoryMock(
                 $requestExecutor,
                 $productStorageClient,
-                $categoryStorageClient
+                $categoryStorageClient,
+                $priceProductStorageClient,
+                $priceProductClient,
+                $moneyClient
             )
         );
 
@@ -216,12 +244,16 @@ class CoreMediaClientTest extends Unit
         array $productConcreteStorageData
     ): CoreMediaToProductStorageClientInterface {
         $coreMediaToProductStorageClientBridge = $this->getMockBuilder(CoreMediaToProductStorageClientInterface::class)->getMock();
-        $coreMediaToProductStorageClientBridge->method('findProductAbstractStorageDataByMapping')->willReturn(
-            $productAbstractStorageData
-        );
-        $coreMediaToProductStorageClientBridge->method('findProductConcreteStorageDataByMapping')->willReturn(
-            $productConcreteStorageData
-        );
+        $coreMediaToProductStorageClientBridge
+            ->method('findProductAbstractStorageDataByMapping')
+            ->willReturnCallback(function (string $mappingType, string $identifier) use ($productAbstractStorageData) {
+                return strpos($identifier, '_') ? null : $productAbstractStorageData;
+            });
+        $coreMediaToProductStorageClientBridge
+            ->method('findProductConcreteStorageDataByMapping')
+            ->willReturnCallback(function (string $mappingType, string $identifier) use ($productConcreteStorageData) {
+                return strpos($identifier, '_') ? $productConcreteStorageData : null;
+            });
 
         return $coreMediaToProductStorageClientBridge;
     }
@@ -243,16 +275,75 @@ class CoreMediaClientTest extends Unit
     }
 
     /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected function getPriceProductStorageClientMock(): CoreMediaToPriceProductStorageClientInterface
+    {
+        $coreMediaToPriceProductStorageClientBridge = $this->getMockBuilder(CoreMediaToPriceProductStorageClientInterface::class)->getMock();
+        $coreMediaToPriceProductStorageClientBridge->method('getPriceProductAbstractTransfers')->willReturn([
+            $this->tester->getPriceProductTransfer([
+                PriceProductTransfer::MONEY_VALUE => $this->tester->getMoneyValueTransfer([
+                    MoneyValueTransfer::NET_AMOUNT => static::PRODUCT_ABSTRACT_PRICE,
+                ]),
+            ]),
+        ]);
+        $coreMediaToPriceProductStorageClientBridge->method('resolvePriceProductConcrete')->willReturn([
+            $this->tester->getPriceProductTransfer([
+                PriceProductTransfer::MONEY_VALUE => $this->tester->getMoneyValueTransfer([
+                    MoneyValueTransfer::NET_AMOUNT => static::PRODUCT_CONCRETE_PRICE,
+                ]),
+            ]),
+        ]);
+
+        return $coreMediaToPriceProductStorageClientBridge;
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected function getPriceProductClientMock(): CoreMediaToPriceProductClientInterface
+    {
+        $coreMediaToPriceProductClientBridge = $this->getMockBuilder(CoreMediaToPriceProductClientInterface::class)->getMock();
+        $coreMediaToPriceProductClientBridge->method('resolveProductPriceTransfer')->willReturnCallback(function (array $priceProductTransfers) {
+            return $this->tester->getCurrentProductPriceTransfer([
+                CurrentProductPriceTransfer::PRICE => $priceProductTransfers[0]->getMoneyValue()->getNetAmount(),
+                CurrentProductPriceTransfer::CURRENCY => $this->tester->getCurrencyTransfer(),
+            ]);
+        });
+
+        return $coreMediaToPriceProductClientBridge;
+    }
+
+    /**
+     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected function getMoneyClientMock(): CoreMediaToMoneyClientInterface
+    {
+        $coreMediaToMoneyClientBridge = $this->getMockBuilder(CoreMediaToMoneyClientInterface::class)->getMock();
+        $coreMediaToMoneyClientBridge->method('formatWithSymbol')->willReturnCallback(function (MoneyTransfer $moneyTransfer) {
+            return static::CURRENCY_CODE . $moneyTransfer->getAmount();
+        });
+
+        return $coreMediaToMoneyClientBridge;
+    }
+
+    /**
      * @param \SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface $requestExecutor
      * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface $productStorageClient
      * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface $categoryStorageClient
+     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient
+     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface $priceProductClient
+     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface $moneyClient
      *
      * @return \PHPUnit\Framework\MockObject\MockObject|\SprykerEco\Client\CoreMedia\CoreMediaFactory
      */
     protected function getCoreMediaFactoryMock(
         RequestExecutorInterface $requestExecutor,
         CoreMediaToProductStorageClientInterface $productStorageClient,
-        CoreMediaToCategoryStorageClientInterface $categoryStorageClient
+        CoreMediaToCategoryStorageClientInterface $categoryStorageClient,
+        CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient,
+        CoreMediaToPriceProductClientInterface $priceProductClient,
+        CoreMediaToMoneyClientInterface $moneyClient
     ): CoreMediaFactory {
         $coreMediaFactoryMock = $this->getMockBuilder(CoreMediaFactory::class)
             ->setMethods([
@@ -261,6 +352,9 @@ class CoreMediaClientTest extends Unit
                 'getUtilEncodingService',
                 'getProductStorageClient',
                 'getCategoryStorageClient',
+                'getPriceProductStorageClient',
+                'getPriceProductClient',
+                'getMoneyClient',
             ])->getMock();
         $coreMediaFactoryMock->method('createApiRequestExecutor')->willReturn($requestExecutor);
         $coreMediaFactoryMock->method('getConfig')->willReturn(
@@ -271,6 +365,9 @@ class CoreMediaClientTest extends Unit
         );
         $coreMediaFactoryMock->method('getProductStorageClient')->willReturn($productStorageClient);
         $coreMediaFactoryMock->method('getCategoryStorageClient')->willReturn($categoryStorageClient);
+        $coreMediaFactoryMock->method('getPriceProductStorageClient')->willReturn($priceProductStorageClient);
+        $coreMediaFactoryMock->method('getPriceProductClient')->willReturn($priceProductClient);
+        $coreMediaFactoryMock->method('getMoneyClient')->willReturn($moneyClient);
 
         return $coreMediaFactoryMock;
     }
