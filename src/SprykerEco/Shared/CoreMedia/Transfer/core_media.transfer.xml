@@ -48,4 +48,22 @@
         <property name="url" type="string"/>
     </transfer>
 
+    <transfer name="Money">
+        <property name="amount" type="string" />
+        <property name="currency" type="Currency" />
+    </transfer>
+
+    <transfer name="CurrentProductPrice">
+        <property name="price" type="int" />
+        <property name="currency" type="Currency" />
+    </transfer>
+
+    <transfer name="PriceProduct">
+        <property name="moneyValue" type="MoneyValue" />
+    </transfer>
+
+    <transfer name="MoneyValue">
+        <property name="netAmount" type="int" />
+    </transfer>
+
 </transfers>
