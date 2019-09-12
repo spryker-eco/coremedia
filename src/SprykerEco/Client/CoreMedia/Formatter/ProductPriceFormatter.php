@@ -7,47 +7,32 @@
 
 namespace SprykerEco\Client\CoreMedia\Formatter;
 
+use Generated\Shared\Transfer\CurrentProductPriceTransfer;
 use Generated\Shared\Transfer\MoneyTransfer;
 use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface;
 
 class ProductPriceFormatter implements ProductPriceFormatterInterface
 {
-    /**
-     * @var \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface
-     */
-    protected $priceProductClient;
-
     /**
      * @var \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface
      */
     protected $moneyClient;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface $priceProductClient
      * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface $moneyClient
      */
-    public function __construct(
-        CoreMediaToPriceProductClientInterface $priceProductClient,
-        CoreMediaToMoneyClientInterface $moneyClient
-    ) {
-        $this->priceProductClient = $priceProductClient;
+    public function __construct(CoreMediaToMoneyClientInterface $moneyClient)
+    {
         $this->moneyClient = $moneyClient;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\PriceProductTransfer[] $priceProductTransfers
+     * @param \Generated\Shared\Transfer\CurrentProductPriceTransfer $currentProductPriceTransfer
      *
-     * @return string|null
+     * @return string
      */
-    public function getFormattedProductPrice(array $priceProductTransfers): ?string
+    public function getFormattedProductPrice(CurrentProductPriceTransfer $currentProductPriceTransfer): string
     {
-        $currentProductPriceTransfer = $this->priceProductClient->resolveProductPriceTransfer($priceProductTransfers);
-
-        if (!$currentProductPriceTransfer->getCurrency() || !$currentProductPriceTransfer->getPrice()) {
-            return null;
-        }
-
         $moneyTransfer = (new MoneyTransfer())
             ->setCurrency($currentProductPriceTransfer->getCurrency())
             ->setAmount((string)$currentProductPriceTransfer->getPrice());

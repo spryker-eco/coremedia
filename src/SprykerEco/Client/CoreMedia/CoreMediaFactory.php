@@ -40,8 +40,8 @@ use SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatter;
 use SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatterInterface;
 use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReader;
 use SprykerEco\Client\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
-use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReader;
-use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductReader;
+use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReader;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReader;
@@ -227,18 +227,19 @@ class CoreMediaFactory extends AbstractFactory
             $this->getConfig(),
             $this->createProductAbstractStorageReader(),
             $this->createProductConcreteStorageReader(),
-            $this->createPriceProductStorageReader(),
+            $this->createPriceProductReader(),
             $this->createProductPriceFormatter()
         );
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReaderInterface
+     * @return \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface
      */
-    public function createPriceProductStorageReader(): PriceProductStorageReaderInterface
+    public function createPriceProductReader(): PriceProductReaderInterface
     {
-        return new PriceProductStorageReader(
-            $this->getPriceProductStorageClient()
+        return new PriceProductReader(
+            $this->getPriceProductStorageClient(),
+            $this->getPriceProductClient()
         );
     }
 
@@ -248,7 +249,6 @@ class CoreMediaFactory extends AbstractFactory
     public function createProductPriceFormatter(): ProductPriceFormatterInterface
     {
         return new ProductPriceFormatter(
-            $this->getPriceProductClient(),
             $this->getMoneyClient()
         );
     }

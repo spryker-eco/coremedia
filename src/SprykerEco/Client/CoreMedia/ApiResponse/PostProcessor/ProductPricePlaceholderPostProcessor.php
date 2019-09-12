@@ -8,9 +8,10 @@
 namespace SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use Generated\Shared\Transfer\CurrentProductPriceTransfer;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatterInterface;
-use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReaderInterface;
+use SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
 use SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface;
 
@@ -33,9 +34,9 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
     protected $productConcreteStorageReader;
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReaderInterface
+     * @var \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface
      */
-    protected $priceProductStorageReader;
+    protected $priceProductReader;
 
     /**
      * @var \SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatterInterface
@@ -46,21 +47,21 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
      * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
      * @param \SprykerEco\Client\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface $productAbstractStorageReader
      * @param \SprykerEco\Client\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface $productConcreteStorageReader
-     * @param \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductStorageReaderInterface $priceProductStorageReader
+     * @param \SprykerEco\Client\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface $priceProductReader
      * @param \SprykerEco\Client\CoreMedia\Formatter\ProductPriceFormatterInterface $productPriceFormatter
      */
     public function __construct(
         CoreMediaConfig $config,
         ProductAbstractStorageReaderInterface $productAbstractStorageReader,
         ProductConcreteStorageReaderInterface $productConcreteStorageReader,
-        PriceProductStorageReaderInterface $priceProductStorageReader,
+        PriceProductReaderInterface $priceProductReader,
         ProductPriceFormatterInterface $productPriceFormatter
     ) {
         parent::__construct($config);
 
         $this->productAbstractStorageReader = $productAbstractStorageReader;
         $this->productConcreteStorageReader = $productConcreteStorageReader;
-        $this->priceProductStorageReader = $priceProductStorageReader;
+        $this->priceProductReader = $priceProductReader;
         $this->productPriceFormatter = $productPriceFormatter;
     }
 
@@ -102,31 +103,37 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
             return null;
         }
 
-        $abstractProductPrice = $this->findAbstractProductPrice(
+        $currentProductPriceTransfer = $this->findAbstractProductPrice(
             $coreMediaPlaceholderTransfer,
             $locale
         );
 
-        if ($abstractProductPrice) {
-            return $abstractProductPrice;
+        if ($currentProductPriceTransfer) {
+            return $this->productPriceFormatter->getFormattedProductPrice($currentProductPriceTransfer);
         }
 
-        return $this->findConcreteProductPrice(
+        $currentProductPriceTransfer = $this->findConcreteProductPrice(
             $coreMediaPlaceholderTransfer,
             $locale
         );
+
+        if ($currentProductPriceTransfer) {
+            return $this->productPriceFormatter->getFormattedProductPrice($currentProductPriceTransfer);
+        }
+
+        return null;
     }
 
     /**
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
-     * @return string|null
+     * @return \Generated\Shared\Transfer\CurrentProductPriceTransfer|null
      */
     protected function findAbstractProductPrice(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
-    ): ?string {
+    ): ?CurrentProductPriceTransfer {
         $abstractProductData = $this->productAbstractStorageReader->getProductAbstractData(
             $coreMediaPlaceholderTransfer->getProductId(),
             $locale
@@ -136,22 +143,20 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
             return null;
         }
 
-        $priceProductTransfers = $this->priceProductStorageReader
-            ->getPriceProductAbstractTransfers($abstractProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]);
-
-        return $this->productPriceFormatter->getFormattedProductPrice($priceProductTransfers);
+        return $this->priceProductReader
+            ->findCurrentAbstractProductPrice($abstractProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]);
     }
 
     /**
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
-     * @return string|null
+     * @return \Generated\Shared\Transfer\CurrentProductPriceTransfer|null
      */
     protected function findConcreteProductPrice(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
-    ): ?string {
+    ): ?CurrentProductPriceTransfer {
         $concreteProductData = $this->productConcreteStorageReader->getProductConcreteData(
             $coreMediaPlaceholderTransfer->getProductId(),
             $locale
@@ -161,13 +166,11 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
             return null;
         }
 
-        $priceProductTransfers = $this->priceProductStorageReader
-            ->getResolvedPriceProductConcreteTransfers(
+        return $this->priceProductReader
+            ->findCurrentConcreteProductPrice(
                 $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE],
                 $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]
             );
-
-        return $this->productPriceFormatter->getFormattedProductPrice($priceProductTransfers);
     }
 
     /**

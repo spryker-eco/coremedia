@@ -7,12 +7,14 @@
 
 namespace SprykerEco\Client\CoreMedia\Formatter;
 
+use Generated\Shared\Transfer\CurrentProductPriceTransfer;
+
 interface ProductPriceFormatterInterface
 {
     /**
-     * @param \Generated\Shared\Transfer\PriceProductTransfer[] $priceProductTransfers
+     * @param \Generated\Shared\Transfer\CurrentProductPriceTransfer $currentProductPriceTransfer
      *
-     * @return string|null
+     * @return string
      */
-    public function getFormattedProductPrice(array $priceProductTransfers): ?string;
+    public function getFormattedProductPrice(CurrentProductPriceTransfer $currentProductPriceTransfer): string;
 }
