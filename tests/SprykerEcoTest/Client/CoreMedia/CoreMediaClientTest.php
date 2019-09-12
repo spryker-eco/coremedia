@@ -326,6 +326,7 @@ class CoreMediaClientTest extends Unit
         return [
             [static::API_RESPONSE_CORRECT_DATA],
             [html_entity_decode(static::API_RESPONSE_CORRECT_DATA)],
+            [str_replace('&quot;', '\'', static::API_RESPONSE_CORRECT_DATA)],
         ];
     }
 
@@ -337,6 +338,7 @@ class CoreMediaClientTest extends Unit
         return [
             [static::API_RESPONSE_INCORRECT_DATA],
             [html_entity_decode(static::API_RESPONSE_INCORRECT_DATA)],
+            [str_replace('&quot;', '\'', static::API_RESPONSE_INCORRECT_DATA)],
         ];
     }
 
@@ -348,6 +350,7 @@ class CoreMediaClientTest extends Unit
         return [
             [static::API_RESPONSE_NONEXISTENT_PLACEHOLDER_OBJECT_TYPE],
             [html_entity_decode(static::API_RESPONSE_NONEXISTENT_PLACEHOLDER_OBJECT_TYPE)],
+            [str_replace('&quot;', '\'', static::API_RESPONSE_NONEXISTENT_PLACEHOLDER_OBJECT_TYPE)],
         ];
     }
 }
