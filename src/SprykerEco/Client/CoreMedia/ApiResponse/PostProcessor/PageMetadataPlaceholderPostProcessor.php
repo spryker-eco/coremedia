@@ -29,13 +29,13 @@ class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProces
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
-     * @return string|null
+     * @return string
      */
     protected function getPlaceholderReplacement(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
-    ): ?string {
-        $metadata = null;
+    ): string {
+        $metadata = '';
 
         if ($coreMediaPlaceholderTransfer->getTitle() !== null) {
             $metadata .= $this->createMetatag(CoreMediaPlaceholderTransfer::TITLE, $coreMediaPlaceholderTransfer->getTitle());
