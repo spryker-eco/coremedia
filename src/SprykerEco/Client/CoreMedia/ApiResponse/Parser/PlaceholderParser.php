@@ -81,21 +81,9 @@ class PlaceholderParser implements PlaceholderParserInterface
      */
     protected function decodePlaceholderData(string $placeholderData): ?array
     {
-        $placeholderData = $this->sanitizePlaceholderData($placeholderData);
-
         return $this->utilEncodingService->decodeJson(
             html_entity_decode($placeholderData, ENT_QUOTES, 'UTF-8'),
             true
         );
-    }
-
-    /**
-     * @param string $placeholderData
-     *
-     * @return string
-     */
-    protected function sanitizePlaceholderData(string $placeholderData): string
-    {
-        return str_replace('\'', '"', $placeholderData);
     }
 }
