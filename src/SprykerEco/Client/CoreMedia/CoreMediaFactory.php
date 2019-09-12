@@ -21,6 +21,7 @@ use SprykerEco\Client\CoreMedia\ApiResponse\ApiResponseInterface;
 use SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParser;
 use SprykerEco\Client\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface;
 use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\CategoryUrlPlaceholderPostProcessor;
+use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PageMetadataPlaceholderPostProcessor;
 use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface;
 use SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\ProductUrlPlaceholderPostProcessor;
 use SprykerEco\Client\CoreMedia\ApiResponse\Replacer\PlaceholderReplacer;
@@ -201,6 +202,11 @@ class CoreMediaFactory extends AbstractFactory
         );
     }
 
+    public function createPageMetadataPostProcessor(): PlaceholderPostProcessorInterface
+    {
+        return new PageMetadataPlaceholderPostProcessor($this->getConfig());
+    }
+
     /**
      * @return \SprykerEco\Client\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface[]
      */
@@ -209,6 +215,7 @@ class CoreMediaFactory extends AbstractFactory
         return [
             $this->createProductUrlPlaceholderPostProcessor(),
             $this->createCategoryUrlPlaceholderPostProcessor(),
+            $this->createPageMetadataPostProcessor(),
         ];
     }
 
