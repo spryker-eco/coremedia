@@ -55,7 +55,7 @@ class ApiClient implements ApiClientInterface
     public function getDocumentFragment(
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
     ): CoreMediaApiResponseTransfer {
-        $request = $this->requestBuilder->buildPsrRequest(
+        $request = $this->requestBuilder->buildRequest(
             static::REQUEST_GET_METHOD,
             $this->urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer)
         );

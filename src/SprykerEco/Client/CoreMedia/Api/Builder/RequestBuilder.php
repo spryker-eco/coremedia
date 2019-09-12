@@ -18,7 +18,7 @@ class RequestBuilder implements RequestBuilderInterface
      *
      * @return \Psr\Http\Message\RequestInterface
      */
-    public function buildPsrRequest(
+    public function buildRequest(
         string $requestMethod,
         string $requestUrl
     ): RequestInterface {

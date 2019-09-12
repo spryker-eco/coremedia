@@ -40,7 +40,7 @@ class UrlConfiguration implements UrlConfigurationInterface
             $coreMediaFragmentRequestTransfer
         );
 
-        return $this->buildCoreMediaApiUrl($this->config->getFragmentBasePath() . $queryParamString);
+        return $this->getCoreMediaHost() . $this->config->getFragmentBasePath() . $queryParamString;
     }
 
     /**
@@ -160,25 +160,11 @@ class UrlConfiguration implements UrlConfigurationInterface
             return sprintf(static::HTTP_QUERY_KEY_VALUE_PATTERN, $key, var_export($value, true));
         }
 
-        if ($value === null) {
-            return '';
-        }
-
         if (is_scalar($value)) {
             return sprintf(static::HTTP_QUERY_KEY_VALUE_PATTERN, $key, rawurlencode($value));
         }
 
         return '';
-    }
-
-    /**
-     * @param string $urlPath
-     *
-     * @return string
-     */
-    protected function buildCoreMediaApiUrl(string $urlPath): string
-    {
-        return $this->getCoreMediaHost() . $urlPath;
     }
 
     /**
