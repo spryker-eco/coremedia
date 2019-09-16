@@ -40,14 +40,7 @@ class RequestMapper implements RequestMapperInterface
         }
 
         $coreMediaFragmentRequestTransfer = new CoreMediaFragmentRequestTransfer();
-
-        /** @var \Generated\Shared\Transfer\StoreTransfer $storeTransfer */
-        $storeTransfer = $requestParameters[CoreMediaFragmentRequestTransfer::STORE];
-        $coreMediaFragmentRequestTransfer->setStore($storeTransfer->getName());
-
-        $requestData = $requestParameters;
-        unset($requestData[CoreMediaFragmentRequestTransfer::STORE]);
-        $coreMediaFragmentRequestTransfer->fromArray($requestData, true);
+        $coreMediaFragmentRequestTransfer->fromArray($requestParameters, true);
 
         return $coreMediaFragmentRequestTransfer;
     }
