@@ -42,6 +42,7 @@
         <property name="keywords" type="string"/>
         <property name="description" type="string"/>
         <property name="pageName" type="string"/>
+        <property name="externalSeoSegment" type="string"/>
     </transfer>
 
     <transfer name="CategoryNodeStorage">
