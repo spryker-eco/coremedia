@@ -9,6 +9,7 @@ namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CustomPageUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
 {
@@ -16,12 +17,21 @@ class CustomPageUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProce
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
 
     /**
+     * @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface
+     */
+    protected $urlGenerator;
+
+    /**
      * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
+     * @param \Symfony\Component\Routing\Generator\UrlGeneratorInterface $urlGenerator
      */
     public function __construct(
-        CoreMediaConfig $config
+        CoreMediaConfig $config,
+        UrlGeneratorInterface $urlGenerator
     ) {
         parent::__construct($config);
+
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -59,6 +69,12 @@ class CustomPageUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProce
             return null;
         }
 
-        return $coreMediaPlaceholderTransfer->getExternalSeoSegment();
+        $pageUrl = $this->urlGenerator->generate($coreMediaPlaceholderTransfer->getExternalSeoSegment());
+
+        if ($pageUrl) {
+            return $pageUrl;
+        }
+
+        return null;
     }
 }

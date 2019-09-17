@@ -40,6 +40,7 @@ use SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReader;
 use SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
 use SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReader;
 use SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @method \SprykerEco\Yves\CoreMedia\CoreMediaConfig getConfig()
@@ -207,7 +208,8 @@ class CoreMediaFactory extends AbstractFactory
     public function createCustomPageUrlPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
     {
         return new CustomPageUrlPlaceholderPostProcessor(
-            $this->getConfig()
+            $this->getConfig(),
+            $this->getUrlGenerator()
         );
     }
 
@@ -271,5 +273,13 @@ class CoreMediaFactory extends AbstractFactory
     public function getMoneyClient(): CoreMediaToMoneyClientInterface
     {
         return $this->getProvidedDependency(CoreMediaDependencyProvider::CLIENT_MONEY);
+    }
+
+    /**
+     * @return \Symfony\Component\Routing\Generator\UrlGeneratorInterface
+     */
+    public function getUrlGenerator(): UrlGeneratorInterface
+    {
+        return $this->getProvidedDependency(CoreMediaDependencyProvider::URL_GENERATOR);
     }
 }

@@ -9,6 +9,7 @@ namespace SprykerEco\Yves\CoreMedia;
 
 use Spryker\Yves\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Yves\Kernel\Container;
+use Spryker\Yves\Kernel\Plugin\Pimple;
 use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientBridge;
 use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToMoneyClientBridge;
 use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientBridge;
@@ -24,6 +25,7 @@ class CoreMediaDependencyProvider extends AbstractBundleDependencyProvider
     public const CLIENT_PRICE_PRODUCT = 'CLIENT_PRICE_PRODUCT';
     public const CLIENT_MONEY = 'CLIENT_MONEY';
     public const SERVICE_UTIL_ENCODING = 'SERVICE_UTIL_ENCODING';
+    public const URL_GENERATOR = 'URL_GENERATOR';
 
     /**
      * @param \Spryker\Yves\Kernel\Container $container
@@ -38,6 +40,7 @@ class CoreMediaDependencyProvider extends AbstractBundleDependencyProvider
         $container = $this->addPriceProductStorageClient($container);
         $container = $this->addPriceProductClient($container);
         $container = $this->addMoneyClient($container);
+        $container = $this->addUrlGenerator($container);
 
         return $container;
     }
@@ -133,6 +136,20 @@ class CoreMediaDependencyProvider extends AbstractBundleDependencyProvider
             return new CoreMediaToMoneyClientBridge(
                 $container->getLocator()->money()->client()
             );
+        });
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Yves\Kernel\Container $container
+     *
+     * @return \Spryker\Yves\Kernel\Container
+     */
+    protected function addUrlGenerator(Container $container): Container
+    {
+        $container->set(static::URL_GENERATOR, function () {
+            return (new Pimple())->getApplication()['url_generator'];
         });
 
         return $container;
