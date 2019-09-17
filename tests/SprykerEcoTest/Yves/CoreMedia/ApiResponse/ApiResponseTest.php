@@ -23,6 +23,7 @@ use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInt
 use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface;
 use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 use SprykerEco\Yves\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ApiResponseTest extends Unit
 {
@@ -40,6 +41,7 @@ class ApiResponseTest extends Unit
     protected const PRODUCT_ABSTRACT_PRICE = 1000;
     protected const PRODUCT_CONCRETE_PRICE = 500;
     protected const CURRENCY_CODE = 'USD';
+    protected const EXISTENT_ROUTE = 'cart';
 
     protected const API_RESPONSE_NONEXISTENT_PLACEHOLDER_OBJECT_TYPE = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;012&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;nonexistent-object-type&quot;} CM--&gt;">Incorrect data</a>';
 
@@ -48,14 +50,16 @@ class ApiResponseTest extends Unit
     . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;12345&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>'
     . '&lt;!--CM {&quot;renderType&quot;:&quot;metadata&quot;,&quot;objectType&quot;:&quot;page&quot;,&quot;title&quot;:&quot;testMetaTitle&quot;,&quot;description&quot;:&quot;testMetaDescription&quot;,&quot;keywords&quot;:&quot;testMetaKeywords&quot;,&quot;pageName&quot;:&quot;testMetaPageName&quot;} CM--&gt;'
     . 'Product abstract price: &lt;!--CM {&quot;productId&quot;:&quot;013&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;'
-    . 'Product concrete price: &lt;!--CM {&quot;productId&quot;:&quot;013_34234&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;';
+    . 'Product concrete price: &lt;!--CM {&quot;productId&quot;:&quot;013_34234&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;'
+    . '<a href="&lt;!--CM {&quot;externalSeoSegment&quot;:&quot;cart&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;page&quot;} CM--&gt;">Page url</a>';
 
     protected const API_RESPONSE_INCORRECT_DATA = '<a href="&lt;!--CM {&quot;productId&quot;:&quot;073&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product abstract</a> '
     . '<a href="&lt;!--CM {&quot;productId&quot;:&quot;056_1234567&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;">Test product concrete</a> '
     . '<a href="&lt;!--CM {&quot;categoryId&quot;:&quot;56789&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;category&quot;} CM--&gt;">Test category</a>'
     . '<!--CM {"renderType":"metadata","objectType":"page","pbe":"pbe","slider":"slider"} CM-->'
     . 'Product abstract price: &lt;!--CM {&quot;productId&quot;:&quot;014&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;'
-    . 'Product concrete price: &lt;!--CM {&quot;productId&quot;:&quot;014_34234&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;';
+    . 'Product concrete price: &lt;!--CM {&quot;productId&quot;:&quot;014_34234&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;'
+    . '<a href="&lt;!--CM {&quot;externalSeoSegment&quot;:&quot;nonExistentRoute&quot;,&quot;renderType&quot;:&quot;url&quot;,&quot;objectType&quot;:&quot;page&quot;} CM--&gt;">Page url</a>';
 
     /**
      * @var \SprykerEcoTest\Yves\CoreMedia\CoreMediaYvesTester
@@ -69,7 +73,7 @@ class ApiResponseTest extends Unit
      *
      * @return void
      */
-    public function testCoreMediaClientProvidesCorrectDataWithReplacedPlaceholders(string $correctApiResponseData): void
+    public function testApiResponseProvidesCorrectDataWithReplacedPlaceholders(string $correctApiResponseData): void
     {
         $unprocessedCoreMediaApiResponseTransfer = $this->tester->getCoreMediaApiResponseTransfer([
             CoreMediaApiResponseTransfer::IS_SUCCESSFUL => true,
@@ -84,7 +88,8 @@ class ApiResponseTest extends Unit
             $unprocessedCoreMediaApiResponseTransfer,
             static::PRODUCT_ABSTRACT_STORAGE_DATA,
             static::PRODUCT_CONCRETE_STORAGE_DATA,
-            $categoryNodeStorageTransfer
+            $categoryNodeStorageTransfer,
+            static::EXISTENT_ROUTE
         );
 
         $this->assertEquals(
@@ -94,7 +99,8 @@ class ApiResponseTest extends Unit
             '<a href="/en/category-12345">Test category</a>' .
             '<meta name="title" content="testMetaTitle"><meta name="description" content="testMetaDescription"><meta name="keywords" content="testMetaKeywords"><meta name="pageName" content="testMetaPageName">' .
             'Product abstract price: USD1000' .
-            'Product concrete price: USD500'
+            'Product concrete price: USD500' .
+            '<a href="/cart">Page url</a>'
         );
     }
 
@@ -105,7 +111,7 @@ class ApiResponseTest extends Unit
      *
      * @return void
      */
-    public function testCoreMediaClientReturnsTheSameDataOnIncorrectPlaceholderObjectType(
+    public function testApiResponseReturnsTheSameDataOnIncorrectPlaceholderObjectType(
         string $nonexistentPlaceholderObjectTypeApiResponseData
     ): void {
         $unprocessedCoreMediaApiResponseTransfer = $this->tester->getCoreMediaApiResponseTransfer([
@@ -121,7 +127,8 @@ class ApiResponseTest extends Unit
             $unprocessedCoreMediaApiResponseTransfer,
             static::PRODUCT_ABSTRACT_STORAGE_DATA,
             static::PRODUCT_CONCRETE_STORAGE_DATA,
-            $categoryNodeStorageTransfer
+            $categoryNodeStorageTransfer,
+            static::EXISTENT_ROUTE
         );
 
         $this->assertEquals(
@@ -137,7 +144,7 @@ class ApiResponseTest extends Unit
      *
      * @return void
      */
-    public function testCoreMediaClientFailsOnIncorrectPlaceholdersData(string $incorrectApiResponseData): void
+    public function testApiResponseFailsOnIncorrectPlaceholdersData(string $incorrectApiResponseData): void
     {
         $unprocessedCoreMediaApiResponseTransfer = $this->tester->getCoreMediaApiResponseTransfer([
             CoreMediaApiResponseTransfer::IS_SUCCESSFUL => true,
@@ -150,7 +157,8 @@ class ApiResponseTest extends Unit
             $unprocessedCoreMediaApiResponseTransfer,
             [],
             [],
-            $categoryNodeStorageTransfer
+            $categoryNodeStorageTransfer,
+            'nonExistentRoute'
         );
 
         $this->assertEquals(
@@ -159,6 +167,7 @@ class ApiResponseTest extends Unit
             . '<!--CM {"renderType":"metadata","objectType":"page","pbe":"pbe","slider":"slider"} CM-->'
             . 'Product abstract price: '
             . 'Product concrete price: '
+            . '<a href="">Page url</a>'
         );
     }
 
@@ -167,6 +176,7 @@ class ApiResponseTest extends Unit
      * @param array $productAbstractStorageData
      * @param array $productConcreteStorageData
      * @param \Generated\Shared\Transfer\CategoryNodeStorageTransfer $categoryNodeStorageTransfer
+     * @param string $externalSeoSegment
      *
      * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
      */
@@ -174,7 +184,8 @@ class ApiResponseTest extends Unit
         CoreMediaApiResponseTransfer $unprocessedCoreMediaApiResponseTransfer,
         array $productAbstractStorageData,
         array $productConcreteStorageData,
-        CategoryNodeStorageTransfer $categoryNodeStorageTransfer
+        CategoryNodeStorageTransfer $categoryNodeStorageTransfer,
+        string $externalSeoSegment
     ): CoreMediaApiResponseTransfer {
         $productStorageClient = $this->getProductStorageClientMock(
             $productAbstractStorageData,
@@ -184,13 +195,15 @@ class ApiResponseTest extends Unit
         $priceProductStorageClient = $this->getPriceProductStorageClientMock();
         $priceProductClient = $this->getPriceProductClientMock();
         $moneyClient = $this->getMoneyClientMock();
+        $urlGenerator = $this->getUrlGeneratorMock($externalSeoSegment);
 
         $apiResponse = $this->getCoreMediaFactoryMock(
             $productStorageClient,
             $categoryStorageClient,
             $priceProductStorageClient,
             $priceProductClient,
-            $moneyClient
+            $moneyClient,
+            $urlGenerator
         )->createApiResponse();
 
         return $apiResponse->prepare(
@@ -320,6 +333,7 @@ class ApiResponseTest extends Unit
      * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient
      * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface $priceProductClient
      * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface $moneyClient
+     * @param \Symfony\Component\Routing\Generator\UrlGeneratorInterface $urlGenerator
      *
      * @return \PHPUnit\Framework\MockObject\MockObject|\SprykerEco\Yves\CoreMedia\CoreMediaFactory
      */
@@ -328,7 +342,8 @@ class ApiResponseTest extends Unit
         CoreMediaToCategoryStorageClientInterface $categoryStorageClient,
         CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient,
         CoreMediaToPriceProductClientInterface $priceProductClient,
-        CoreMediaToMoneyClientInterface $moneyClient
+        CoreMediaToMoneyClientInterface $moneyClient,
+        UrlGeneratorInterface $urlGenerator
     ): CoreMediaFactory {
         $coreMediaFactoryMock = $this->getMockBuilder(CoreMediaFactory::class)
             ->setMethods([
@@ -339,6 +354,7 @@ class ApiResponseTest extends Unit
                 'getPriceProductStorageClient',
                 'getPriceProductClient',
                 'getMoneyClient',
+                'getUrlGenerator',
             ])->getMock();
 
         $coreMediaFactoryMock->method('getConfig')->willReturn(
@@ -352,6 +368,7 @@ class ApiResponseTest extends Unit
         $coreMediaFactoryMock->method('getPriceProductStorageClient')->willReturn($priceProductStorageClient);
         $coreMediaFactoryMock->method('getPriceProductClient')->willReturn($priceProductClient);
         $coreMediaFactoryMock->method('getMoneyClient')->willReturn($moneyClient);
+        $coreMediaFactoryMock->method('getUrlGenerator')->willReturn($urlGenerator);
 
         return $coreMediaFactoryMock;
     }
@@ -382,6 +399,23 @@ class ApiResponseTest extends Unit
         $coreMediaClientMock->method('getDocumentFragment')->willReturn($coreMediaApiResponseTransfer);
 
         return $coreMediaClientMock;
+    }
+
+    /**
+     * @param string $externalSeoSegment
+     *
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Symfony\Component\Routing\Generator\UrlGeneratorInterface
+     */
+    protected function getUrlGeneratorMock(string $externalSeoSegment): UrlGeneratorInterface
+    {
+        $urlGeneratorMock = $this->getMockBuilder(UrlGeneratorInterface::class)
+            ->setMethods(['generate'])
+            ->getMockForAbstractClass();
+        $urlGeneratorMock->method('generate')->willReturn(
+            $externalSeoSegment === static::EXISTENT_ROUTE ? '/' . static::EXISTENT_ROUTE : ''
+        );
+
+        return $urlGeneratorMock;
     }
 
     /**
