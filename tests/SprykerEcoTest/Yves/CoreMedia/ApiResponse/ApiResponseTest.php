@@ -5,38 +5,28 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEcoTest\Client\CoreMedia;
+namespace SprykerEcoTest\Yves\CoreMedia\ApiResponse;
 
 use Codeception\Test\Unit;
 use Generated\Shared\Transfer\CategoryNodeStorageTransfer;
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
-use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 use Generated\Shared\Transfer\CurrentProductPriceTransfer;
 use Generated\Shared\Transfer\MoneyTransfer;
 use Generated\Shared\Transfer\MoneyValueTransfer;
 use Generated\Shared\Transfer\PriceProductTransfer;
-use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
-use SprykerEco\Client\CoreMedia\CoreMediaConfig;
-use SprykerEco\Client\CoreMedia\CoreMediaFactory;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface;
-use SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
-use SprykerEco\Client\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
+use SprykerEco\Client\CoreMedia\CoreMediaClientInterface;
+use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
+use SprykerEco\Yves\CoreMedia\CoreMediaFactory;
+use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
+use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface;
+use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface;
+use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface;
+use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
+use SprykerEco\Yves\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
 
-class CoreMediaClientTest extends Unit
+class ApiResponseTest extends Unit
 {
-    protected const CORE_MEDIA_HOST = 'https://test.coremedia.com';
     protected const IS_DEBUG_MODE_ENABLED = false;
-    protected const APPLICATION_STORE_MAPPING = [
-        'DE' => 'test-store',
-    ];
-    protected const APPLICATION_STORE_LOCALE_MAPPING = [
-        'test-store' => [
-            'en_US' => 'en-GB',
-        ],
-    ];
     protected const PRODUCT_ABSTRACT_STORAGE_DATA = [
         'url' => '/en/test-product-abstract-012',
         'id_product_abstract' => 1,
@@ -68,7 +58,7 @@ class CoreMediaClientTest extends Unit
     . 'Product concrete price: &lt;!--CM {&quot;productId&quot;:&quot;014_34234&quot;,&quot;renderType&quot;:&quot;price&quot;,&quot;objectType&quot;:&quot;product&quot;} CM--&gt;';
 
     /**
-     * @var \SprykerEcoTest\Client\CoreMedia\CoreMediaClientTester
+     * @var \SprykerEcoTest\Yves\CoreMedia\CoreMediaYvesTester
      */
     protected $tester;
 
@@ -90,7 +80,7 @@ class CoreMediaClientTest extends Unit
             CategoryNodeStorageTransfer::URL => static::CATEGORY_URL,
         ]);
 
-        $coreMediaApiResponseTransfer = $this->getDocumentFragmentData(
+        $coreMediaApiResponseTransfer = $this->prepare(
             $unprocessedCoreMediaApiResponseTransfer,
             static::PRODUCT_ABSTRACT_STORAGE_DATA,
             static::PRODUCT_CONCRETE_STORAGE_DATA,
@@ -127,7 +117,7 @@ class CoreMediaClientTest extends Unit
             CategoryNodeStorageTransfer::URL => static::CATEGORY_URL,
         ]);
 
-        $coreMediaApiResponseTransfer = $this->getDocumentFragmentData(
+        $coreMediaApiResponseTransfer = $this->prepare(
             $unprocessedCoreMediaApiResponseTransfer,
             static::PRODUCT_ABSTRACT_STORAGE_DATA,
             static::PRODUCT_CONCRETE_STORAGE_DATA,
@@ -156,7 +146,7 @@ class CoreMediaClientTest extends Unit
 
         $categoryNodeStorageTransfer = $this->tester->getCategoryNodeStorageTransfer([]);
 
-        $coreMediaApiResponseTransfer = $this->getDocumentFragmentData(
+        $coreMediaApiResponseTransfer = $this->prepare(
             $unprocessedCoreMediaApiResponseTransfer,
             [],
             [],
@@ -180,13 +170,12 @@ class CoreMediaClientTest extends Unit
      *
      * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
      */
-    protected function getDocumentFragmentData(
+    protected function prepare(
         CoreMediaApiResponseTransfer $unprocessedCoreMediaApiResponseTransfer,
         array $productAbstractStorageData,
         array $productConcreteStorageData,
         CategoryNodeStorageTransfer $categoryNodeStorageTransfer
     ): CoreMediaApiResponseTransfer {
-        $requestExecutor = $this->getRequestExecutorMock($unprocessedCoreMediaApiResponseTransfer);
         $productStorageClient = $this->getProductStorageClientMock(
             $productAbstractStorageData,
             $productConcreteStorageData
@@ -196,23 +185,19 @@ class CoreMediaClientTest extends Unit
         $priceProductClient = $this->getPriceProductClientMock();
         $moneyClient = $this->getMoneyClientMock();
 
-        $coreMediaClient = $this->tester->getCoreMediaClient();
-        $coreMediaClient->setFactory(
-            $this->getCoreMediaFactoryMock(
-                $requestExecutor,
-                $productStorageClient,
-                $categoryStorageClient,
-                $priceProductStorageClient,
-                $priceProductClient,
-                $moneyClient
-            )
-        );
+        $apiResponse = $this->getCoreMediaFactoryMock(
+            $productStorageClient,
+            $categoryStorageClient,
+            $priceProductStorageClient,
+            $priceProductClient,
+            $moneyClient
+        )->createApiResponse();
 
-        return $coreMediaClient->getDocumentFragment(
-            $this->tester->getCoreMediaFragmentRequestTransfer([
-                CoreMediaFragmentRequestTransfer::STORE => 'DE',
-                CoreMediaFragmentRequestTransfer::LOCALE => 'en_US',
-            ])
+        return $apiResponse->prepare(
+            $this->getCoreMediaClientMock($unprocessedCoreMediaApiResponseTransfer)->getDocumentFragment(
+                $this->tester->getCoreMediaFragmentRequestTransfer()
+            ),
+            'en_US'
         );
     }
 
@@ -239,7 +224,7 @@ class CoreMediaClientTest extends Unit
      * @param array $productAbstractStorageData
      * @param array $productConcreteStorageData
      *
-     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getProductStorageClientMock(
         array $productAbstractStorageData,
@@ -263,7 +248,7 @@ class CoreMediaClientTest extends Unit
     /**
      * @param \Generated\Shared\Transfer\CategoryNodeStorageTransfer $categoryNodeStorageTransfer
      *
-     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getCategoryStorageClientMock(
         CategoryNodeStorageTransfer $categoryNodeStorageTransfer
@@ -277,7 +262,7 @@ class CoreMediaClientTest extends Unit
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getPriceProductStorageClientMock(): CoreMediaToPriceProductStorageClientInterface
     {
@@ -301,7 +286,7 @@ class CoreMediaClientTest extends Unit
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getPriceProductClientMock(): CoreMediaToPriceProductClientInterface
     {
@@ -317,7 +302,7 @@ class CoreMediaClientTest extends Unit
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getMoneyClientMock(): CoreMediaToMoneyClientInterface
     {
@@ -330,17 +315,15 @@ class CoreMediaClientTest extends Unit
     }
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface $requestExecutor
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface $productStorageClient
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface $categoryStorageClient
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface $priceProductClient
-     * @param \SprykerEco\Client\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface $moneyClient
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface $productStorageClient
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface $categoryStorageClient
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface $priceProductClient
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface $moneyClient
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject|\SprykerEco\Client\CoreMedia\CoreMediaFactory
+     * @return \PHPUnit\Framework\MockObject\MockObject|\SprykerEco\Yves\CoreMedia\CoreMediaFactory
      */
     protected function getCoreMediaFactoryMock(
-        RequestExecutorInterface $requestExecutor,
         CoreMediaToProductStorageClientInterface $productStorageClient,
         CoreMediaToCategoryStorageClientInterface $categoryStorageClient,
         CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient,
@@ -349,7 +332,6 @@ class CoreMediaClientTest extends Unit
     ): CoreMediaFactory {
         $coreMediaFactoryMock = $this->getMockBuilder(CoreMediaFactory::class)
             ->setMethods([
-                'createApiRequestExecutor',
                 'getConfig',
                 'getUtilEncodingService',
                 'getProductStorageClient',
@@ -358,7 +340,7 @@ class CoreMediaClientTest extends Unit
                 'getPriceProductClient',
                 'getMoneyClient',
             ])->getMock();
-        $coreMediaFactoryMock->method('createApiRequestExecutor')->willReturn($requestExecutor);
+
         $coreMediaFactoryMock->method('getConfig')->willReturn(
             $this->getCoreMediaConfigMock()
         );
@@ -375,24 +357,13 @@ class CoreMediaClientTest extends Unit
     }
 
     /**
-     * @return \PHPUnit\Framework\MockObject\MockObject|\SprykerEco\Client\CoreMedia\CoreMediaConfig
+     * @return \PHPUnit\Framework\MockObject\MockObject|\SprykerEco\Yves\CoreMedia\CoreMediaConfig
      */
     protected function getCoreMediaConfigMock(): CoreMediaConfig
     {
         $coreMediaConfigMock = $this->getMockBuilder(CoreMediaConfig::class)
-            ->setMethods([
-                'getCoreMediaHost',
-                'isDebugModeEnabled',
-                'getApplicationStoreMapping',
-                'getApplicationStoreLocaleMapping',
-            ])
-            ->getMock();
+            ->setMethods(['isDebugModeEnabled'])->getMock();
         $coreMediaConfigMock->method('isDebugModeEnabled')->willReturn(static::IS_DEBUG_MODE_ENABLED);
-        $coreMediaConfigMock->method('getCoreMediaHost')->willReturn(static::CORE_MEDIA_HOST);
-        $coreMediaConfigMock->method('getApplicationStoreMapping')
-            ->willReturn(static::APPLICATION_STORE_MAPPING);
-        $coreMediaConfigMock->method('getApplicationStoreLocaleMapping')
-            ->willReturn(static::APPLICATION_STORE_LOCALE_MAPPING);
 
         return $coreMediaConfigMock;
     }
@@ -400,17 +371,17 @@ class CoreMediaClientTest extends Unit
     /**
      * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject|\SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface
+     * @return \PHPUnit\Framework\MockObject\MockObject|\SprykerEco\Client\CoreMedia\CoreMediaClientInterface
      */
-    protected function getRequestExecutorMock(
+    protected function getCoreMediaClientMock(
         CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
-    ): RequestExecutorInterface {
-        $coreMediaFactoryMock = $this->getMockBuilder(RequestExecutorInterface::class)
-            ->setMethods(['execute'])
+    ): CoreMediaClientInterface {
+        $coreMediaClientMock = $this->getMockBuilder(CoreMediaClientInterface::class)
+            ->setMethods(['getDocumentFragment'])
             ->getMock();
-        $coreMediaFactoryMock->method('execute')->willReturn($coreMediaApiResponseTransfer);
+        $coreMediaClientMock->method('getDocumentFragment')->willReturn($coreMediaApiResponseTransfer);
 
-        return $coreMediaFactoryMock;
+        return $coreMediaClientMock;
     }
 
     /**

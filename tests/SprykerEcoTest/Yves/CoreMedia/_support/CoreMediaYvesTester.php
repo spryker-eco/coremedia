@@ -5,7 +5,7 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEcoTest\Client\CoreMedia;
+namespace SprykerEcoTest\Yves\CoreMedia;
 
 use Codeception\Actor;
 
@@ -24,7 +24,11 @@ use Codeception\Actor;
  *
  * @SuppressWarnings(PHPMD)
  */
-class CoreMediaClientTester extends Actor
+class CoreMediaYvesTester extends Actor
 {
-    use _generated\CoreMediaClientTesterActions;
+    use _generated\CoreMediaYvesTesterActions;
+
+   /**
+    * Define custom actions here
+    */
 }
