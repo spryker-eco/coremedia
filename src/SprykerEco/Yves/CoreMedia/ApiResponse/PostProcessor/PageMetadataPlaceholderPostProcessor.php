@@ -8,11 +8,28 @@
 namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
 
 class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'page';
     protected const PLACEHOLDER_RENDER_TYPE = 'metadata';
+
+    /**
+     * @var \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface[]
+     */
+    protected $metadataReplacers = [];
+
+    /**
+     * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
+     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface[] $metadataReplacers
+     */
+    public function __construct(CoreMediaConfig $config, array $metadataReplacers)
+    {
+        parent::__construct($config);
+
+        $this->metadataReplacers = $metadataReplacers;
+    }
 
     /**
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
@@ -37,20 +54,8 @@ class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProces
     ): string {
         $metadata = '';
 
-        if ($coreMediaPlaceholderTransfer->getTitle() !== null) {
-            $metadata .= $this->createMetaTag(CoreMediaPlaceholderTransfer::TITLE, $coreMediaPlaceholderTransfer->getTitle());
-        }
-
-        if ($coreMediaPlaceholderTransfer->getDescription() !== null) {
-            $metadata .= $this->createMetaTag(CoreMediaPlaceholderTransfer::DESCRIPTION, $coreMediaPlaceholderTransfer->getDescription());
-        }
-
-        if ($coreMediaPlaceholderTransfer->getKeywords() !== null) {
-            $metadata .= $this->createMetaTag(CoreMediaPlaceholderTransfer::KEYWORDS, $coreMediaPlaceholderTransfer->getKeywords());
-        }
-
-        if ($coreMediaPlaceholderTransfer->getPageName() !== null) {
-            $metadata .= $this->createMetaTag(CoreMediaPlaceholderTransfer::PAGE_NAME, $coreMediaPlaceholderTransfer->getPageName());
+        foreach ($this->metadataReplacers as $metadataReplacer) {
+            $metadata .= $metadataReplacer->replaceMetatag($coreMediaPlaceholderTransfer);
         }
 
         return $metadata;
@@ -65,16 +70,5 @@ class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProces
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
     ): CoreMediaPlaceholderTransfer {
         return $coreMediaPlaceholderTransfer->setPlaceholderReplacement(null);
-    }
-
-    /**
-     * @param string $metaKey
-     * @param string $metaValue
-     *
-     * @return string
-     */
-    protected function createMetaTag(string $metaKey, string $metaValue = ''): string
-    {
-        return sprintf($this->config->getMetaTagFormat(), $metaKey, $metaValue);
     }
 }

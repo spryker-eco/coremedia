@@ -18,6 +18,11 @@ use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PageMetadataPlaceholderP
 use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface;
 use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\ProductPricePlaceholderPostProcessor;
 use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\ProductUrlPlaceholderPostProcessor;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\DescriptionMetadataReplacer;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\KeywordsMetadataReplacer;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\PageNameMetadataReplacer;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\TitleMetatdataReplacer;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\PlaceholderReplacer;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface;
@@ -164,7 +169,7 @@ class CoreMediaFactory extends AbstractFactory
      */
     public function createPageMetadataPostProcessor(): PlaceholderPostProcessorInterface
     {
-        return new PageMetadataPlaceholderPostProcessor($this->getConfig());
+        return new PageMetadataPlaceholderPostProcessor($this->getConfig(), $this->getMetadataReplacers());
     }
 
     /**
@@ -225,6 +230,52 @@ class CoreMediaFactory extends AbstractFactory
             $this->createProductPricePlaceholderPostProcessor(),
             $this->createCustomPageUrlPlaceholderPostProcessor(),
         ];
+    }
+
+
+    /**
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface[]
+     */
+    public function getMetadataReplacers(): array
+    {
+        return [
+            $this->createTitleMetadataReplacer(),
+            $this->createDescriptionMetadataReplacer(),
+            $this->createKeywordsMetadataReplacer(),
+            $this->createPageNameMetadataReplacer(),
+        ];
+    }
+
+    /**
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface
+     */
+    public function createTitleMetadataReplacer(): MetadataReplacerInterface
+    {
+        return new TitleMetatdataReplacer($this->getConfig());
+    }
+
+    /**
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface
+     */
+    public function createDescriptionMetadataReplacer(): MetadataReplacerInterface
+    {
+        return new DescriptionMetadataReplacer($this->getConfig());
+    }
+
+    /**
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface
+     */
+    public function createKeywordsMetadataReplacer(): MetadataReplacerInterface
+    {
+        return new KeywordsMetadataReplacer($this->getConfig());
+    }
+
+    /**
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface
+     */
+    public function createPageNameMetadataReplacer(): MetadataReplacerInterface
+    {
+        return new PageNameMetadataReplacer($this->getConfig());
     }
 
     /**
