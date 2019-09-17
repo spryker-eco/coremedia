@@ -232,7 +232,6 @@ class CoreMediaFactory extends AbstractFactory
         ];
     }
 
-
     /**
      * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface[]
      */
