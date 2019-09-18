@@ -8,8 +8,8 @@
 namespace SprykerEco\Yves\CoreMedia;
 
 use Spryker\Yves\Kernel\AbstractFactory;
-use SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponse;
-use SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponseInterface;
+use SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponsePreparator;
+use SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponsePreparatorInterface;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Parser\PlaceholderParser;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface;
 use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\CategoryUrlPlaceholderPostProcessor;
@@ -22,7 +22,7 @@ use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\DescriptionMetadataR
 use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\KeywordsMetadataReplacer;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\PageNameMetadataReplacer;
-use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\TitleMetatdataReplacer;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\TitleMetadataReplacer;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\PlaceholderReplacer;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface;
@@ -61,11 +61,11 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponseInterface
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponsePreparatorInterface
      */
-    public function createApiResponse(): ApiResponseInterface
+    public function createApiResponsePreparator(): ApiResponsePreparatorInterface
     {
-        return new ApiResponse(
+        return new ApiResponsePreparator(
             $this->getApiResponseResolvers()
         );
     }
@@ -250,7 +250,7 @@ class CoreMediaFactory extends AbstractFactory
      */
     public function createTitleMetadataReplacer(): MetadataReplacerInterface
     {
-        return new TitleMetatdataReplacer($this->getConfig());
+        return new TitleMetadataReplacer($this->getConfig());
     }
 
     /**

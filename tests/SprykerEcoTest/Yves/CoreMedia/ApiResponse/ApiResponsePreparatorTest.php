@@ -25,7 +25,7 @@ use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientI
 use SprykerEco\Yves\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class ApiResponseTest extends Unit
+class ApiResponsePreparatorTest extends Unit
 {
     protected const IS_DEBUG_MODE_ENABLED = false;
     protected const PRODUCT_ABSTRACT_STORAGE_DATA = [
@@ -73,7 +73,7 @@ class ApiResponseTest extends Unit
      *
      * @return void
      */
-    public function testApiResponseProvidesCorrectDataWithReplacedPlaceholders(string $correctApiResponseData): void
+    public function testApiResponsePreparatorProvidesCorrectDataWithReplacedPlaceholders(string $correctApiResponseData): void
     {
         $unprocessedCoreMediaApiResponseTransfer = $this->tester->getCoreMediaApiResponseTransfer([
             CoreMediaApiResponseTransfer::IS_SUCCESSFUL => true,
@@ -111,7 +111,7 @@ class ApiResponseTest extends Unit
      *
      * @return void
      */
-    public function testApiResponseReturnsTheSameDataOnIncorrectPlaceholderObjectType(
+    public function testApiResponsePreparatorReturnsTheSameDataOnIncorrectPlaceholderObjectType(
         string $nonexistentPlaceholderObjectTypeApiResponseData
     ): void {
         $unprocessedCoreMediaApiResponseTransfer = $this->tester->getCoreMediaApiResponseTransfer([
@@ -144,7 +144,7 @@ class ApiResponseTest extends Unit
      *
      * @return void
      */
-    public function testApiResponseFailsOnIncorrectPlaceholdersData(string $incorrectApiResponseData): void
+    public function testApiResponsePreparatorFailsOnIncorrectPlaceholdersData(string $incorrectApiResponseData): void
     {
         $unprocessedCoreMediaApiResponseTransfer = $this->tester->getCoreMediaApiResponseTransfer([
             CoreMediaApiResponseTransfer::IS_SUCCESSFUL => true,
@@ -197,16 +197,16 @@ class ApiResponseTest extends Unit
         $moneyClient = $this->getMoneyClientMock();
         $urlGenerator = $this->getUrlGeneratorMock($externalSeoSegment);
 
-        $apiResponse = $this->getCoreMediaFactoryMock(
+        $apiResponsePreparator = $this->getCoreMediaFactoryMock(
             $productStorageClient,
             $categoryStorageClient,
             $priceProductStorageClient,
             $priceProductClient,
             $moneyClient,
             $urlGenerator
-        )->createApiResponse();
+        )->createApiResponsePreparator();
 
-        return $apiResponse->prepare(
+        return $apiResponsePreparator->prepare(
             $this->getCoreMediaClientMock($unprocessedCoreMediaApiResponseTransfer)->getDocumentFragment(
                 $this->tester->getCoreMediaFragmentRequestTransfer()
             ),

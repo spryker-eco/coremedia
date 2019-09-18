@@ -9,7 +9,7 @@ namespace SprykerEco\Yves\CoreMedia\ApiResponse;
 
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 
-interface ApiResponseInterface
+interface ApiResponsePreparatorInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer

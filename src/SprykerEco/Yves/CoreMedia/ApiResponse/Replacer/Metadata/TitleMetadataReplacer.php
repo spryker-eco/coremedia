@@ -9,14 +9,14 @@ namespace SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 
-class TitleMetatdataReplacer extends AbstractMetadataReplacer
+class TitleMetadataReplacer extends AbstractMetadataReplacer
 {
     /**
      * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      *
      * @return string
      */
-    public function replaceMetatag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
+    public function replaceMetaTag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
     {
         if ($coreMediaPlaceholderTransfer->getTitle() !== null) {
             return sprintf($this->config->getMetaTagFormat(), CoreMediaPlaceholderTransfer::TITLE, $coreMediaPlaceholderTransfer->getTitle());

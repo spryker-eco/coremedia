@@ -16,7 +16,7 @@ class DescriptionMetadataReplacer extends AbstractMetadataReplacer
      *
      * @return string
      */
-    public function replaceMetatag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
+    public function replaceMetaTag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
     {
         if ($coreMediaPlaceholderTransfer->getDescription() !== null) {
             return sprintf($this->config->getMetaTagFormat(), CoreMediaPlaceholderTransfer::DESCRIPTION, $coreMediaPlaceholderTransfer->getDescription());

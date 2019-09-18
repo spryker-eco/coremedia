@@ -16,7 +16,7 @@ class PageNameMetadataReplacer extends AbstractMetadataReplacer
      *
      * @return string
      */
-    public function replaceMetatag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
+    public function replaceMetaTag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
     {
         if ($coreMediaPlaceholderTransfer->getPageName() !== null) {
             return sprintf($this->config->getMetaTagFormat(), CoreMediaPlaceholderTransfer::PAGE_NAME, $coreMediaPlaceholderTransfer->getPageName());

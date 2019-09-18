@@ -5,7 +5,7 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Client\CoreMedia\Api\Exception;
+namespace SprykerEco\Yves\CoreMedia\Exception;
 
 use Exception;
 

@@ -30,7 +30,7 @@ abstract class AbstractMetadataReplacer implements MetadataReplacerInterface
      *
      * @return string
      */
-    public function replaceMetatag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
+    public function replaceMetaTag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
     {
         return '';
     }

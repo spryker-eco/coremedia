@@ -32,7 +32,7 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
         $coreMediaFragmentRequestTransfer = $this->getCoreMediaFragmentRequestTransfer($cmsSlotContentRequestTransfer);
 
         $coreMediaApiResponseTransfer = $this->getClient()->getDocumentFragment($coreMediaFragmentRequestTransfer);
-        $coreMediaApiResponseTransfer = $this->getFactory()->createApiResponse()->prepare(
+        $coreMediaApiResponseTransfer = $this->getFactory()->createApiResponsePreparator()->prepare(
             $coreMediaApiResponseTransfer,
             $coreMediaFragmentRequestTransfer->getLocale()
         );

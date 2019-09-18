@@ -55,7 +55,7 @@ class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProces
         $metadata = '';
 
         foreach ($this->metadataReplacers as $metadataReplacer) {
-            $metadata .= $metadataReplacer->replaceMetatag($coreMediaPlaceholderTransfer);
+            $metadata .= $metadataReplacer->replaceMetaTag($coreMediaPlaceholderTransfer);
         }
 
         return $metadata;
