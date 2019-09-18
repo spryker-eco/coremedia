@@ -8,7 +8,7 @@
 namespace SprykerEco\Yves\CoreMedia\Plugin\ShopCmsSlot;
 
 use Generated\Shared\Transfer\CmsSlotContentRequestTransfer;
-use Generated\Shared\Transfer\CmsSlotDataTransfer;
+use Generated\Shared\Transfer\CmsSlotContentResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 use Spryker\Yves\Kernel\AbstractPlugin;
@@ -23,17 +23,17 @@ class CoreMediaCmsSlotContentPlugin extends AbstractPlugin implements CmsSlotCon
     /**
      * @param \Generated\Shared\Transfer\CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
      *
-     * @return \Generated\Shared\Transfer\CmsSlotDataTransfer
+     * @return \Generated\Shared\Transfer\CmsSlotContentResponseTransfer
      */
-    public function getSlotContent(CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer): CmsSlotDataTransfer
+    public function getSlotContent(CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer): CmsSlotContentResponseTransfer
     {
-        $cmsSlotDataTransfer = new CmsSlotDataTransfer();
+        $cmsSlotContentResponseTransfer = new CmsSlotContentResponseTransfer();
 
         $coreMediaApiResponseTransfer = $this->getClient()->getDocumentFragment(
             $this->getCoreMediaFragmentRequestTransfer($cmsSlotContentRequestTransfer)
         );
 
-        return $cmsSlotDataTransfer->setContent(
+        return $cmsSlotContentResponseTransfer->setContent(
             $this->getContentFromCoreMediaApiResponseTransfer($coreMediaApiResponseTransfer)
         );
     }
