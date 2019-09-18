@@ -34,6 +34,8 @@ class CoreMediaDependencyProvider extends AbstractBundleDependencyProvider
      */
     public function provideDependencies(Container $container): Container
     {
+        $container = parent::provideDependencies($container);
+
         $container = $this->addUtilEncodingService($container);
         $container = $this->addProductStorageClient($container);
         $container = $this->addCategoryStorageClient($container);

@@ -169,7 +169,10 @@ class CoreMediaFactory extends AbstractFactory
      */
     public function createPageMetadataPostProcessor(): PlaceholderPostProcessorInterface
     {
-        return new PageMetadataPlaceholderPostProcessor($this->getConfig(), $this->getMetadataReplacers());
+        return new PageMetadataPlaceholderPostProcessor(
+            $this->getConfig(),
+            $this->getMetadataReplacers()
+        );
     }
 
     /**

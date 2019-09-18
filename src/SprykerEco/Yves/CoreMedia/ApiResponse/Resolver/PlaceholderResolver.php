@@ -20,7 +20,7 @@ class PlaceholderResolver implements ApiResponseResolverInterface
     protected $placeholderParser;
 
     /**
-     * @var array|\SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface[]
+     * @var \SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface[]
      */
     protected $placeholderPostProcessors;
 
@@ -31,7 +31,7 @@ class PlaceholderResolver implements ApiResponseResolverInterface
 
     /**
      * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface $placeholderParser
-     * @param array $placeholderPostProcessors
+     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface[] $placeholderPostProcessors
      * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface $placeholderReplacer
      */
     public function __construct(

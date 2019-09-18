@@ -55,16 +55,6 @@ class CustomPageUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProce
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
-        return $this->findPageUrl($coreMediaPlaceholderTransfer);
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
-     *
-     * @return string|null
-     */
-    protected function findPageUrl(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): ?string
-    {
         if (!$coreMediaPlaceholderTransfer->getExternalSeoSegment()) {
             return null;
         }
