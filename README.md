@@ -1,7 +1,6 @@
 # CoreMedia Module
 [![Build Status](https://travis-ci.org/spryker-eco/coremedia.svg)](https://travis-ci.org/spryker-eco/coremedia)
 
-Provides the collection of calls to CoreMedia API.
 
 ## Installation
 
