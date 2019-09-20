@@ -29,7 +29,7 @@ class CoreMediaClient extends AbstractClient implements CoreMediaClientInterface
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
     ): CoreMediaApiResponseTransfer {
         return $this->getFactory()
-            ->createCoreMediaStub()
+            ->createApiClient()
             ->getDocumentFragment($coreMediaFragmentRequestTransfer);
     }
 }

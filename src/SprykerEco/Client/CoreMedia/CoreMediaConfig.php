@@ -8,9 +8,11 @@
 namespace SprykerEco\Client\CoreMedia;
 
 use Spryker\Zed\Kernel\AbstractBundleConfig;
-use SprykerEco\Shared\CoreMedia\CoreMediaConfig as SharedCoreMediaConfig;
 use SprykerEco\Shared\CoreMedia\CoreMediaConstants;
 
+/**
+ * @method \SprykerEco\Shared\CoreMedia\CoreMediaConfig getSharedConfig()
+ */
 class CoreMediaConfig extends AbstractBundleConfig
 {
     protected const FRAGMENT_BASE_PATH = '/blueprint/servlet/service/fragment/';
@@ -28,7 +30,7 @@ class CoreMediaConfig extends AbstractBundleConfig
      */
     public function isDebugModeEnabled(): bool
     {
-        return $this->get(CoreMediaConstants::ENABLE_DEBUG, false);
+        return $this->getSharedConfig()->isDebugModeEnabled();
     }
 
     /**
@@ -63,21 +65,5 @@ class CoreMediaConfig extends AbstractBundleConfig
     public function getApplicationStoreLocaleMapping(): array
     {
         return [];
-    }
-
-    /**
-     * @return string
-     */
-    public function getPlaceholderPattern(): string
-    {
-        return '/(?:(?:&lt;|<)!--CM\s*)(?P<' . SharedCoreMediaConfig::PREG_MATCH_PLACEHOLDER_KEY . '>(?:(?!CM--(&gt;|>)).|\s)*)(?:\s*\CM--(?:&gt;|>))/i';
-    }
-
-    /**
-     * @return string
-     */
-    public function getMetaTagFormat(): string
-    {
-        return '<meta name="%s" content="%s">';
     }
 }

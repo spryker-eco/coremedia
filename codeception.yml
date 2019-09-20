@@ -3,6 +3,7 @@ actor: Tester
 
 include:
     - tests/SprykerEcoTest/Client/CoreMedia
+    - tests/SprykerEcoTest/Yves/CoreMedia
 
 paths:
     tests: tests

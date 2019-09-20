@@ -9,7 +9,7 @@ namespace SprykerEco\Yves\CoreMedia\Mapper;
 
 use Generated\Shared\Transfer\CmsSlotContentRequestTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
-use SprykerEco\Client\CoreMedia\Api\Exception\MissingRequestParameterException;
+use SprykerEco\Yves\CoreMedia\Exception\MissingRequestParameterException;
 
 class RequestMapper implements RequestMapperInterface
 {
@@ -18,7 +18,7 @@ class RequestMapper implements RequestMapperInterface
     /**
      * @param \Generated\Shared\Transfer\CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
      *
-     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\MissingRequestParameterException
+     * @throws \SprykerEco\Yves\CoreMedia\Exception\MissingRequestParameterException
      *
      * @return \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer
      */
