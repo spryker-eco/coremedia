@@ -33,7 +33,11 @@ class TitleMetadataReplacer implements MetadataReplacerInterface
     public function replaceMetaTag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
     {
         if ($coreMediaPlaceholderTransfer->getTitle() !== null) {
-            return sprintf($this->config->getMetaTagFormat(), CoreMediaPlaceholderTransfer::TITLE, $coreMediaPlaceholderTransfer->getTitle());
+            return sprintf(
+                $this->config->getMetaTagFormat(),
+                CoreMediaPlaceholderTransfer::TITLE,
+                htmlentities($coreMediaPlaceholderTransfer->getTitle())
+            );
         }
 
         return '';

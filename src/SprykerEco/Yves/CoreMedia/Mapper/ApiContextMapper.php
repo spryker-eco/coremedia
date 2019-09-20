@@ -8,10 +8,12 @@
 namespace SprykerEco\Yves\CoreMedia\Mapper;
 
 use Generated\Shared\Transfer\CmsSlotContentRequestTransfer;
+use Generated\Shared\Transfer\CmsSlotContentResponseTransfer;
+use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 use SprykerEco\Yves\CoreMedia\Exception\MissingRequestParameterException;
 
-class RequestMapper implements RequestMapperInterface
+class ApiContextMapper implements ApiContextMapperInterface
 {
     protected const PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION = 'The "%s" param is missing in the request to CoreMedia.';
 
@@ -43,5 +45,35 @@ class RequestMapper implements RequestMapperInterface
         $coreMediaFragmentRequestTransfer->fromArray($requestParameters, true);
 
         return $coreMediaFragmentRequestTransfer;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     *
+     * @return \Generated\Shared\Transfer\CmsSlotContentResponseTransfer
+     */
+    public function mapCoreMediaApiResponseTransferToCmsSlotContentResponseTransfer(
+        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+    ): CmsSlotContentResponseTransfer {
+        $cmsSlotContentResponseTransfer = new CmsSlotContentResponseTransfer();
+
+        return $cmsSlotContentResponseTransfer->setContent(
+            $this->getContentFromCoreMediaApiResponseTransfer($coreMediaApiResponseTransfer)
+        );
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     *
+     * @return string
+     */
+    protected function getContentFromCoreMediaApiResponseTransfer(
+        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+    ): string {
+        if (!$coreMediaApiResponseTransfer->getIsSuccessful()) {
+            return '';
+        }
+
+        return $coreMediaApiResponseTransfer->getData();
     }
 }

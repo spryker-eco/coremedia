@@ -10,10 +10,10 @@ namespace SprykerEco\Yves\CoreMedia\Dependency\Client;
 interface CoreMediaToCategoryStorageClientInterface
 {
     /**
-     * @param int $idCategoryStorageNode
+     * @param int $idCategoryNode
      * @param string $localeName
      *
      * @return \Generated\Shared\Transfer\CategoryNodeStorageTransfer
      */
-    public function getCategoryNodeById($idCategoryStorageNode, $localeName);
+    public function getCategoryNodeById($idCategoryNode, $localeName);
 }

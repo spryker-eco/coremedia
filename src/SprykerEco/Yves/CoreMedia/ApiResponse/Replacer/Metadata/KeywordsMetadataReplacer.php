@@ -33,7 +33,11 @@ class KeywordsMetadataReplacer implements MetadataReplacerInterface
     public function replaceMetaTag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
     {
         if ($coreMediaPlaceholderTransfer->getKeywords() !== null) {
-            return sprintf($this->config->getMetaTagFormat(), CoreMediaPlaceholderTransfer::KEYWORDS, $coreMediaPlaceholderTransfer->getKeywords());
+            return sprintf(
+                $this->config->getMetaTagFormat(),
+                CoreMediaPlaceholderTransfer::KEYWORDS,
+                htmlentities($coreMediaPlaceholderTransfer->getKeywords())
+            );
         }
 
         return '';

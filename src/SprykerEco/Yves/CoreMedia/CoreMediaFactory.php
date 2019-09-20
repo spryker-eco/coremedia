@@ -35,10 +35,12 @@ use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientI
 use SprykerEco\Yves\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
 use SprykerEco\Yves\CoreMedia\Formatter\ProductPriceFormatter;
 use SprykerEco\Yves\CoreMedia\Formatter\ProductPriceFormatterInterface;
-use SprykerEco\Yves\CoreMedia\Mapper\RequestMapper;
-use SprykerEco\Yves\CoreMedia\Mapper\RequestMapperInterface;
+use SprykerEco\Yves\CoreMedia\Mapper\ApiContextMapper;
+use SprykerEco\Yves\CoreMedia\Mapper\ApiContextMapperInterface;
 use SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReader;
 use SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
+use SprykerEco\Yves\CoreMedia\Reader\CmsSlotContent\CmsSlotContentReader;
+use SprykerEco\Yves\CoreMedia\Reader\CmsSlotContent\CmsSlotContentReaderInterface;
 use SprykerEco\Yves\CoreMedia\Reader\PriceProduct\PriceProductReader;
 use SprykerEco\Yves\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface;
 use SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReader;
@@ -49,15 +51,28 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @method \SprykerEco\Yves\CoreMedia\CoreMediaConfig getConfig()
+ * @method \SprykerEco\Client\CoreMedia\CoreMediaClientInterface getClient()
  */
 class CoreMediaFactory extends AbstractFactory
 {
     /**
-     * @return \SprykerEco\Yves\CoreMedia\Mapper\RequestMapperInterface
+     * @return \SprykerEco\Yves\CoreMedia\Reader\CmsSlotContent\CmsSlotContentReaderInterface
      */
-    public function createRequestMapper(): RequestMapperInterface
+    public function createCmsSlotContentReader(): CmsSlotContentReaderInterface
     {
-        return new RequestMapper();
+        return new CmsSlotContentReader(
+            $this->getClient(),
+            $this->createApiContextMapper(),
+            $this->createApiResponsePreparator()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Yves\CoreMedia\Mapper\ApiContextMapperInterface
+     */
+    public function createApiContextMapper(): ApiContextMapperInterface
+    {
+        return new ApiContextMapper();
     }
 
     /**
