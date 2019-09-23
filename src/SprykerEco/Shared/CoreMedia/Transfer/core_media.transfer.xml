@@ -59,6 +59,9 @@
         <property name="currency" type="Currency" />
     </transfer>
 
+    <transfer name="Currency">
+    </transfer>
+
     <transfer name="PriceProduct">
         <property name="moneyValue" type="MoneyValue" />
     </transfer>

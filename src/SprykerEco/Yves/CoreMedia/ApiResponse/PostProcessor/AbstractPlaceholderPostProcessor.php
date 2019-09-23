@@ -85,16 +85,18 @@ abstract class AbstractPlaceholderPostProcessor implements PlaceholderPostProces
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): void {
-        if ($this->config->isDebugModeEnabled()) {
-            $dataException = new InvalidPlaceholderDataException(
-                sprintf(
-                    "Cannot obtain placeholder replacement for:\n[Placeholder]: %s\n[Locale]: %s",
-                    $coreMediaPlaceholderTransfer->getPlaceholderBody(),
-                    $locale
-                )
-            );
-
-            ErrorLogger::getInstance()->log($dataException);
+        if (!$this->config->isDebugModeEnabled()) {
+            return;
         }
+
+        $dataException = new InvalidPlaceholderDataException(
+            sprintf(
+                "Cannot obtain placeholder replacement for:\n[Placeholder]: %s\n[Locale]: %s",
+                $coreMediaPlaceholderTransfer->getPlaceholderBody(),
+                $locale
+            )
+        );
+
+        ErrorLogger::getInstance()->log($dataException);
     }
 }
