@@ -32,14 +32,14 @@ class PageNameMetadataReplacer implements MetadataReplacerInterface
      */
     public function replaceMetaTag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
     {
-        if ($coreMediaPlaceholderTransfer->getPageName() !== null) {
-            return sprintf(
-                $this->config->getMetaTagFormat(),
-                CoreMediaPlaceholderTransfer::PAGE_NAME,
-                htmlentities($coreMediaPlaceholderTransfer->getPageName())
-            );
+        if ($coreMediaPlaceholderTransfer->getPageName() === null) {
+            return '';
         }
 
-        return '';
+        return sprintf(
+            $this->config->getMetaTagFormat(),
+            CoreMediaPlaceholderTransfer::PAGE_NAME,
+            htmlentities($coreMediaPlaceholderTransfer->getPageName())
+        );
     }
 }
