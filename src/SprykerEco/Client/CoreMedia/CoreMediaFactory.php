@@ -12,8 +12,8 @@ use SprykerEco\Client\CoreMedia\Api\ApiClient;
 use SprykerEco\Client\CoreMedia\Api\ApiClientInterface;
 use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilder;
 use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilderInterface;
-use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfiguration;
-use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
+use SprykerEco\Client\CoreMedia\Api\Builder\UrlBuilder;
+use SprykerEco\Client\CoreMedia\Api\Builder\UrlBuilderInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutor;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
@@ -31,7 +31,7 @@ class CoreMediaFactory extends AbstractFactory
         return new ApiClient(
             $this->createApiRequestBuilder(),
             $this->createApiRequestExecutor(),
-            $this->createUrlConfiguration()
+            $this->createUrlBuilder()
         );
     }
 
@@ -55,11 +55,11 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     * @return \SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface
+     * @return \SprykerEco\Client\CoreMedia\Api\Builder\UrlBuilderInterface
      */
-    public function createUrlConfiguration(): UrlConfigurationInterface
+    public function createUrlBuilder(): UrlBuilderInterface
     {
-        return new UrlConfiguration(
+        return new UrlBuilder(
             $this->getConfig()
         );
     }

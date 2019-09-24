@@ -11,7 +11,6 @@ use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Psr\Http\Message\RequestInterface;
 use RuntimeException;
 use Spryker\Shared\ErrorHandler\ErrorLogger;
-use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\Dependency\Guzzle\CoreMediaToGuzzleInterface;
 
@@ -39,14 +38,11 @@ class RequestExecutor implements RequestExecutorInterface
 
     /**
      * @param \Psr\Http\Message\RequestInterface $request
-     * @param \SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface $urlConfiguration
      *
      * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
      */
-    public function execute(
-        RequestInterface $request,
-        UrlConfigurationInterface $urlConfiguration
-    ): CoreMediaApiResponseTransfer {
+    public function execute(RequestInterface $request): CoreMediaApiResponseTransfer
+    {
         try {
             $response = $this->httpClient->send($request);
         } catch (RuntimeException $runtimeException) {

@@ -5,13 +5,13 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Client\CoreMedia\Api\Configuration;
+namespace SprykerEco\Client\CoreMedia\Api\Builder;
 
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
-use SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException;
+use SprykerEco\Client\CoreMedia\Api\Exception\UrlBuilderException;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 
-class UrlConfiguration implements UrlConfigurationInterface
+class UrlBuilder implements UrlBuilderInterface
 {
     protected const HTTP_QUERY_KEY_VALUE_PATTERN = '%s=%s';
 
@@ -33,7 +33,7 @@ class UrlConfiguration implements UrlConfigurationInterface
      *
      * @return string
      */
-    public function getDocumentFragmentApiUrl(
+    public function buildDocumentFragmentApiUrl(
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
     ): string {
         $queryParamString = $this->getQueryStringFromCoreMediaFragmentRequestTransfer(
@@ -100,7 +100,7 @@ class UrlConfiguration implements UrlConfigurationInterface
     /**
      * @param string $storeName
      *
-     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException
+     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlBuilderException
      *
      * @return string
      */
@@ -109,7 +109,7 @@ class UrlConfiguration implements UrlConfigurationInterface
         $applicationStoreMapping = $this->config->getApplicationStoreMapping();
 
         if (!isset($applicationStoreMapping[$storeName])) {
-            throw new UrlConfigurationException(
+            throw new UrlBuilderException(
                 sprintf('Cannot find storeId by store name "%s" in application store mapping.', $storeName)
             );
         }
@@ -121,7 +121,7 @@ class UrlConfiguration implements UrlConfigurationInterface
      * @param string $storeId
      * @param string $localeName
      *
-     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException
+     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlBuilderException
      *
      * @return string
      */
@@ -130,13 +130,13 @@ class UrlConfiguration implements UrlConfigurationInterface
         $applicationStoreLocaleMapping = $this->config->getApplicationStoreLocaleMapping();
 
         if (!isset($applicationStoreLocaleMapping[$storeId])) {
-            throw new UrlConfigurationException(
+            throw new UrlBuilderException(
                 sprintf('Not defined storeId "%s" in application store locale mapping.', $storeId)
             );
         }
 
         if (!isset($applicationStoreLocaleMapping[$storeId][$localeName])) {
-            throw new UrlConfigurationException(
+            throw new UrlBuilderException(
                 sprintf(
                     'Cannot find locale by locale name "%s" for storeId "%s" in application store locale mapping.',
                     $localeName,
@@ -168,7 +168,7 @@ class UrlConfiguration implements UrlConfigurationInterface
     }
 
     /**
-     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException
+     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlBuilderException
      *
      * @return string
      */
@@ -177,7 +177,7 @@ class UrlConfiguration implements UrlConfigurationInterface
         $coreMediaHost = $this->config->getCoreMediaHost();
 
         if (!$coreMediaHost) {
-            throw new UrlConfigurationException('Please specify the CoreMedia host.');
+            throw new UrlBuilderException('Please specify the CoreMedia host in configuration.');
         }
 
         return $coreMediaHost;

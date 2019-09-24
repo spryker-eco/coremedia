@@ -52,20 +52,20 @@ class PlaceholderParser implements PlaceholderParserInterface
         $placeholders = [];
 
         if (!$matches[SharedCoreMediaConfig::PREG_MATCH_PLACEHOLDER_KEY]) {
-            return $placeholders;
+            return [];
         }
 
         $placeholdersData = array_unique($matches[SharedCoreMediaConfig::PREG_MATCH_PLACEHOLDER_KEY]);
 
         foreach ($placeholdersData as $placeholderKey => $placeholderData) {
-            $placeholderData = $this->decodePlaceholderData($placeholderData);
+            $decodedPlaceholderData = $this->decodePlaceholderData($placeholderData);
 
-            if (!$placeholderData) {
+            if (!$decodedPlaceholderData) {
                 continue;
             }
 
             $coreMediaPlaceholderTransfer = (new CoreMediaPlaceholderTransfer())
-                ->fromArray($placeholderData, true)
+                ->fromArray($decodedPlaceholderData, true)
                 ->setPlaceholderBody($matches[0][$placeholderKey]);
 
             $placeholders[] = $coreMediaPlaceholderTransfer;
@@ -82,8 +82,18 @@ class PlaceholderParser implements PlaceholderParserInterface
     protected function decodePlaceholderData(string $placeholderData): ?array
     {
         return $this->utilEncodingService->decodeJson(
-            html_entity_decode($placeholderData, ENT_QUOTES, 'UTF-8'),
+            $this->htmlEntityDecodePlaceholderData($placeholderData),
             true
         );
+    }
+
+    /**
+     * @param string $placeholderData
+     *
+     * @return string
+     */
+    protected function htmlEntityDecodePlaceholderData(string $placeholderData): string
+    {
+        return html_entity_decode($placeholderData, ENT_QUOTES, 'UTF-8');
     }
 }

@@ -10,7 +10,7 @@ namespace SprykerEco\Client\CoreMedia\Api;
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 use SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilderInterface;
-use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
+use SprykerEco\Client\CoreMedia\Api\Builder\UrlBuilderInterface;
 use SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface;
 
 class ApiClient implements ApiClientInterface
@@ -28,23 +28,23 @@ class ApiClient implements ApiClientInterface
     protected $requestExecutor;
 
     /**
-     * @var \SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface
+     * @var \SprykerEco\Client\CoreMedia\Api\Builder\UrlBuilderInterface
      */
-    protected $urlConfiguration;
+    protected $urlBuilder;
 
     /**
      * @param \SprykerEco\Client\CoreMedia\Api\Builder\RequestBuilderInterface $requestBuilder
      * @param \SprykerEco\Client\CoreMedia\Api\Executor\RequestExecutorInterface $requestExecutor
-     * @param \SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface $urlConfiguration
+     * @param \SprykerEco\Client\CoreMedia\Api\Builder\UrlBuilderInterface $urlBuilder
      */
     public function __construct(
         RequestBuilderInterface $requestBuilder,
         RequestExecutorInterface $requestExecutor,
-        UrlConfigurationInterface $urlConfiguration
+        UrlBuilderInterface $urlBuilder
     ) {
         $this->requestBuilder = $requestBuilder;
         $this->requestExecutor = $requestExecutor;
-        $this->urlConfiguration = $urlConfiguration;
+        $this->urlBuilder = $urlBuilder;
     }
 
     /**
@@ -57,9 +57,9 @@ class ApiClient implements ApiClientInterface
     ): CoreMediaApiResponseTransfer {
         $request = $this->requestBuilder->buildRequest(
             static::REQUEST_GET_METHOD,
-            $this->urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer)
+            $this->urlBuilder->buildDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer)
         );
 
-        return $this->requestExecutor->execute($request, $this->urlConfiguration);
+        return $this->requestExecutor->execute($request);
     }
 }

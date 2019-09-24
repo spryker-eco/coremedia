@@ -5,18 +5,18 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Client\CoreMedia\Api\Configuration;
+namespace SprykerEco\Client\CoreMedia\Api\Builder;
 
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
 
-interface UrlConfigurationInterface
+interface UrlBuilderInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
      *
      * @return string
      */
-    public function getDocumentFragmentApiUrl(
+    public function buildDocumentFragmentApiUrl(
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
     ): string;
 }

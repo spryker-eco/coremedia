@@ -9,11 +9,11 @@ namespace SprykerEcoTest\Client\CoreMedia\Api\Configuration;
 
 use Codeception\Test\Unit;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
-use SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException;
+use SprykerEco\Client\CoreMedia\Api\Exception\UrlBuilderException;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\CoreMediaFactory;
 
-class UrlConfigurationTest extends Unit
+class UrlBuilderTest extends Unit
 {
     protected const CORE_MEDIA_HOST = 'https://test.coremedia.com';
     protected const APPLICATION_STORE_MAPPING = [
@@ -33,7 +33,7 @@ class UrlConfigurationTest extends Unit
     /**
      * @return void
      */
-    public function testUrlConfigurationProvidesCorrectUrlForApiRequest(): void
+    public function testUrlBuilderProvidesCorrectUrlForApiRequest(): void
     {
         $coreMediaFragmentRequestTransfer = $this->tester->getCoreMediaFragmentRequestTransfer([
             CoreMediaFragmentRequestTransfer::STORE => 'DE',
@@ -46,8 +46,8 @@ class UrlConfigurationTest extends Unit
         ]);
 
         $coreMediaFactoryMock = $this->getCoreMediaFactoryMock();
-        $urlConfiguration = $coreMediaFactoryMock->createUrlConfiguration();
-        $url = $urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
+        $urlBuilder = $coreMediaFactoryMock->createUrlBuilder();
+        $url = $urlBuilder->buildDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
 
         $this->assertEquals('https://test.coremedia.com/blueprint/servlet/service/fragment/test-store/en-GB/' .
             'params;pageId=test-page;productId=111;categoryId=222;' .
@@ -57,7 +57,7 @@ class UrlConfigurationTest extends Unit
     /**
      * @return void
      */
-    public function testUrlConfigurationProvidesCorrectUrlOnNullParametersProvided(): void
+    public function testUrlBuilderProvidesCorrectUrlOnNullParametersProvided(): void
     {
         $coreMediaFragmentRequestTransfer = $this->tester->getCoreMediaFragmentRequestTransfer([
             CoreMediaFragmentRequestTransfer::STORE => 'DE',
@@ -70,8 +70,8 @@ class UrlConfigurationTest extends Unit
         ]);
 
         $coreMediaFactoryMock = $this->getCoreMediaFactoryMock();
-        $urlConfiguration = $coreMediaFactoryMock->createUrlConfiguration();
-        $url = $urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
+        $urlBuilder = $coreMediaFactoryMock->createUrlBuilder();
+        $url = $urlBuilder->buildDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
 
         $this->assertEquals('https://test.coremedia.com/blueprint/servlet/service/fragment/test-store/en-GB/' .
             'params;categoryId=222', $url);
@@ -80,7 +80,7 @@ class UrlConfigurationTest extends Unit
     /**
      * @return void
      */
-    public function testUrlConfigurationFailsOnIncorrectStoreProvided(): void
+    public function testUrlBuilderFailsOnIncorrectStoreProvided(): void
     {
         $coreMediaFragmentRequestTransfer = $this->tester->getCoreMediaFragmentRequestTransfer([
             CoreMediaFragmentRequestTransfer::STORE => 'wrong-store',
@@ -93,16 +93,16 @@ class UrlConfigurationTest extends Unit
         ]);
 
         $coreMediaFactoryMock = $this->getCoreMediaFactoryMock();
-        $urlConfiguration = $coreMediaFactoryMock->createUrlConfiguration();
+        $urlBuilder = $coreMediaFactoryMock->createUrlBuilder();
 
-        $this->expectException(UrlConfigurationException::class);
-        $urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
+        $this->expectException(UrlBuilderException::class);
+        $urlBuilder->buildDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
     }
 
     /**
      * @return void
      */
-    public function testUrlConfigurationFailsOnIncorrectLocaleProvided(): void
+    public function testUrlBuilderFailsOnIncorrectLocaleProvided(): void
     {
         $coreMediaFragmentRequestTransfer = $this->tester->getCoreMediaFragmentRequestTransfer([
             CoreMediaFragmentRequestTransfer::STORE => 'DE',
@@ -115,10 +115,10 @@ class UrlConfigurationTest extends Unit
         ]);
 
         $coreMediaFactoryMock = $this->getCoreMediaFactoryMock();
-        $urlConfiguration = $coreMediaFactoryMock->createUrlConfiguration();
+        $urlBuilder = $coreMediaFactoryMock->createUrlBuilder();
 
-        $this->expectException(UrlConfigurationException::class);
-        $urlConfiguration->getDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
+        $this->expectException(UrlBuilderException::class);
+        $urlBuilder->buildDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
     }
 
     /**
