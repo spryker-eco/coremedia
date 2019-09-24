@@ -36,9 +36,17 @@ class CoreMediaDependencyProvider extends AbstractDependencyProvider
     protected function addGuzzleClient(Container $container): Container
     {
         $container->set(static::CLIENT_GUZZLE, function () {
-            return new CoreMediaToGuzzleBridge(new Client());
+            return new CoreMediaToGuzzleBridge($this->createGuzzleHttpClient());
         });
 
         return $container;
+    }
+
+    /**
+     * @return \GuzzleHttp\Client
+     */
+    protected function createGuzzleHttpClient(): Client
+    {
+        return new Client();
     }
 }
