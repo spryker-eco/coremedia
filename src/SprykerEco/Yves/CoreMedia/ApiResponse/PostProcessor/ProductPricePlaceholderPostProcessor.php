@@ -10,10 +10,10 @@ namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 use Generated\Shared\Transfer\CurrentProductPriceTransfer;
 use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
+use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface;
+use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface;
+use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 use SprykerEco\Yves\CoreMedia\Formatter\ProductPriceFormatterInterface;
-use SprykerEco\Yves\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface;
-use SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
-use SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface;
 
 class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
 {
@@ -23,20 +23,22 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
     protected const PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE = 'id_product_concrete';
     protected const PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT = 'id_product_abstract';
 
-    /**
-     * @var \SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface
-     */
-    protected $productAbstractStorageReader;
+    protected const PRODUCT_ABSTRACT_MAPPING_TYPE = 'sku';
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface
+     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface
      */
-    protected $productConcreteStorageReader;
+    protected $productStorageClient;
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface
+     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface
      */
-    protected $priceProductReader;
+    protected $priceProductStorageClient;
+
+    /**
+     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface
+     */
+    protected $priceProductClient;
 
     /**
      * @var \SprykerEco\Yves\CoreMedia\Formatter\ProductPriceFormatterInterface
@@ -45,23 +47,23 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
 
     /**
      * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
-     * @param \SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface $productAbstractStorageReader
-     * @param \SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface $productConcreteStorageReader
-     * @param \SprykerEco\Yves\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface $priceProductReader
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface $productStorageClient
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface $priceProductClient
      * @param \SprykerEco\Yves\CoreMedia\Formatter\ProductPriceFormatterInterface $productPriceFormatter
      */
     public function __construct(
         CoreMediaConfig $config,
-        ProductAbstractStorageReaderInterface $productAbstractStorageReader,
-        ProductConcreteStorageReaderInterface $productConcreteStorageReader,
-        PriceProductReaderInterface $priceProductReader,
+        CoreMediaToProductStorageClientInterface $productStorageClient,
+        CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient,
+        CoreMediaToPriceProductClientInterface $priceProductClient,
         ProductPriceFormatterInterface $productPriceFormatter
     ) {
         parent::__construct($config);
 
-        $this->productAbstractStorageReader = $productAbstractStorageReader;
-        $this->productConcreteStorageReader = $productConcreteStorageReader;
-        $this->priceProductReader = $priceProductReader;
+        $this->productStorageClient = $productStorageClient;
+        $this->priceProductStorageClient = $priceProductStorageClient;
+        $this->priceProductClient = $priceProductClient;
         $this->productPriceFormatter = $productPriceFormatter;
     }
 
@@ -134,7 +136,8 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?CurrentProductPriceTransfer {
-        $abstractProductData = $this->productAbstractStorageReader->getProductAbstractData(
+        $abstractProductData = $this->productStorageClient->findProductAbstractStorageDataByMapping(
+            static::PRODUCT_ABSTRACT_MAPPING_TYPE,
             $coreMediaPlaceholderTransfer->getProductId(),
             $locale
         );
@@ -143,8 +146,10 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
             return null;
         }
 
-        return $this->priceProductReader
-            ->findCurrentAbstractProductPrice($abstractProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]);
+        $priceProductTransfers = $this->priceProductStorageClient
+            ->getPriceProductAbstractTransfers($abstractProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]);
+
+        return $this->resolveProductPriceTransfer($priceProductTransfers);
     }
 
     /**
@@ -157,7 +162,8 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?CurrentProductPriceTransfer {
-        $concreteProductData = $this->productConcreteStorageReader->getProductConcreteData(
+        $concreteProductData = $this->productStorageClient->findProductConcreteStorageDataByMapping(
+            static::PRODUCT_ABSTRACT_MAPPING_TYPE,
             $coreMediaPlaceholderTransfer->getProductId(),
             $locale
         );
@@ -166,11 +172,15 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
             return null;
         }
 
-        return $this->priceProductReader
-            ->findCurrentConcreteProductPrice(
+        $priceProductTransfers = $this->priceProductStorageClient
+            ->getResolvedPriceProductConcreteTransfers(
                 $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE],
                 $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]
             );
+
+        return $this->resolveProductPriceTransfer(
+            $priceProductTransfers
+        );
     }
 
     /**
@@ -181,7 +191,22 @@ class ProductPricePlaceholderPostProcessor extends AbstractPlaceholderPostProces
     protected function validateConcreteProductData(?array $concreteProductData): bool
     {
         return $concreteProductData
-            && isset($concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE])
-            && isset($concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]);
+            && isset($concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_CONCRETE], $concreteProductData[static::PRODUCT_DATA_KEY_ID_PRODUCT_ABSTRACT]);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\PriceProductTransfer[] $priceProductTransfers
+     *
+     * @return \Generated\Shared\Transfer\CurrentProductPriceTransfer|null
+     */
+    protected function resolveProductPriceTransfer(array $priceProductTransfers): ?CurrentProductPriceTransfer
+    {
+        $currentProductPriceTransfer = $this->priceProductClient->resolveProductPriceTransfer($priceProductTransfers);
+
+        if (!$currentProductPriceTransfer->getCurrency() || !$currentProductPriceTransfer->getPrice()) {
+            return null;
+        }
+
+        return $currentProductPriceTransfer;
     }
 }

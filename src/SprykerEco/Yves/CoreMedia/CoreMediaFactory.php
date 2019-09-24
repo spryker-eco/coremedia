@@ -41,12 +41,6 @@ use SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReader;
 use SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
 use SprykerEco\Yves\CoreMedia\Reader\CmsSlotContent\CmsSlotContentReader;
 use SprykerEco\Yves\CoreMedia\Reader\CmsSlotContent\CmsSlotContentReaderInterface;
-use SprykerEco\Yves\CoreMedia\Reader\PriceProduct\PriceProductReader;
-use SprykerEco\Yves\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface;
-use SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReader;
-use SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
-use SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReader;
-use SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -133,27 +127,6 @@ class CoreMediaFactory extends AbstractFactory
     {
         return new ProductUrlPlaceholderPostProcessor(
             $this->getConfig(),
-            $this->createProductAbstractStorageReader(),
-            $this->createProductConcreteStorageReader()
-        );
-    }
-
-    /**
-     * @return \SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface
-     */
-    public function createProductAbstractStorageReader(): ProductAbstractStorageReaderInterface
-    {
-        return new ProductAbstractStorageReader(
-            $this->getProductStorageClient()
-        );
-    }
-
-    /**
-     * @return \SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface
-     */
-    public function createProductConcreteStorageReader(): ProductConcreteStorageReaderInterface
-    {
-        return new ProductConcreteStorageReader(
             $this->getProductStorageClient()
         );
     }
@@ -165,16 +138,6 @@ class CoreMediaFactory extends AbstractFactory
     {
         return new CategoryUrlPlaceholderPostProcessor(
             $this->getConfig(),
-            $this->createCategoryStorageReader()
-        );
-    }
-
-    /**
-     * @return \SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReaderInterface
-     */
-    public function createCategoryStorageReader(): CategoryStorageReaderInterface
-    {
-        return new CategoryStorageReader(
             $this->getCategoryStorageClient()
         );
     }
@@ -197,21 +160,10 @@ class CoreMediaFactory extends AbstractFactory
     {
         return new ProductPricePlaceholderPostProcessor(
             $this->getConfig(),
-            $this->createProductAbstractStorageReader(),
-            $this->createProductConcreteStorageReader(),
-            $this->createPriceProductReader(),
-            $this->createProductPriceFormatter()
-        );
-    }
-
-    /**
-     * @return \SprykerEco\Yves\CoreMedia\Reader\PriceProduct\PriceProductReaderInterface
-     */
-    public function createPriceProductReader(): PriceProductReaderInterface
-    {
-        return new PriceProductReader(
+            $this->getProductStorageClient(),
             $this->getPriceProductStorageClient(),
-            $this->getPriceProductClient()
+            $this->getPriceProductClient(),
+            $this->createProductPriceFormatter()
         );
     }
 

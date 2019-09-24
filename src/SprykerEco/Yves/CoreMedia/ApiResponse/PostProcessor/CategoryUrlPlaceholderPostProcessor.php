@@ -9,6 +9,7 @@ namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
+use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
 use SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
 
 class CategoryUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
@@ -17,21 +18,21 @@ class CategoryUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcess
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReaderInterface
+     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface
      */
-    protected $categoryStorageReader;
+    protected $categoryStorageClient;
 
     /**
      * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
-     * @param \SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReaderInterface $categoryStorageReader
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface $categoryStorageReader
      */
     public function __construct(
         CoreMediaConfig $config,
-        CategoryStorageReaderInterface $categoryStorageReader
+        CoreMediaToCategoryStorageClientInterface $categoryStorageClient
     ) {
         parent::__construct($config);
 
-        $this->categoryStorageReader = $categoryStorageReader;
+        $this->categoryStorageClient = $categoryStorageClient;
     }
 
     /**
@@ -59,7 +60,7 @@ class CategoryUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcess
             return null;
         }
 
-        $categoryNodeStorageTransfer = $this->categoryStorageReader->getCategoryNodeById(
+        $categoryNodeStorageTransfer = $this->categoryStorageClient->getCategoryNodeById(
             (int)$coreMediaPlaceholderTransfer->getCategoryId(),
             $locale
         );

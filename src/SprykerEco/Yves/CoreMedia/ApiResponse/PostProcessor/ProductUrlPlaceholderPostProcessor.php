@@ -9,8 +9,7 @@ namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
 use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
-use SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface;
-use SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface;
+use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 
 class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
 {
@@ -18,30 +17,24 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
     protected const PRODUCT_DATA_KEY_URL = 'url';
 
-    /**
-     * @var \SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface
-     */
-    protected $productAbstractStorageReader;
+    protected const PRODUCT_MAPPING_TYPE = 'sku';
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface
+     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface
      */
-    protected $productConcreteStorageReader;
+    protected $productStorageClient;
 
     /**
      * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
-     * @param \SprykerEco\Yves\CoreMedia\Reader\Product\ProductAbstractStorageReaderInterface $productAbstractStorageReader
-     * @param \SprykerEco\Yves\CoreMedia\Reader\Product\ProductConcreteStorageReaderInterface $productConcreteStorageReader
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface $productStorageClient
      */
     public function __construct(
         CoreMediaConfig $config,
-        ProductAbstractStorageReaderInterface $productAbstractStorageReader,
-        ProductConcreteStorageReaderInterface $productConcreteStorageReader
+        CoreMediaToProductStorageClientInterface $productStorageClient
     ) {
         parent::__construct($config);
 
-        $this->productAbstractStorageReader = $productAbstractStorageReader;
-        $this->productConcreteStorageReader = $productConcreteStorageReader;
+        $this->productStorageClient = $productStorageClient;
     }
 
     /**
@@ -107,7 +100,8 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
-        $abstractProductData = $this->productAbstractStorageReader->getProductAbstractData(
+        $abstractProductData = $this->productStorageClient->findProductAbstractStorageDataByMapping(
+            static::PRODUCT_MAPPING_TYPE,
             $coreMediaPlaceholderTransfer->getProductId(),
             $locale
         );
@@ -125,7 +119,8 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
-        $concreteProductData = $this->productConcreteStorageReader->getProductConcreteData(
+        $concreteProductData = $this->productStorageClient->findProductConcreteStorageDataByMapping(
+            static::PRODUCT_MAPPING_TYPE,
             $coreMediaPlaceholderTransfer->getProductId(),
             $locale
         );

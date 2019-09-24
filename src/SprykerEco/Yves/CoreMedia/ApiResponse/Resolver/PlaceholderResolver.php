@@ -64,6 +64,8 @@ class PlaceholderResolver implements ApiResponseResolverInterface
             return $coreMediaApiResponseTransfer;
         }
 
+        $coreMediaPlaceholderTransfers = array_merge($coreMediaPlaceholderTransfers, $coreMediaPlaceholderTransfers);
+
         foreach ($coreMediaPlaceholderTransfers as $coreMediaPlaceholderTransfer) {
             $coreMediaPlaceholderTransfer = $this->executeCoreMediaPlaceholderPostProcessor(
                 $coreMediaPlaceholderTransfer,
