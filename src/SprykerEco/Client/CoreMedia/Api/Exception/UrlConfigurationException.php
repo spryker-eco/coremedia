@@ -9,6 +9,6 @@ namespace SprykerEco\Client\CoreMedia\Api\Exception;
 
 use Exception;
 
-class UrlBuilderException extends Exception
+class UrlConfigurationException extends Exception
 {
 }

@@ -9,7 +9,7 @@ namespace SprykerEcoTest\Client\CoreMedia\Api\Configuration;
 
 use Codeception\Test\Unit;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
-use SprykerEco\Client\CoreMedia\Api\Exception\UrlBuilderException;
+use SprykerEco\Client\CoreMedia\Api\Exception\UrlConfigurationException;
 use SprykerEco\Client\CoreMedia\CoreMediaConfig;
 use SprykerEco\Client\CoreMedia\CoreMediaFactory;
 
@@ -95,7 +95,7 @@ class UrlBuilderTest extends Unit
         $coreMediaFactoryMock = $this->getCoreMediaFactoryMock();
         $urlBuilder = $coreMediaFactoryMock->createUrlBuilder();
 
-        $this->expectException(UrlBuilderException::class);
+        $this->expectException(UrlConfigurationException::class);
         $urlBuilder->buildDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
     }
 
@@ -117,7 +117,7 @@ class UrlBuilderTest extends Unit
         $coreMediaFactoryMock = $this->getCoreMediaFactoryMock();
         $urlBuilder = $coreMediaFactoryMock->createUrlBuilder();
 
-        $this->expectException(UrlBuilderException::class);
+        $this->expectException(UrlConfigurationException::class);
         $urlBuilder->buildDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
     }
 

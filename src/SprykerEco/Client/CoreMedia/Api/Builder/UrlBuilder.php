@@ -8,24 +8,31 @@
 namespace SprykerEco\Client\CoreMedia\Api\Builder;
 
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
-use SprykerEco\Client\CoreMedia\Api\Exception\UrlBuilderException;
-use SprykerEco\Client\CoreMedia\CoreMediaConfig;
+use SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface;
 
 class UrlBuilder implements UrlBuilderInterface
 {
     protected const HTTP_QUERY_KEY_VALUE_PATTERN = '%s=%s';
 
-    /**
-     * @var \SprykerEco\Client\CoreMedia\CoreMediaConfig
-     */
-    protected $config;
+    protected const NAME_QUERY_PARAMS = [
+        CoreMediaFragmentRequestTransfer::PAGE_ID,
+        CoreMediaFragmentRequestTransfer::PRODUCT_ID,
+        CoreMediaFragmentRequestTransfer::CATEGORY_ID,
+        CoreMediaFragmentRequestTransfer::VIEW,
+        CoreMediaFragmentRequestTransfer::PLACEMENT,
+    ];
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\CoreMediaConfig $config
+     * @var \SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface
      */
-    public function __construct(CoreMediaConfig $config)
+    protected $urlConfiguration;
+
+    /**
+     * @param \SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface $urlConfiguration
+     */
+    public function __construct(UrlConfigurationInterface $urlConfiguration)
     {
-        $this->config = $config;
+        $this->urlConfiguration = $urlConfiguration;
     }
 
     /**
@@ -36,11 +43,11 @@ class UrlBuilder implements UrlBuilderInterface
     public function buildDocumentFragmentApiUrl(
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
     ): string {
-        $queryParamString = $this->getQueryStringFromCoreMediaFragmentRequestTransfer(
+        $query = $this->transformCoreMediaFragmentRequestTransferPropertiesToQueryString(
             $coreMediaFragmentRequestTransfer
         );
 
-        return $this->getCoreMediaHost() . $this->config->getFragmentBasePath() . $queryParamString;
+        return $this->urlConfiguration->getCoreMediaHost() . $this->urlConfiguration->getBasePath() . $query;
     }
 
     /**
@@ -48,104 +55,26 @@ class UrlBuilder implements UrlBuilderInterface
      *
      * @return string
      */
-    protected function getQueryStringFromCoreMediaFragmentRequestTransfer(
+    protected function transformCoreMediaFragmentRequestTransferPropertiesToQueryString(
         CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
     ): string {
-        $storeId = $this->getStoreIdByStoreName($coreMediaFragmentRequestTransfer->getStore());
-        $locale = $this->getLocaleByStoreIdAndLocaleName($storeId, $coreMediaFragmentRequestTransfer->getLocale());
-        $queryParams = $this->getQueryParamsFromCoreMediaFragmentRequestTransfer($coreMediaFragmentRequestTransfer);
+        $store = $this->urlConfiguration->getStore($coreMediaFragmentRequestTransfer->getStore());
+        $locale = $this->urlConfiguration->getLocale($store, $coreMediaFragmentRequestTransfer->getLocale());
+        $coreMediaFragmentRequestTransferArray = $coreMediaFragmentRequestTransfer->toArray(true, true);
+        $queryParams = [];
+
+        foreach ($coreMediaFragmentRequestTransferArray as $key => $value) {
+            if (in_array($key, static::NAME_QUERY_PARAMS, true)) {
+                $queryParams[] = $this->serializeCoreMediaFragmentRequestTransferProperty($key, $value);
+            }
+        }
 
         return sprintf(
             '%s/%s/params;%s',
-            $storeId,
+            $store,
             $locale,
             implode(';', array_filter($queryParams))
         );
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
-     *
-     * @return string[]
-     */
-    protected function getQueryParamsFromCoreMediaFragmentRequestTransfer(
-        CoreMediaFragmentRequestTransfer $coreMediaFragmentRequestTransfer
-    ): array {
-        $queryParams = [
-            $this->getQueryKeyValueString(
-                CoreMediaFragmentRequestTransfer::PAGE_ID,
-                $coreMediaFragmentRequestTransfer->getPageId()
-            ),
-            $this->getQueryKeyValueString(
-                CoreMediaFragmentRequestTransfer::PRODUCT_ID,
-                $coreMediaFragmentRequestTransfer->getProductId()
-            ),
-            $this->getQueryKeyValueString(
-                CoreMediaFragmentRequestTransfer::CATEGORY_ID,
-                $coreMediaFragmentRequestTransfer->getCategoryId()
-            ),
-            $this->getQueryKeyValueString(
-                CoreMediaFragmentRequestTransfer::VIEW,
-                $coreMediaFragmentRequestTransfer->getView()
-            ),
-            $this->getQueryKeyValueString(
-                CoreMediaFragmentRequestTransfer::PLACEMENT,
-                $coreMediaFragmentRequestTransfer->getPlacement()
-            ),
-        ];
-
-        return $queryParams;
-    }
-
-    /**
-     * @param string $storeName
-     *
-     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlBuilderException
-     *
-     * @return string
-     */
-    protected function getStoreIdByStoreName(string $storeName): string
-    {
-        $applicationStoreMapping = $this->config->getApplicationStoreMapping();
-
-        if (!isset($applicationStoreMapping[$storeName])) {
-            throw new UrlBuilderException(
-                sprintf('Cannot find storeId by store name "%s" in application store mapping.', $storeName)
-            );
-        }
-
-        return $applicationStoreMapping[$storeName];
-    }
-
-    /**
-     * @param string $storeId
-     * @param string $localeName
-     *
-     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlBuilderException
-     *
-     * @return string
-     */
-    protected function getLocaleByStoreIdAndLocaleName(string $storeId, string $localeName): string
-    {
-        $applicationStoreLocaleMapping = $this->config->getApplicationStoreLocaleMapping();
-
-        if (!isset($applicationStoreLocaleMapping[$storeId])) {
-            throw new UrlBuilderException(
-                sprintf('Not defined storeId "%s" in application store locale mapping.', $storeId)
-            );
-        }
-
-        if (!isset($applicationStoreLocaleMapping[$storeId][$localeName])) {
-            throw new UrlBuilderException(
-                sprintf(
-                    'Cannot find locale by locale name "%s" for storeId "%s" in application store locale mapping.',
-                    $localeName,
-                    $storeId
-                )
-            );
-        }
-
-        return $applicationStoreLocaleMapping[$storeId][$localeName];
     }
 
     /**
@@ -154,7 +83,7 @@ class UrlBuilder implements UrlBuilderInterface
      *
      * @return string
      */
-    protected function getQueryKeyValueString(string $key, $value): string
+    protected function serializeCoreMediaFragmentRequestTransferProperty(string $key, $value): string
     {
         if (is_bool($value)) {
             return sprintf(static::HTTP_QUERY_KEY_VALUE_PATTERN, $key, var_export($value, true));
@@ -165,21 +94,5 @@ class UrlBuilder implements UrlBuilderInterface
         }
 
         return '';
-    }
-
-    /**
-     * @throws \SprykerEco\Client\CoreMedia\Api\Exception\UrlBuilderException
-     *
-     * @return string
-     */
-    protected function getCoreMediaHost(): string
-    {
-        $coreMediaHost = $this->config->getCoreMediaHost();
-
-        if (!$coreMediaHost) {
-            throw new UrlBuilderException('Please specify the CoreMedia host in configuration.');
-        }
-
-        return $coreMediaHost;
     }
 }
