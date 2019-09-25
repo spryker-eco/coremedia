@@ -11,14 +11,11 @@ use Generated\Shared\Transfer\CmsSlotContentRequestTransfer;
 use Generated\Shared\Transfer\CmsSlotContentResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
 use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
-use SprykerEco\Yves\CoreMedia\Exception\MissingRequestParameterException;
 
 class ApiContextMapper implements ApiContextMapperInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
-     *
-     * @throws \SprykerEco\Yves\CoreMedia\Exception\MissingRequestParameterException
      *
      * @return \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer
      */
