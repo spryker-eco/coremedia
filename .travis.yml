@@ -16,9 +16,16 @@ env:
 install:
     - composer install --no-interaction --prefer-dist
 
+before_script:
+    - if [[ $PREFER_LOWEST != 1 ]]; then composer install --prefer-source --no-interaction; fi
+    - if [[ $PREFER_LOWEST == 1 ]]; then composer update --prefer-lowest --prefer-dist --prefer-stable --no-interaction; fi
+    - if [[ $PREFER_LOWEST == 1 ]]; then composer require --dev dereuromark/composer-prefer-lowest; fi
+
 script:
-    - vendor/bin/phpcs src --standard=vendor/spryker/code-sniffer/Spryker/ruleset.xml
-    - vendor/bin/codecept run --env isolated --coverage-xml
+    - if [[ $DEFAULT == 1 ]] ; then composer test ; fi
+    - if [[ $PREFER_LOWEST == 1 ]]; then vendor/bin/validate-prefer-lowest; fi
+    - if [[ $CHECKS == 1 ]] ; then composer phpstan ; fi
+    - if [[ $CHECKS == 1 ]] ; then composer cs-check ; fi
 
 after_success:
     - vendor/bin/coveralls -vvv
