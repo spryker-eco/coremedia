@@ -1,34 +1,37 @@
 language: php
 
+sudo: false
+
 php:
     - 7.1
-
-cache:
-    directories:
-        - vendor
-        - $HOME/.composer/cache
+    - 7.3
 
 env:
     global:
-        - APPLICATION_ENV=development
-        - APPLICATION_STORE=DE
+        - DEFAULT=1 CI=1
 
-install:
-    - composer install --no-interaction --prefer-dist
+matrix:
+    include:
+        - php: 7.1
+          env: PREFER_LOWEST=1
+
+        - php: 7.2
+          env: CHECKS=1 DEFAULT=0
+
+          fast_finish: true
 
 before_script:
-    - if [[ $PREFER_LOWEST != 1 ]]; then composer install --prefer-source --no-interaction; fi
-    - if [[ $PREFER_LOWEST == 1 ]]; then composer update --prefer-lowest --prefer-dist --prefer-stable --no-interaction; fi
-    - if [[ $PREFER_LOWEST == 1 ]]; then composer require --dev dereuromark/composer-prefer-lowest; fi
+    - if [[ $PREFER_LOWEST != 1 ]]; then composer update --no-interaction; fi;
+    - if [[ $PREFER_LOWEST == 1 ]]; then composer update --prefer-lowest --no-interaction --prefer-dist --prefer-stable ; fi;
 
 script:
-    - if [[ $DEFAULT == 1 ]] ; then composer test ; fi
-    - if [[ $PREFER_LOWEST == 1 ]]; then vendor/bin/validate-prefer-lowest; fi
-    - if [[ $CHECKS == 1 ]] ; then composer phpstan ; fi
-    - if [[ $CHECKS == 1 ]] ; then composer cs-check ; fi
+    - if [[ $DEFAULT == 1 ]]; then vendor/bin/codecept run --coverage-xml ; fi
+    - if [[ $CHECKS == 1 ]]; then composer phpstan ; fi
+    - if [[ $CHECKS == 1 ]]; then composer cs-check ; fi
 
-after_success:
-    - vendor/bin/coveralls -vvv
+cache:
+    directories:
+        - $HOME/.composer/cache
 
 notifications:
     email: false
