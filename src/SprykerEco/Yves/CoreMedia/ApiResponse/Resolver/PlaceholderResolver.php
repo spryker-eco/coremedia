@@ -54,10 +54,6 @@ class PlaceholderResolver implements ApiResponseResolverInterface
         CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
         string $locale
     ): CoreMediaApiResponseTransfer {
-        if (!$coreMediaApiResponseTransfer->getData()) {
-            return $coreMediaApiResponseTransfer;
-        }
-
         $coreMediaPlaceholderTransfers = $this->placeholderParser->parse($coreMediaApiResponseTransfer->getData());
 
         if (!$coreMediaPlaceholderTransfers) {

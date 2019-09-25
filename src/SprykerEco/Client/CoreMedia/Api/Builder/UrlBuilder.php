@@ -90,7 +90,7 @@ class UrlBuilder implements UrlBuilderInterface
         }
 
         if (is_scalar($value)) {
-            return sprintf(static::HTTP_QUERY_KEY_VALUE_PATTERN, $key, rawurlencode($value));
+            return sprintf(static::HTTP_QUERY_KEY_VALUE_PATTERN, $key, $value);
         }
 
         return '';

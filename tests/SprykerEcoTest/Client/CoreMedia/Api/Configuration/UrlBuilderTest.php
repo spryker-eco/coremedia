@@ -50,8 +50,8 @@ class UrlBuilderTest extends Unit
         $url = $urlBuilder->buildDocumentFragmentApiUrl($coreMediaFragmentRequestTransfer);
 
         $this->assertEquals('https://test.coremedia.com/blueprint/servlet/service/fragment/test-store/en-GB/' .
-            'params;pageId=test-page;productId=111;categoryId=222;' .
-            'view=asDefaultFragment;placement=header', $url);
+            'params;productId=111;categoryId=222;pageId=test-page;' .
+            'placement=header;view=asDefaultFragment', $url);
     }
 
     /**
