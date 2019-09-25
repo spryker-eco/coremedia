@@ -92,7 +92,7 @@ class UrlConfiguration implements UrlConfigurationInterface
                 sprintf(
                     'Cannot find locale by locale name "%s" for storeId "%s" in application store locale mapping.',
                     $localeName,
-                    $storeId
+                    $store
                 )
             );
         }

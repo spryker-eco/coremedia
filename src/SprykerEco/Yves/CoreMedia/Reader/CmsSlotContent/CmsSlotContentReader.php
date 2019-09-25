@@ -57,6 +57,11 @@ class CmsSlotContentReader implements CmsSlotContentReaderInterface
             $cmsSlotContentRequestTransfer
         );
         $coreMediaApiResponseTransfer = $this->coreMediaClient->getDocumentFragment($coreMediaFragmentRequestTransfer);
+
+        if (!$coreMediaApiResponseTransfer->getIsSuccessful()) {
+            return (new CmsSlotContentResponseTransfer())->setContent('');
+        }
+
         $coreMediaApiResponseTransfer = $this->apiResponsePreparator->prepare(
             $coreMediaApiResponseTransfer,
             $coreMediaFragmentRequestTransfer->getLocale()

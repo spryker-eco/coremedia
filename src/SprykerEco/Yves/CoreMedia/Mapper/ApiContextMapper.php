@@ -15,8 +15,6 @@ use SprykerEco\Yves\CoreMedia\Exception\MissingRequestParameterException;
 
 class ApiContextMapper implements ApiContextMapperInterface
 {
-    protected const PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION = 'The "%s" param is missing in the request to CoreMedia.';
-
     /**
      * @param \Generated\Shared\Transfer\CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
      *
@@ -27,24 +25,10 @@ class ApiContextMapper implements ApiContextMapperInterface
     public function mapCmsSlotContentRequestToCoreMediaFragmentRequest(
         CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
     ): CoreMediaFragmentRequestTransfer {
-        $requestParameters = $cmsSlotContentRequestTransfer->getParams();
-
-        if (!isset($requestParameters[CoreMediaFragmentRequestTransfer::STORE])) {
-            throw new MissingRequestParameterException(
-                sprintf(static::PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION, CoreMediaFragmentRequestTransfer::STORE)
-            );
-        }
-
-        if (!isset($requestParameters[CoreMediaFragmentRequestTransfer::LOCALE])) {
-            throw new MissingRequestParameterException(
-                sprintf(static::PATTERN_MISSING_REQUEST_PARAMETER_EXCEPTION, CoreMediaFragmentRequestTransfer::LOCALE)
-            );
-        }
-
-        $coreMediaFragmentRequestTransfer = new CoreMediaFragmentRequestTransfer();
-        $coreMediaFragmentRequestTransfer->fromArray($requestParameters, true);
-
-        return $coreMediaFragmentRequestTransfer;
+        return (new CoreMediaFragmentRequestTransfer())
+            ->fromArray($cmsSlotContentRequestTransfer->getParams(), true)
+            ->requireStore()
+            ->requireLocale();
     }
 
     /**
@@ -55,25 +39,6 @@ class ApiContextMapper implements ApiContextMapperInterface
     public function mapCoreMediaApiResponseTransferToCmsSlotContentResponseTransfer(
         CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
     ): CmsSlotContentResponseTransfer {
-        $cmsSlotContentResponseTransfer = new CmsSlotContentResponseTransfer();
-
-        return $cmsSlotContentResponseTransfer->setContent(
-            $this->getContentFromCoreMediaApiResponseTransfer($coreMediaApiResponseTransfer)
-        );
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
-     *
-     * @return string
-     */
-    protected function getContentFromCoreMediaApiResponseTransfer(
-        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
-    ): string {
-        if (!$coreMediaApiResponseTransfer->getIsSuccessful()) {
-            return '';
-        }
-
-        return $coreMediaApiResponseTransfer->getData();
+        return (new CmsSlotContentResponseTransfer())->setContent($coreMediaApiResponseTransfer->getData());
     }
 }
