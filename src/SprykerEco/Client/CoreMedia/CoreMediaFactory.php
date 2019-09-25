@@ -67,7 +67,6 @@ class CoreMediaFactory extends AbstractFactory
     }
 
     /**
-     *
      * @return \SprykerEco\Client\CoreMedia\Api\Configuration\UrlConfigurationInterface
      */
     public function createUrlConfiguration(): UrlConfigurationInterface

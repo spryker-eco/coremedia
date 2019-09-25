@@ -5,13 +5,12 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
+namespace SprykerEco\Yves\CoreMedia\ApiResponse\Renderer;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
 use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
 
-class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
+class ProductUrlPlaceholderReplacementRenderer implements PlaceholderReplacementRendererInterface
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'product';
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
@@ -25,15 +24,10 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
     protected $productStorageClient;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
      * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface $productStorageClient
      */
-    public function __construct(
-        CoreMediaConfig $config,
-        CoreMediaToProductStorageClientInterface $productStorageClient
-    ) {
-        parent::__construct($config);
-
+    public function __construct(CoreMediaToProductStorageClientInterface $productStorageClient)
+    {
         $this->productStorageClient = $productStorageClient;
     }
 
@@ -54,20 +48,7 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
      *
      * @return string|null
      */
-    protected function getPlaceholderReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
-        string $locale
-    ): ?string {
-        return $this->findProductUrl($coreMediaPlaceholderTransfer, $locale);
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
-     * @param string $locale
-     *
-     * @return string|null
-     */
-    protected function findProductUrl(
+    public function getPlaceholderReplacement(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
@@ -88,6 +69,14 @@ class ProductUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcesso
             $coreMediaPlaceholderTransfer,
             $locale
         );
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFallbackPlaceholderReplacement(): ?string
+    {
+        return '';
     }
 
     /**

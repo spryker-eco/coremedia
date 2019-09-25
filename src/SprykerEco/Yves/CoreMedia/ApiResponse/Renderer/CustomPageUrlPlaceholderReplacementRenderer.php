@@ -5,13 +5,12 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
+namespace SprykerEco\Yves\CoreMedia\ApiResponse\Renderer;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class CustomPageUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
+class CustomPageUrlPlaceholderReplacementRenderer implements PlaceholderReplacementRendererInterface
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'page';
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
@@ -22,15 +21,10 @@ class CustomPageUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProce
     protected $urlGenerator;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
      * @param \Symfony\Component\Routing\Generator\UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(
-        CoreMediaConfig $config,
-        UrlGeneratorInterface $urlGenerator
-    ) {
-        parent::__construct($config);
-
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -51,7 +45,7 @@ class CustomPageUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProce
      *
      * @return string|null
      */
-    protected function getPlaceholderReplacement(
+    public function getPlaceholderReplacement(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
@@ -66,5 +60,13 @@ class CustomPageUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProce
         }
 
         return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFallbackPlaceholderReplacement(): ?string
+    {
+        return '';
     }
 }

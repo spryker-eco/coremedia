@@ -5,14 +5,12 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
+namespace SprykerEco\Yves\CoreMedia\ApiResponse\Renderer;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
 use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
-use SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
 
-class CategoryUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
+class CategoryUrlPlaceholderReplacementRenderer implements PlaceholderReplacementRendererInterface
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'category';
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
@@ -23,15 +21,10 @@ class CategoryUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcess
     protected $categoryStorageClient;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
-     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface $categoryStorageReader
+     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface $categoryStorageClient
      */
-    public function __construct(
-        CoreMediaConfig $config,
-        CoreMediaToCategoryStorageClientInterface $categoryStorageClient
-    ) {
-        parent::__construct($config);
-
+    public function __construct(CoreMediaToCategoryStorageClientInterface $categoryStorageClient)
+    {
         $this->categoryStorageClient = $categoryStorageClient;
     }
 
@@ -52,7 +45,7 @@ class CategoryUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcess
      *
      * @return string|null
      */
-    protected function getPlaceholderReplacement(
+    public function getPlaceholderReplacement(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
@@ -66,5 +59,13 @@ class CategoryUrlPlaceholderPostProcessor extends AbstractPlaceholderPostProcess
         );
 
         return $categoryNodeStorageTransfer->getUrl();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFallbackPlaceholderReplacement(): ?string
+    {
+        return '';
     }
 }

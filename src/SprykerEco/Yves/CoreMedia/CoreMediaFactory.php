@@ -10,14 +10,18 @@ namespace SprykerEco\Yves\CoreMedia;
 use Spryker\Yves\Kernel\AbstractFactory;
 use SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponsePreparator;
 use SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponsePreparatorInterface;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Executor\IncorrectPlaceholderDataExecutor;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Executor\IncorrectPlaceholderDataExecutorInterface;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Parser\PlaceholderParser;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface;
-use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\CategoryUrlPlaceholderPostProcessor;
-use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\CustomPageUrlPlaceholderPostProcessor;
-use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PageMetadataPlaceholderPostProcessor;
+use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessor;
 use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface;
-use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\ProductPricePlaceholderPostProcessor;
-use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\ProductUrlPlaceholderPostProcessor;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\CategoryUrlPlaceholderReplacementRenderer;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\CustomPageUrlPlaceholderReplacementRenderer;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PageMetadataPlaceholderReplacementRenderer;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\ProductPricePlaceholderReplacementRenderer;
+use SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\ProductUrlPlaceholderReplacementRenderer;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\DescriptionMetadataReplacer;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\KeywordsMetadataReplacer;
 use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface;
@@ -37,8 +41,6 @@ use SprykerEco\Yves\CoreMedia\Formatter\ProductPriceFormatter;
 use SprykerEco\Yves\CoreMedia\Formatter\ProductPriceFormatterInterface;
 use SprykerEco\Yves\CoreMedia\Mapper\ApiContextMapper;
 use SprykerEco\Yves\CoreMedia\Mapper\ApiContextMapperInterface;
-use SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReader;
-use SprykerEco\Yves\CoreMedia\Reader\Category\CategoryStorageReaderInterface;
 use SprykerEco\Yves\CoreMedia\Reader\CmsSlotContent\CmsSlotContentReader;
 use SprykerEco\Yves\CoreMedia\Reader\CmsSlotContent\CmsSlotContentReaderInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -96,7 +98,7 @@ class CoreMediaFactory extends AbstractFactory
     {
         return new PlaceholderResolver(
             $this->createPlaceholderParser(),
-            $this->getPlaceholderPostProcessors(),
+            $this->createPlaceholderPostProcessor(),
             $this->createPlaceholderReplacer()
         );
     }
@@ -123,48 +125,79 @@ class CoreMediaFactory extends AbstractFactory
     /**
      * @return \SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
      */
-    public function createProductUrlPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
+    public function createPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
     {
-        return new ProductUrlPlaceholderPostProcessor(
-            $this->getConfig(),
+        return new PlaceholderPostProcessor(
+            $this->getPlaceholderReplacementRenderers(),
+            $this->createIncorrectPlaceholderDataExecutor()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface
+     */
+    public function createProductUrlPlaceholderReplacementRenderer(): PlaceholderReplacementRendererInterface
+    {
+        return new ProductUrlPlaceholderReplacementRenderer(
             $this->getProductStorageClient()
         );
     }
 
     /**
-     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface
      */
-    public function createCategoryUrlPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
+    public function createCategoryUrlPlaceholderReplacementRenderer(): PlaceholderReplacementRendererInterface
     {
-        return new CategoryUrlPlaceholderPostProcessor(
-            $this->getConfig(),
+        return new CategoryUrlPlaceholderReplacementRenderer(
             $this->getCategoryStorageClient()
         );
     }
 
     /**
-     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface
      */
-    public function createPageMetadataPostProcessor(): PlaceholderPostProcessorInterface
+    public function createPageMetadataPlaceholderReplacementRenderer(): PlaceholderReplacementRendererInterface
     {
-        return new PageMetadataPlaceholderPostProcessor(
-            $this->getConfig(),
+        return new PageMetadataPlaceholderReplacementRenderer(
             $this->getMetadataReplacers()
         );
     }
 
     /**
-     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface
      */
-    public function createProductPricePlaceholderPostProcessor(): PlaceholderPostProcessorInterface
+    public function createProductPricePlaceholderReplacementRenderer(): PlaceholderReplacementRendererInterface
     {
-        return new ProductPricePlaceholderPostProcessor(
-            $this->getConfig(),
+        return new ProductPricePlaceholderReplacementRenderer(
             $this->getProductStorageClient(),
             $this->getPriceProductStorageClient(),
             $this->getPriceProductClient(),
             $this->createProductPriceFormatter()
         );
+    }
+
+    /**
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface
+     */
+    public function createCustomPageUrlPlaceholderReplacementRenderer(): PlaceholderReplacementRendererInterface
+    {
+        return new CustomPageUrlPlaceholderReplacementRenderer(
+            $this->getUrlGenerator()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface[]
+     */
+    public function getPlaceholderReplacementRenderers(): array
+    {
+        return [
+            $this->createProductUrlPlaceholderReplacementRenderer(),
+            $this->createCategoryUrlPlaceholderReplacementRenderer(),
+            $this->createPageMetadataPlaceholderReplacementRenderer(),
+            $this->createProductPricePlaceholderReplacementRenderer(),
+            $this->createCustomPageUrlPlaceholderReplacementRenderer(),
+        ];
     }
 
     /**
@@ -175,31 +208,6 @@ class CoreMediaFactory extends AbstractFactory
         return new ProductPriceFormatter(
             $this->getMoneyClient()
         );
-    }
-
-    /**
-     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
-     */
-    public function createCustomPageUrlPlaceholderPostProcessor(): PlaceholderPostProcessorInterface
-    {
-        return new CustomPageUrlPlaceholderPostProcessor(
-            $this->getConfig(),
-            $this->getUrlGenerator()
-        );
-    }
-
-    /**
-     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface[]
-     */
-    public function getPlaceholderPostProcessors(): array
-    {
-        return [
-            $this->createProductUrlPlaceholderPostProcessor(),
-            $this->createCategoryUrlPlaceholderPostProcessor(),
-            $this->createPageMetadataPostProcessor(),
-            $this->createProductPricePlaceholderPostProcessor(),
-            $this->createCustomPageUrlPlaceholderPostProcessor(),
-        ];
     }
 
     /**
@@ -245,6 +253,14 @@ class CoreMediaFactory extends AbstractFactory
     public function createPageNameMetadataReplacer(): MetadataReplacerInterface
     {
         return new PageNameMetadataReplacer($this->getConfig());
+    }
+
+    /**
+     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Executor\IncorrectPlaceholderDataExecutorInterface
+     */
+    public function createIncorrectPlaceholderDataExecutor(): IncorrectPlaceholderDataExecutorInterface
+    {
+        return new IncorrectPlaceholderDataExecutor($this->getConfig());
     }
 
     /**

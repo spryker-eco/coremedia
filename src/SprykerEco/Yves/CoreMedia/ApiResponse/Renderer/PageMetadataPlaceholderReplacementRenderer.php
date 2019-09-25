@@ -5,12 +5,11 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
+namespace SprykerEco\Yves\CoreMedia\ApiResponse\Renderer;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
 
-class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProcessor
+class PageMetadataPlaceholderReplacementRenderer implements PlaceholderReplacementRendererInterface
 {
     protected const PLACEHOLDER_OBJECT_TYPE = 'page';
     protected const PLACEHOLDER_RENDER_TYPE = 'metadata';
@@ -21,13 +20,10 @@ class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProces
     protected $metadataReplacers = [];
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
      * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface[] $metadataReplacers
      */
-    public function __construct(CoreMediaConfig $config, array $metadataReplacers)
+    public function __construct(array $metadataReplacers)
     {
-        parent::__construct($config);
-
         $this->metadataReplacers = $metadataReplacers;
     }
 
@@ -48,7 +44,7 @@ class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProces
      *
      * @return string
      */
-    protected function getPlaceholderReplacement(
+    public function getPlaceholderReplacement(
         CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): string {
@@ -62,13 +58,10 @@ class PageMetadataPlaceholderPostProcessor extends AbstractPlaceholderPostProces
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
-     *
-     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
+     * @return string|null
      */
-    protected function setFallbackPlaceholderReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
-    ): CoreMediaPlaceholderTransfer {
-        return $coreMediaPlaceholderTransfer->setPlaceholderReplacement(null);
+    public function getFallbackPlaceholderReplacement(): ?string
+    {
+        return null;
     }
 }
