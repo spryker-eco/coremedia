@@ -1,7 +1,13 @@
+/vendor/
+/phpunit.phar
+/tmp/
+/composer.lock
+/composer.phar
+/.phpunit.result.cache
+
 # IDEs
 /.idea
 /.project
-/nbproject
 /.buildpath
 /.settings
 *.sublime-*
