@@ -40,7 +40,7 @@
     }
   },
   "scripts": {
-    "cs-check": "phpcs --standard=vendor/spryker/code-sniffer/Spryker/ruleset.xml"
+    "cs-check": "phpcs --standard=vendor/spryker/code-sniffer/Spryker/ruleset.xml -p src/ tests/"
   },
   "config": {
     "sort-packages": true
