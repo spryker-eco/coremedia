@@ -24,7 +24,7 @@ class PlaceholderPostProcessor implements PlaceholderPostProcessorInterface
     protected $incorrectPlaceholderDataExecutor;
 
     /**
-     * @param array $placeholderReplacementRenderers
+     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface[] $placeholderReplacementRenderers
      * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Executor\IncorrectPlaceholderDataExecutorInterface $incorrectPlaceholderDataExecutor
      */
     public function __construct(
