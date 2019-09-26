@@ -41,12 +41,5 @@
   },
   "config": {
     "sort-packages": true
-  },
-  "scripts": {
-    "cs-check": "phpcs --standard=vendor/spryker/code-sniffer/Spryker/ruleset.xml -v src/ tests/",
-    "cs-fix": "phpcbf --standard=vendor/spryker/code-sniffer/Spryker/ruleset.xml -v src/ tests/",
-    "phpstan": "phpstan analyse -l 5 -c phpstan.neon src/",
-    "test": "codecept run",
-    "test-coverage": "codecept run --coverage-xml"
   }
 }
