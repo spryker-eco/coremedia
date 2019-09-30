@@ -8,6 +8,7 @@
 namespace SprykerEco\Yves\CoreMedia\ApiResponse\Renderer;
 
 use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CustomPageUrlPlaceholderReplacementRenderer implements PlaceholderReplacementRendererInterface
@@ -53,13 +54,13 @@ class CustomPageUrlPlaceholderReplacementRenderer implements PlaceholderReplacem
             return null;
         }
 
-        $pageUrl = $this->urlGenerator->generate($coreMediaPlaceholderTransfer->getExternalSeoSegment());
+        try {
+            $pageUrl = $this->urlGenerator->generate($coreMediaPlaceholderTransfer->getExternalSeoSegment());
 
-        if ($pageUrl) {
             return $pageUrl;
+        } catch (RouteNotFoundException $e) {
+            return null;
         }
-
-        return null;
     }
 
     /**
