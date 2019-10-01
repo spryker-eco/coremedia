@@ -1,4 +1,4 @@
-# CoreMedia Module
+# Coremedia Module
 [![Build Status](https://travis-ci.org/spryker-eco/coremedia.svg)](https://travis-ci.org/spryker-eco/coremedia)
 
 
