@@ -17,7 +17,7 @@ use Spryker\Client\Kernel\AbstractClient;
 class CoreMediaClient extends AbstractClient implements CoreMediaClientInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @api
      *
