@@ -5,20 +5,20 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse;
+namespace SprykerEco\Yves\Coremedia\ApiResponse;
 
-use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
+use Generated\Shared\Transfer\CoremediaApiResponseTransfer;
 
 interface ApiResponsePreparatorInterface
 {
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     * @param \Generated\Shared\Transfer\CoremediaApiResponseTransfer $coreMediaApiResponseTransfer
      * @param string $locale
      *
-     * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
+     * @return \Generated\Shared\Transfer\CoremediaApiResponseTransfer
      */
     public function prepare(
-        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
+        CoremediaApiResponseTransfer $coreMediaApiResponseTransfer,
         string $locale
-    ): CoreMediaApiResponseTransfer;
+    ): CoremediaApiResponseTransfer;
 }

@@ -5,38 +5,38 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\Reader\CmsSlotContent;
+namespace SprykerEco\Yves\Coremedia\Reader\CmsSlotContent;
 
 use Generated\Shared\Transfer\CmsSlotContentRequestTransfer;
 use Generated\Shared\Transfer\CmsSlotContentResponseTransfer;
-use SprykerEco\Client\CoreMedia\CoreMediaClientInterface;
-use SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponsePreparatorInterface;
-use SprykerEco\Yves\CoreMedia\Mapper\ApiContextMapperInterface;
+use SprykerEco\Client\Coremedia\CoremediaClientInterface;
+use SprykerEco\Yves\Coremedia\ApiResponse\ApiResponsePreparatorInterface;
+use SprykerEco\Yves\Coremedia\Mapper\ApiContextMapperInterface;
 
 class CmsSlotContentReader implements CmsSlotContentReaderInterface
 {
     /**
-     * @var \SprykerEco\Client\CoreMedia\CoreMediaClientInterface
+     * @var \SprykerEco\Client\Coremedia\CoremediaClientInterface
      */
     protected $coreMediaClient;
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Mapper\ApiContextMapperInterface
+     * @var \SprykerEco\Yves\Coremedia\Mapper\ApiContextMapperInterface
      */
     protected $apiContextMapper;
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponsePreparatorInterface
+     * @var \SprykerEco\Yves\Coremedia\ApiResponse\ApiResponsePreparatorInterface
      */
     protected $apiResponsePreparator;
 
     /**
-     * @param \SprykerEco\Client\CoreMedia\CoreMediaClientInterface $coreMediaClient
-     * @param \SprykerEco\Yves\CoreMedia\Mapper\ApiContextMapperInterface $apiContextMapper
-     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\ApiResponsePreparatorInterface $apiResponsePreparator
+     * @param \SprykerEco\Client\Coremedia\CoremediaClientInterface $coreMediaClient
+     * @param \SprykerEco\Yves\Coremedia\Mapper\ApiContextMapperInterface $apiContextMapper
+     * @param \SprykerEco\Yves\Coremedia\ApiResponse\ApiResponsePreparatorInterface $apiResponsePreparator
      */
     public function __construct(
-        CoreMediaClientInterface $coreMediaClient,
+        CoremediaClientInterface $coreMediaClient,
         ApiContextMapperInterface $apiContextMapper,
         ApiResponsePreparatorInterface $apiResponsePreparator
     ) {
@@ -53,7 +53,7 @@ class CmsSlotContentReader implements CmsSlotContentReaderInterface
     public function getDocumentFragment(
         CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
     ): CmsSlotContentResponseTransfer {
-        $coreMediaFragmentRequestTransfer = $this->apiContextMapper->mapCmsSlotContentRequestToCoreMediaFragmentRequest(
+        $coreMediaFragmentRequestTransfer = $this->apiContextMapper->mapCmsSlotContentRequestToCoremediaFragmentRequest(
             $cmsSlotContentRequestTransfer
         );
         $coreMediaApiResponseTransfer = $this->coreMediaClient->getDocumentFragment($coreMediaFragmentRequestTransfer);
@@ -68,6 +68,6 @@ class CmsSlotContentReader implements CmsSlotContentReaderInterface
         );
 
         return $this->apiContextMapper
-            ->mapCoreMediaApiResponseTransferToCmsSlotContentResponseTransfer($coreMediaApiResponseTransfer);
+            ->mapCoremediaApiResponseTransferToCmsSlotContentResponseTransfer($coreMediaApiResponseTransfer);
     }
 }

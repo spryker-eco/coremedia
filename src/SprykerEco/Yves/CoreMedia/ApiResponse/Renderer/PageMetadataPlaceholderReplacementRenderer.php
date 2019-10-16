@@ -5,9 +5,9 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Renderer;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Renderer;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
 
 class PageMetadataPlaceholderReplacementRenderer implements PlaceholderReplacementRendererInterface
 {
@@ -15,12 +15,12 @@ class PageMetadataPlaceholderReplacementRenderer implements PlaceholderReplaceme
     protected const PLACEHOLDER_RENDER_TYPE = 'metadata';
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface[]
+     * @var \SprykerEco\Yves\Coremedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface[]
      */
     protected $metadataReplacers = [];
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface[] $metadataReplacers
+     * @param \SprykerEco\Yves\Coremedia\ApiResponse\Replacer\Metadata\MetadataReplacerInterface[] $metadataReplacers
      */
     public function __construct(array $metadataReplacers)
     {
@@ -28,24 +28,24 @@ class PageMetadataPlaceholderReplacementRenderer implements PlaceholderReplaceme
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      *
      * @return bool
      */
-    public function isApplicable(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): bool
+    public function isApplicable(CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer): bool
     {
         return $coreMediaPlaceholderTransfer->getObjectType() === static::PLACEHOLDER_OBJECT_TYPE &&
             $coreMediaPlaceholderTransfer->getRenderType() === static::PLACEHOLDER_RENDER_TYPE;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
      * @return string
      */
     public function getPlaceholderReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): string {
         $metadata = '';

@@ -5,23 +5,23 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\Formatter;
+namespace SprykerEco\Yves\Coremedia\Formatter;
 
 use Generated\Shared\Transfer\CurrentProductPriceTransfer;
 use Generated\Shared\Transfer\MoneyTransfer;
-use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface;
+use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToMoneyClientInterface;
 
 class ProductPriceFormatter implements ProductPriceFormatterInterface
 {
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface
+     * @var \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToMoneyClientInterface
      */
     protected $moneyClient;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToMoneyClientInterface $moneyClient
+     * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToMoneyClientInterface $moneyClient
      */
-    public function __construct(CoreMediaToMoneyClientInterface $moneyClient)
+    public function __construct(CoremediaToMoneyClientInterface $moneyClient)
     {
         $this->moneyClient = $moneyClient;
     }

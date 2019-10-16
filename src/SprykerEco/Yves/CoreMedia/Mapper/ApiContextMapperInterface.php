@@ -5,30 +5,30 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\Mapper;
+namespace SprykerEco\Yves\Coremedia\Mapper;
 
 use Generated\Shared\Transfer\CmsSlotContentRequestTransfer;
 use Generated\Shared\Transfer\CmsSlotContentResponseTransfer;
-use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
-use Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer;
+use Generated\Shared\Transfer\CoremediaApiResponseTransfer;
+use Generated\Shared\Transfer\CoremediaFragmentRequestTransfer;
 
 interface ApiContextMapperInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
      *
-     * @return \Generated\Shared\Transfer\CoreMediaFragmentRequestTransfer
+     * @return \Generated\Shared\Transfer\CoremediaFragmentRequestTransfer
      */
-    public function mapCmsSlotContentRequestToCoreMediaFragmentRequest(
+    public function mapCmsSlotContentRequestToCoremediaFragmentRequest(
         CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
-    ): CoreMediaFragmentRequestTransfer;
+    ): CoremediaFragmentRequestTransfer;
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     * @param \Generated\Shared\Transfer\CoremediaApiResponseTransfer $coreMediaApiResponseTransfer
      *
      * @return \Generated\Shared\Transfer\CmsSlotContentResponseTransfer
      */
-    public function mapCoreMediaApiResponseTransferToCmsSlotContentResponseTransfer(
-        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+    public function mapCoremediaApiResponseTransferToCmsSlotContentResponseTransfer(
+        CoremediaApiResponseTransfer $coreMediaApiResponseTransfer
     ): CmsSlotContentResponseTransfer;
 }

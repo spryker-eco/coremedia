@@ -5,32 +5,32 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Replacer\Metadata;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
+use SprykerEco\Yves\Coremedia\CoremediaConfig;
 
 class TitleMetadataReplacer implements MetadataReplacerInterface
 {
     /**
-     * @var \SprykerEco\Yves\CoreMedia\CoreMediaConfig
+     * @var \SprykerEco\Yves\Coremedia\CoremediaConfig
      */
     protected $config;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
+     * @param \SprykerEco\Yves\Coremedia\CoremediaConfig $config
      */
-    public function __construct(CoreMediaConfig $config)
+    public function __construct(CoremediaConfig $config)
     {
         $this->config = $config;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      *
      * @return string
      */
-    public function replaceMetaTag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
+    public function replaceMetaTag(CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string
     {
         if ($coreMediaPlaceholderTransfer->getTitle() === null) {
             return '';
@@ -38,7 +38,7 @@ class TitleMetadataReplacer implements MetadataReplacerInterface
 
         return sprintf(
             $this->config->getMetaTagFormat(),
-            CoreMediaPlaceholderTransfer::TITLE,
+            CoremediaPlaceholderTransfer::TITLE,
             htmlentities($coreMediaPlaceholderTransfer->getTitle())
         );
     }

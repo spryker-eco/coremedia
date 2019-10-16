@@ -5,14 +5,14 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Renderer;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Renderer;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
 use Generated\Shared\Transfer\CurrentProductPriceTransfer;
-use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface;
-use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface;
-use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
-use SprykerEco\Yves\CoreMedia\Formatter\ProductPriceFormatterInterface;
+use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductClientInterface;
+use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductStorageClientInterface;
+use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToProductStorageClientInterface;
+use SprykerEco\Yves\Coremedia\Formatter\ProductPriceFormatterInterface;
 
 class ProductPricePlaceholderReplacementRenderer implements PlaceholderReplacementRendererInterface
 {
@@ -25,35 +25,35 @@ class ProductPricePlaceholderReplacementRenderer implements PlaceholderReplaceme
     protected const PRODUCT_ABSTRACT_MAPPING_TYPE = 'sku';
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface
+     * @var \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToProductStorageClientInterface
      */
     protected $productStorageClient;
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface
+     * @var \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductStorageClientInterface
      */
     protected $priceProductStorageClient;
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface
+     * @var \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductClientInterface
      */
     protected $priceProductClient;
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Formatter\ProductPriceFormatterInterface
+     * @var \SprykerEco\Yves\Coremedia\Formatter\ProductPriceFormatterInterface
      */
     protected $productPriceFormatter;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface $productStorageClient
-     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient
-     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToPriceProductClientInterface $priceProductClient
-     * @param \SprykerEco\Yves\CoreMedia\Formatter\ProductPriceFormatterInterface $productPriceFormatter
+     * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToProductStorageClientInterface $productStorageClient
+     * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductStorageClientInterface $priceProductStorageClient
+     * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductClientInterface $priceProductClient
+     * @param \SprykerEco\Yves\Coremedia\Formatter\ProductPriceFormatterInterface $productPriceFormatter
      */
     public function __construct(
-        CoreMediaToProductStorageClientInterface $productStorageClient,
-        CoreMediaToPriceProductStorageClientInterface $priceProductStorageClient,
-        CoreMediaToPriceProductClientInterface $priceProductClient,
+        CoremediaToProductStorageClientInterface $productStorageClient,
+        CoremediaToPriceProductStorageClientInterface $priceProductStorageClient,
+        CoremediaToPriceProductClientInterface $priceProductClient,
         ProductPriceFormatterInterface $productPriceFormatter
     ) {
         $this->productStorageClient = $productStorageClient;
@@ -63,24 +63,24 @@ class ProductPricePlaceholderReplacementRenderer implements PlaceholderReplaceme
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      *
      * @return bool
      */
-    public function isApplicable(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): bool
+    public function isApplicable(CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer): bool
     {
         return $coreMediaPlaceholderTransfer->getObjectType() === static::PLACEHOLDER_OBJECT_TYPE &&
             $coreMediaPlaceholderTransfer->getRenderType() === static::PLACEHOLDER_RENDER_TYPE;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
      * @return string|null
      */
     public function getPlaceholderReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
         if (!$coreMediaPlaceholderTransfer->getProductId()) {
@@ -117,13 +117,13 @@ class ProductPricePlaceholderReplacementRenderer implements PlaceholderReplaceme
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
      * @return \Generated\Shared\Transfer\CurrentProductPriceTransfer|null
      */
     protected function findAbstractProductPrice(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?CurrentProductPriceTransfer {
         $abstractProductData = $this->productStorageClient->findProductAbstractStorageDataByMapping(
@@ -143,13 +143,13 @@ class ProductPricePlaceholderReplacementRenderer implements PlaceholderReplaceme
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
      * @return \Generated\Shared\Transfer\CurrentProductPriceTransfer|null
      */
     protected function findConcreteProductPrice(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?CurrentProductPriceTransfer {
         $concreteProductData = $this->productStorageClient->findProductConcreteStorageDataByMapping(

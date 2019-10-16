@@ -1,7 +1,7 @@
 {
   "name": "spryker-eco/coremedia",
   "type": "library",
-  "description": "CoreMedia module",
+  "description": "Coremedia module",
   "license": "proprietary",
   "require": {
     "php": ">=7.1",
@@ -24,7 +24,7 @@
   "autoload": {
     "psr-4": {
       "SprykerEco\\": "src/SprykerEco/",
-      "SprykerEcoTest\\Client\\CoreMedia\\Helper\\": "tests/SprykerEcoTest/Client/CoreMedia/_support/Helper/"
+      "SprykerEcoTest\\Client\\Coremedia\\Helper\\": "tests/SprykerEcoTest/Client/Coremedia/_support/Helper/"
     }
   },
   "autoload-dev": {
@@ -40,7 +40,8 @@
     }
   },
   "scripts": {
-    "cs-check": "phpcs --standard=vendor/spryker/code-sniffer/Spryker/ruleset.xml -p src/ tests/"
+    "cs-check": "phpcs --standard=vendor/spryker/code-sniffer/Spryker/ruleset.xml -p src/ tests/",
+    "cs-fix": "phpcbf --standard=vendor/spryker/code-sniffer/Spryker/ruleset.xml -p src/ tests/"
   },
   "config": {
     "sort-packages": true

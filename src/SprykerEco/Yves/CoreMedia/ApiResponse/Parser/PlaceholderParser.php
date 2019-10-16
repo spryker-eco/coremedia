@@ -5,32 +5,32 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Parser;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Parser;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Shared\CoreMedia\CoreMediaConfig as SharedCoreMediaConfig;
-use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
-use SprykerEco\Yves\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
+use SprykerEco\Shared\Coremedia\CoremediaConfig as SharedCoremediaConfig;
+use SprykerEco\Yves\Coremedia\CoremediaConfig;
+use SprykerEco\Yves\Coremedia\Dependency\Service\CoremediaToUtilEncodingServiceInterface;
 
 class PlaceholderParser implements PlaceholderParserInterface
 {
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface
+     * @var \SprykerEco\Yves\Coremedia\Dependency\Service\CoremediaToUtilEncodingServiceInterface
      */
     protected $utilEncodingService;
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\CoreMediaConfig
+     * @var \SprykerEco\Yves\Coremedia\CoremediaConfig
      */
     protected $config;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\Dependency\Service\CoreMediaToUtilEncodingServiceInterface $utilEncodingService
-     * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $config
+     * @param \SprykerEco\Yves\Coremedia\Dependency\Service\CoremediaToUtilEncodingServiceInterface $utilEncodingService
+     * @param \SprykerEco\Yves\Coremedia\CoremediaConfig $config
      */
     public function __construct(
-        CoreMediaToUtilEncodingServiceInterface $utilEncodingService,
-        CoreMediaConfig $config
+        CoremediaToUtilEncodingServiceInterface $utilEncodingService,
+        CoremediaConfig $config
     ) {
         $this->utilEncodingService = $utilEncodingService;
         $this->config = $config;
@@ -39,7 +39,7 @@ class PlaceholderParser implements PlaceholderParserInterface
     /**
      * @param string $content
      *
-     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer[]
+     * @return \Generated\Shared\Transfer\CoremediaPlaceholderTransfer[]
      */
     public function parse(string $content): array
     {
@@ -51,11 +51,11 @@ class PlaceholderParser implements PlaceholderParserInterface
 
         $placeholders = [];
 
-        if (!$matches[SharedCoreMediaConfig::PREG_MATCH_PLACEHOLDER_KEY]) {
+        if (!$matches[SharedCoremediaConfig::PREG_MATCH_PLACEHOLDER_KEY]) {
             return [];
         }
 
-        $placeholdersData = array_unique($matches[SharedCoreMediaConfig::PREG_MATCH_PLACEHOLDER_KEY]);
+        $placeholdersData = array_unique($matches[SharedCoremediaConfig::PREG_MATCH_PLACEHOLDER_KEY]);
 
         foreach ($placeholdersData as $placeholderKey => $placeholderData) {
             $decodedPlaceholderData = $this->decodePlaceholderData($placeholderData);
@@ -64,7 +64,7 @@ class PlaceholderParser implements PlaceholderParserInterface
                 continue;
             }
 
-            $coreMediaPlaceholderTransfer = (new CoreMediaPlaceholderTransfer())
+            $coreMediaPlaceholderTransfer = (new CoremediaPlaceholderTransfer())
                 ->fromArray($decodedPlaceholderData, true)
                 ->setPlaceholderBody($matches[0][$placeholderKey]);
 

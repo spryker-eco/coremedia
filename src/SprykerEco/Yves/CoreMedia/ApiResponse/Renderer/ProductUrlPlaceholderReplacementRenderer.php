@@ -5,10 +5,10 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Renderer;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Renderer;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
+use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToProductStorageClientInterface;
 
 class ProductUrlPlaceholderReplacementRenderer implements PlaceholderReplacementRendererInterface
 {
@@ -19,37 +19,37 @@ class ProductUrlPlaceholderReplacementRenderer implements PlaceholderReplacement
     protected const PRODUCT_MAPPING_TYPE = 'sku';
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface
+     * @var \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToProductStorageClientInterface
      */
     protected $productStorageClient;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToProductStorageClientInterface $productStorageClient
+     * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToProductStorageClientInterface $productStorageClient
      */
-    public function __construct(CoreMediaToProductStorageClientInterface $productStorageClient)
+    public function __construct(CoremediaToProductStorageClientInterface $productStorageClient)
     {
         $this->productStorageClient = $productStorageClient;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      *
      * @return bool
      */
-    public function isApplicable(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): bool
+    public function isApplicable(CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer): bool
     {
         return $coreMediaPlaceholderTransfer->getObjectType() === static::PLACEHOLDER_OBJECT_TYPE &&
             $coreMediaPlaceholderTransfer->getRenderType() === static::PLACEHOLDER_RENDER_TYPE;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
      * @return string|null
      */
     public function getPlaceholderReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
         if (!$coreMediaPlaceholderTransfer->getProductId()) {
@@ -80,13 +80,13 @@ class ProductUrlPlaceholderReplacementRenderer implements PlaceholderReplacement
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
      * @return string|null
      */
     protected function findAbstractProductUrl(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
         $abstractProductData = $this->productStorageClient->findProductAbstractStorageDataByMapping(
@@ -99,13 +99,13 @@ class ProductUrlPlaceholderReplacementRenderer implements PlaceholderReplacement
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
      * @return string|null
      */
     protected function findConcreteProductUrl(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
         $concreteProductData = $this->productStorageClient->findProductConcreteStorageDataByMapping(

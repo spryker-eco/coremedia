@@ -5,36 +5,36 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Executor;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Executor;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
 use Spryker\Shared\ErrorHandler\ErrorLogger;
-use SprykerEco\Yves\CoreMedia\CoreMediaConfig;
-use SprykerEco\Yves\CoreMedia\Exception\InvalidPlaceholderDataException;
+use SprykerEco\Yves\Coremedia\CoremediaConfig;
+use SprykerEco\Yves\Coremedia\Exception\InvalidPlaceholderDataException;
 
 class IncorrectPlaceholderDataExecutor implements IncorrectPlaceholderDataExecutorInterface
 {
     /**
-     * @var \SprykerEco\Yves\CoreMedia\CoreMediaConfig
+     * @var \SprykerEco\Yves\Coremedia\CoremediaConfig
      */
     protected $config;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\CoreMediaConfig $coreMediaConfig
+     * @param \SprykerEco\Yves\Coremedia\CoremediaConfig $coreMediaConfig
      */
-    public function __construct(CoreMediaConfig $coreMediaConfig)
+    public function __construct(CoremediaConfig $coreMediaConfig)
     {
         $this->config = $coreMediaConfig;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
      * @return void
      */
     public function executeIncorrectPlaceholderData(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): void {
         if (!$this->config->isDebugModeEnabled()) {

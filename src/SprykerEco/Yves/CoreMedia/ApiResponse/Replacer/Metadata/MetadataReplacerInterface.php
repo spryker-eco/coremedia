@@ -5,16 +5,16 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\Metadata;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Replacer\Metadata;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
 
 interface MetadataReplacerInterface
 {
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      *
      * @return string
      */
-    public function replaceMetaTag(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string;
+    public function replaceMetaTag(CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string;
 }

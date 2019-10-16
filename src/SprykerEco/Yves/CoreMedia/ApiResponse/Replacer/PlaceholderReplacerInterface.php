@@ -5,17 +5,17 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Replacer;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Replacer;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
 
 interface PlaceholderReplacerInterface
 {
     /**
      * @param string $content
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      *
      * @return string
      */
-    public function replace(string $content, CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string;
+    public function replace(string $content, CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer): string;
 }

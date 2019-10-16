@@ -5,20 +5,20 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\PostProcessor;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
 
 interface PlaceholderPostProcessorInterface
 {
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
-     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
+     * @return \Generated\Shared\Transfer\CoremediaPlaceholderTransfer
      */
     public function addReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
-    ): CoreMediaPlaceholderTransfer;
+    ): CoremediaPlaceholderTransfer;
 }

@@ -5,19 +5,19 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse;
+namespace SprykerEco\Yves\Coremedia\ApiResponse;
 
-use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
+use Generated\Shared\Transfer\CoremediaApiResponseTransfer;
 
 class ApiResponsePreparator implements ApiResponsePreparatorInterface
 {
     /**
-     * @var \SprykerEco\Yves\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface[]
+     * @var \SprykerEco\Yves\Coremedia\ApiResponse\Resolver\ApiResponseResolverInterface[]
      */
     protected $apiResponseResolvers;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Resolver\ApiResponseResolverInterface[] $apiResponseResolvers
+     * @param \SprykerEco\Yves\Coremedia\ApiResponse\Resolver\ApiResponseResolverInterface[] $apiResponseResolvers
      */
     public function __construct(array $apiResponseResolvers)
     {
@@ -25,15 +25,15 @@ class ApiResponsePreparator implements ApiResponsePreparatorInterface
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     * @param \Generated\Shared\Transfer\CoremediaApiResponseTransfer $coreMediaApiResponseTransfer
      * @param string $locale
      *
-     * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
+     * @return \Generated\Shared\Transfer\CoremediaApiResponseTransfer
      */
     public function prepare(
-        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
+        CoremediaApiResponseTransfer $coreMediaApiResponseTransfer,
         string $locale
-    ): CoreMediaApiResponseTransfer {
+    ): CoremediaApiResponseTransfer {
         foreach ($this->apiResponseResolvers as $apiResponseResolver) {
             $coreMediaApiResponseTransfer = $apiResponseResolver->resolve($coreMediaApiResponseTransfer, $locale);
         }

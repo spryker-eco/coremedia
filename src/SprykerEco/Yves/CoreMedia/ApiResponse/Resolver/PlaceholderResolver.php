@@ -5,34 +5,34 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Resolver;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Resolver;
 
-use Generated\Shared\Transfer\CoreMediaApiResponseTransfer;
-use SprykerEco\Yves\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface;
-use SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface;
-use SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface;
+use Generated\Shared\Transfer\CoremediaApiResponseTransfer;
+use SprykerEco\Yves\Coremedia\ApiResponse\Parser\PlaceholderParserInterface;
+use SprykerEco\Yves\Coremedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface;
+use SprykerEco\Yves\Coremedia\ApiResponse\Replacer\PlaceholderReplacerInterface;
 
 class PlaceholderResolver implements ApiResponseResolverInterface
 {
     /**
-     * @var \SprykerEco\Yves\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface
+     * @var \SprykerEco\Yves\Coremedia\ApiResponse\Parser\PlaceholderParserInterface
      */
     protected $placeholderParser;
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
+     * @var \SprykerEco\Yves\Coremedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface
      */
     protected $placeholderPostProcessor;
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface
+     * @var \SprykerEco\Yves\Coremedia\ApiResponse\Replacer\PlaceholderReplacerInterface
      */
     protected $placeholderReplacer;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Parser\PlaceholderParserInterface $placeholderParser
-     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface $placeholderPostProcessor
-     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Replacer\PlaceholderReplacerInterface $placeholderReplacer
+     * @param \SprykerEco\Yves\Coremedia\ApiResponse\Parser\PlaceholderParserInterface $placeholderParser
+     * @param \SprykerEco\Yves\Coremedia\ApiResponse\PostProcessor\PlaceholderPostProcessorInterface $placeholderPostProcessor
+     * @param \SprykerEco\Yves\Coremedia\ApiResponse\Replacer\PlaceholderReplacerInterface $placeholderReplacer
      */
     public function __construct(
         PlaceholderParserInterface $placeholderParser,
@@ -45,15 +45,15 @@ class PlaceholderResolver implements ApiResponseResolverInterface
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer
+     * @param \Generated\Shared\Transfer\CoremediaApiResponseTransfer $coreMediaApiResponseTransfer
      * @param string $locale
      *
-     * @return \Generated\Shared\Transfer\CoreMediaApiResponseTransfer
+     * @return \Generated\Shared\Transfer\CoremediaApiResponseTransfer
      */
     public function resolve(
-        CoreMediaApiResponseTransfer $coreMediaApiResponseTransfer,
+        CoremediaApiResponseTransfer $coreMediaApiResponseTransfer,
         string $locale
-    ): CoreMediaApiResponseTransfer {
+    ): CoremediaApiResponseTransfer {
         $coreMediaPlaceholderTransfers = $this->placeholderParser->parse($coreMediaApiResponseTransfer->getData());
 
         if (!$coreMediaPlaceholderTransfers) {

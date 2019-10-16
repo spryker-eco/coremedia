@@ -5,14 +5,14 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Parser;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Parser;
 
 interface PlaceholderParserInterface
 {
     /**
      * @param string $content
      *
-     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer[]
+     * @return \Generated\Shared\Transfer\CoremediaPlaceholderTransfer[]
      */
     public function parse(string $content): array;
 }

@@ -5,27 +5,27 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\PostProcessor;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\PostProcessor;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Yves\CoreMedia\ApiResponse\Executor\IncorrectPlaceholderDataExecutorInterface;
-use SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
+use SprykerEco\Yves\Coremedia\ApiResponse\Executor\IncorrectPlaceholderDataExecutorInterface;
+use SprykerEco\Yves\Coremedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface;
 
 class PlaceholderPostProcessor implements PlaceholderPostProcessorInterface
 {
     /**
-     * @var \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface[]
+     * @var \SprykerEco\Yves\Coremedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface[]
      */
     protected $placeholderReplacementRenderers;
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\ApiResponse\Executor\IncorrectPlaceholderDataExecutorInterface
+     * @var \SprykerEco\Yves\Coremedia\ApiResponse\Executor\IncorrectPlaceholderDataExecutorInterface
      */
     protected $incorrectPlaceholderDataExecutor;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface[] $placeholderReplacementRenderers
-     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Executor\IncorrectPlaceholderDataExecutorInterface $incorrectPlaceholderDataExecutor
+     * @param \SprykerEco\Yves\Coremedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface[] $placeholderReplacementRenderers
+     * @param \SprykerEco\Yves\Coremedia\ApiResponse\Executor\IncorrectPlaceholderDataExecutorInterface $incorrectPlaceholderDataExecutor
      */
     public function __construct(
         array $placeholderReplacementRenderers,
@@ -36,15 +36,15 @@ class PlaceholderPostProcessor implements PlaceholderPostProcessorInterface
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
-     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
+     * @return \Generated\Shared\Transfer\CoremediaPlaceholderTransfer
      */
     public function addReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
-    ): CoreMediaPlaceholderTransfer {
+    ): CoremediaPlaceholderTransfer {
         $placeholderReplacementRenderer = $this->resolvePlaceholderReplacementRenderer($coreMediaPlaceholderTransfer);
 
         if (!$placeholderReplacementRenderer) {
@@ -68,27 +68,27 @@ class PlaceholderPostProcessor implements PlaceholderPostProcessorInterface
     }
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface $placeholderReplacementRenderer
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \SprykerEco\Yves\Coremedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface $placeholderReplacementRenderer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      *
-     * @return \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer
+     * @return \Generated\Shared\Transfer\CoremediaPlaceholderTransfer
      */
     protected function setFallbackPlaceholderReplacement(
         PlaceholderReplacementRendererInterface $placeholderReplacementRenderer,
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
-    ): CoreMediaPlaceholderTransfer {
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+    ): CoremediaPlaceholderTransfer {
         return $coreMediaPlaceholderTransfer->setPlaceholderReplacement(
             $placeholderReplacementRenderer->getFallbackPlaceholderReplacement()
         );
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      *
-     * @return \SprykerEco\Yves\CoreMedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface|null
+     * @return \SprykerEco\Yves\Coremedia\ApiResponse\Renderer\PlaceholderReplacementRendererInterface|null
      */
     protected function resolvePlaceholderReplacementRenderer(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
     ): ?PlaceholderReplacementRendererInterface {
         foreach ($this->placeholderReplacementRenderers as $placeholderReplacementRenderer) {
             if ($placeholderReplacementRenderer->isApplicable($coreMediaPlaceholderTransfer)) {

@@ -5,7 +5,7 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\Formatter;
+namespace SprykerEco\Yves\Coremedia\Formatter;
 
 use Generated\Shared\Transfer\CurrentProductPriceTransfer;
 

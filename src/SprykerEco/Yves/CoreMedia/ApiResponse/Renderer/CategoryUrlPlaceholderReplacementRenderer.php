@@ -5,10 +5,10 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Yves\CoreMedia\ApiResponse\Renderer;
+namespace SprykerEco\Yves\Coremedia\ApiResponse\Renderer;
 
-use Generated\Shared\Transfer\CoreMediaPlaceholderTransfer;
-use SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface;
+use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
+use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToCategoryStorageClientInterface;
 
 class CategoryUrlPlaceholderReplacementRenderer implements PlaceholderReplacementRendererInterface
 {
@@ -16,37 +16,37 @@ class CategoryUrlPlaceholderReplacementRenderer implements PlaceholderReplacemen
     protected const PLACEHOLDER_RENDER_TYPE = 'url';
 
     /**
-     * @var \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface
+     * @var \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToCategoryStorageClientInterface
      */
     protected $categoryStorageClient;
 
     /**
-     * @param \SprykerEco\Yves\CoreMedia\Dependency\Client\CoreMediaToCategoryStorageClientInterface $categoryStorageClient
+     * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToCategoryStorageClientInterface $categoryStorageClient
      */
-    public function __construct(CoreMediaToCategoryStorageClientInterface $categoryStorageClient)
+    public function __construct(CoremediaToCategoryStorageClientInterface $categoryStorageClient)
     {
         $this->categoryStorageClient = $categoryStorageClient;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      *
      * @return bool
      */
-    public function isApplicable(CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer): bool
+    public function isApplicable(CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer): bool
     {
         return $coreMediaPlaceholderTransfer->getObjectType() === static::PLACEHOLDER_OBJECT_TYPE &&
             $coreMediaPlaceholderTransfer->getRenderType() === static::PLACEHOLDER_RENDER_TYPE;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer
+     * @param \Generated\Shared\Transfer\CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer
      * @param string $locale
      *
      * @return string|null
      */
     public function getPlaceholderReplacement(
-        CoreMediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
+        CoremediaPlaceholderTransfer $coreMediaPlaceholderTransfer,
         string $locale
     ): ?string {
         if (!$coreMediaPlaceholderTransfer->getCategoryId()) {
