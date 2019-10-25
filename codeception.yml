@@ -2,8 +2,8 @@ namespace: SprykerEcoTest
 actor: Tester
 
 include:
-    - tests/SprykerEcoTest/Client/CoreMedia
-    - tests/SprykerEcoTest/Yves/CoreMedia
+    - tests/SprykerEcoTest/Client/Coremedia
+    - tests/SprykerEcoTest/Yves/Coremedia
 
 paths:
     tests: tests
