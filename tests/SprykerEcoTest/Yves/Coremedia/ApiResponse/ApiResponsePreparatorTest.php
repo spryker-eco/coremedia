@@ -14,6 +14,7 @@ use Generated\Shared\Transfer\CurrentProductPriceTransfer;
 use Generated\Shared\Transfer\MoneyTransfer;
 use Generated\Shared\Transfer\MoneyValueTransfer;
 use Generated\Shared\Transfer\PriceProductTransfer;
+use Spryker\Zed\Search\Dependency\Service\SearchToUtilEncodingInterface;
 use SprykerEco\Client\Coremedia\CoremediaClientInterface;
 use SprykerEco\Yves\Coremedia\CoremediaConfig;
 use SprykerEco\Yves\Coremedia\CoremediaFactory;
@@ -217,7 +218,7 @@ class ApiResponsePreparatorTest extends Unit
     /**
      * @return \Spryker\Zed\Search\Dependency\Service\SearchToUtilEncodingInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    protected function getUtilEncodingMock()
+    protected function getUtilEncodingMock(): SearchToUtilEncodingInterface
     {
         $utilEncodingMock = $this->getMockBuilder(CoremediaToUtilEncodingServiceInterface::class)
             ->disableOriginalConstructor()
