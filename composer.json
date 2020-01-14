@@ -4,7 +4,7 @@
   "description": "Coremedia module",
   "license": "proprietary",
   "require": {
-    "php": ">=7.1",
+    "php": ">=7.2",
     "spryker-shop/shop-cms-slot-extension": "^1.0.0",
     "spryker/category-storage": "^1.0.0",
     "spryker/error-handler": "^2.1.3",
