@@ -40,6 +40,7 @@ addons:
   apt:
     packages:
       - graphviz
+      - rabbitmq-server
 
   hosts:
     - zed.de.spryker.test
