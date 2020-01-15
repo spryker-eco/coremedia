@@ -1,8 +1,4 @@
 language: php
-dist: trusty
-
-notifications:
-  email: false
 
 sudo: required
 
@@ -59,7 +55,6 @@ env:
 
 cache:
   directories:
-    - $SHOP_DIR/current/vendor
     - $HOME/.composer/cache
 
 before_install:
