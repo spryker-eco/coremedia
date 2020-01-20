@@ -215,9 +215,9 @@ class ApiResponsePreparatorTest extends Unit
     }
 
     /**
-     * @return \Spryker\Zed\Search\Dependency\Service\SearchToUtilEncodingInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return \SprykerEco\Yves\Coremedia\Dependency\Service\CoremediaToUtilEncodingServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    protected function getUtilEncodingMock()
+    protected function getUtilEncodingMock(): CoremediaToUtilEncodingServiceInterface
     {
         $utilEncodingMock = $this->getMockBuilder(CoremediaToUtilEncodingServiceInterface::class)
             ->disableOriginalConstructor()

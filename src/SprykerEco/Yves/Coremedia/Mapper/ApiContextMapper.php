@@ -23,7 +23,7 @@ class ApiContextMapper implements ApiContextMapperInterface
         CmsSlotContentRequestTransfer $cmsSlotContentRequestTransfer
     ): CoremediaFragmentRequestTransfer {
         return (new CoremediaFragmentRequestTransfer())
-            ->fromArray($cmsSlotContentRequestTransfer->getParams(), true)
+            ->fromArray($cmsSlotContentRequestTransfer->getCmsSlotParams()->toArray(), true)
             ->requireStore()
             ->requireLocale();
     }
