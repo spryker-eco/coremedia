@@ -11,4 +11,4 @@ composer require spryker-eco/coremedia
 
 ## Documentation
 
-[Spryker Documentation](https://academy.spryker.com/developing_with_spryker/module_guide/modules.html)
+[Spryker Documentation](https://documentation.spryker.com/docs/coremedia-with-templates-slots)
