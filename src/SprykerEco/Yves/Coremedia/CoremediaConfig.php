@@ -16,6 +16,8 @@ use SprykerEco\Shared\Coremedia\CoremediaConfig as SharedCoremediaConfig;
 class CoremediaConfig extends AbstractBundleConfig
 {
     /**
+     * @api
+     *
      * @return bool
      */
     public function isDebugModeEnabled(): bool
@@ -24,6 +26,8 @@ class CoremediaConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getPlaceholderPattern(): string
@@ -32,6 +36,8 @@ class CoremediaConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getMetaTagFormat(): string

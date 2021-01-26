@@ -18,6 +18,8 @@ class CoremediaConfig extends AbstractBundleConfig
     protected const FRAGMENT_BASE_PATH = '/blueprint/servlet/service/fragment/';
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getCoremediaHost(): string
@@ -26,6 +28,8 @@ class CoremediaConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return bool
      */
     public function isDebugModeEnabled(): bool
@@ -34,6 +38,8 @@ class CoremediaConfig extends AbstractBundleConfig
     }
 
     /**
+     * @api
+     *
      * @return string
      */
     public function getFragmentBasePath(): string
@@ -47,6 +53,8 @@ class CoremediaConfig extends AbstractBundleConfig
      *     ...
      * ]
      *
+     * @api
+     *
      * @return string[]
      */
     public function getApplicationStoreMapping(): array
@@ -59,6 +67,8 @@ class CoremediaConfig extends AbstractBundleConfig
      *     'CoremediaStoreName1` => ['en_US' => 'en-GB', 'de_DE' => 'de-DE'],
      *     ...
      * ]
+     *
+     * @api
      *
      * @return string[][]
      */

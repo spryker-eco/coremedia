@@ -9,6 +9,7 @@ namespace SprykerEco\Yves\Coremedia\ApiResponse\Renderer;
 
 use Generated\Shared\Transfer\CoremediaPlaceholderTransfer;
 use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToCategoryStorageClientInterface;
+use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToStoreClientInterface;
 
 class CategoryUrlPlaceholderReplacementRenderer implements PlaceholderReplacementRendererInterface
 {
@@ -21,11 +22,20 @@ class CategoryUrlPlaceholderReplacementRenderer implements PlaceholderReplacemen
     protected $categoryStorageClient;
 
     /**
-     * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToCategoryStorageClientInterface $categoryStorageClient
+     * @var \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToStoreClientInterface
      */
-    public function __construct(CoremediaToCategoryStorageClientInterface $categoryStorageClient)
-    {
+    protected $storeClient;
+
+    /**
+     * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToCategoryStorageClientInterface $categoryStorageClient
+     * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToStoreClientInterface $storeClient
+     */
+    public function __construct(
+        CoremediaToCategoryStorageClientInterface $categoryStorageClient,
+        CoremediaToStoreClientInterface $storeClient
+    ) {
         $this->categoryStorageClient = $categoryStorageClient;
+        $this->storeClient = $storeClient;
     }
 
     /**
@@ -55,7 +65,8 @@ class CategoryUrlPlaceholderReplacementRenderer implements PlaceholderReplacemen
 
         $categoryNodeStorageTransfer = $this->categoryStorageClient->getCategoryNodeById(
             (int)$coreMediaPlaceholderTransfer->getCategoryId(),
-            $locale
+            $locale,
+            $this->storeClient->getCurrentStore()->getName()
         );
 
         return $categoryNodeStorageTransfer->getUrl();

@@ -15,6 +15,7 @@ use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToMoneyClientBridge;
 use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductClientBridge;
 use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductStorageClientBridge;
 use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToProductStorageClientBridge;
+use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToStoreClientBridge;
 use SprykerEco\Yves\Coremedia\Dependency\Service\CoremediaToUtilEncodingServiceBridge;
 
 class CoremediaDependencyProvider extends AbstractBundleDependencyProvider
@@ -24,6 +25,7 @@ class CoremediaDependencyProvider extends AbstractBundleDependencyProvider
     public const CLIENT_PRICE_PRODUCT_STORAGE = 'CLIENT_PRICE_PRODUCT_STORAGE';
     public const CLIENT_PRICE_PRODUCT = 'CLIENT_PRICE_PRODUCT';
     public const CLIENT_MONEY = 'CLIENT_MONEY';
+    public const CLIENT_STORE = 'CLIENT_STORE';
     public const SERVICE_UTIL_ENCODING = 'SERVICE_UTIL_ENCODING';
     public const URL_GENERATOR = 'URL_GENERATOR';
 
@@ -42,6 +44,7 @@ class CoremediaDependencyProvider extends AbstractBundleDependencyProvider
         $container = $this->addPriceProductStorageClient($container);
         $container = $this->addPriceProductClient($container);
         $container = $this->addMoneyClient($container);
+        $container = $this->addStoreClient($container);
         $container = $this->addUrlGenerator($container);
 
         return $container;
@@ -137,6 +140,22 @@ class CoremediaDependencyProvider extends AbstractBundleDependencyProvider
         $container->set(static::CLIENT_MONEY, function (Container $container) {
             return new CoremediaToMoneyClientBridge(
                 $container->getLocator()->money()->client()
+            );
+        });
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Yves\Kernel\Container $container
+     *
+     * @return \Spryker\Yves\Kernel\Container
+     */
+    protected function addStoreClient(Container $container): Container
+    {
+        $container->set(static::CLIENT_STORE, function (Container $container) {
+            return new CoremediaToStoreClientBridge(
+                $container->getLocator()->store()->client()
             );
         });
 
