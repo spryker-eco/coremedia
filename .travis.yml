@@ -58,7 +58,7 @@ env:
     - APPLICATION_STORE=DE
     - MODULE_DIR=module
     - SHOP_DIR=current
-    - MODULE_NAME=econda
+    - MODULE_NAME=coremedia
     - POSTGRES_PORT=5433
 
 cache:
