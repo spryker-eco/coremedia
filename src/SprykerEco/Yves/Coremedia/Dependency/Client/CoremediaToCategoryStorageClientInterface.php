@@ -7,6 +7,8 @@
 
 namespace SprykerEco\Yves\Coremedia\Dependency\Client;
 
+use Generated\Shared\Transfer\CategoryNodeStorageTransfer;
+
 interface CoremediaToCategoryStorageClientInterface
 {
     /**
@@ -16,5 +18,5 @@ interface CoremediaToCategoryStorageClientInterface
      *
      * @return \Generated\Shared\Transfer\CategoryNodeStorageTransfer
      */
-    public function getCategoryNodeById($idCategoryNode, $localeName, string $storeName);
+    public function getCategoryNodeById(int $idCategoryNode, string $localeName, string $storeName): CategoryNodeStorageTransfer;
 }
