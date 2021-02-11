@@ -14,6 +14,8 @@ class CoremediaConfig extends AbstractBundleConfig
     public const PREG_MATCH_PLACEHOLDER_KEY = 'placeholder';
 
     /**
+     * @api
+     *
      * @return bool
      */
     public function isDebugModeEnabled(): bool

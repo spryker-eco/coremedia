@@ -36,6 +36,7 @@ use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToMoneyClientInterface;
 use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductClientInterface;
 use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductStorageClientInterface;
 use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToProductStorageClientInterface;
+use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToStoreClientInterface;
 use SprykerEco\Yves\Coremedia\Dependency\Service\CoremediaToUtilEncodingServiceInterface;
 use SprykerEco\Yves\Coremedia\Formatter\ProductPriceFormatter;
 use SprykerEco\Yves\Coremedia\Formatter\ProductPriceFormatterInterface;
@@ -149,7 +150,8 @@ class CoremediaFactory extends AbstractFactory
     public function createCategoryUrlPlaceholderReplacementRenderer(): PlaceholderReplacementRendererInterface
     {
         return new CategoryUrlPlaceholderReplacementRenderer(
-            $this->getCategoryStorageClient()
+            $this->getCategoryStorageClient(),
+            $this->getStoreClient()
         );
     }
 
@@ -309,6 +311,14 @@ class CoremediaFactory extends AbstractFactory
     public function getMoneyClient(): CoremediaToMoneyClientInterface
     {
         return $this->getProvidedDependency(CoremediaDependencyProvider::CLIENT_MONEY);
+    }
+
+    /**
+     * @return \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToStoreClientInterface
+     */
+    public function getStoreClient(): CoremediaToStoreClientInterface
+    {
+        return $this->getProvidedDependency(CoremediaDependencyProvider::CLIENT_STORE);
     }
 
     /**

@@ -12,24 +12,25 @@ class CoremediaToCategoryStorageClientBridge implements CoremediaToCategoryStora
     /**
      * @var \Spryker\Client\CategoryStorage\CategoryStorageClientInterface
      */
-    protected $categoryClient;
+    protected $categoryStorageClient;
 
     /**
-     * @param \Spryker\Client\CategoryStorage\CategoryStorageClientInterface $categoryClient
+     * @param \Spryker\Client\CategoryStorage\CategoryStorageClientInterface $categoryStorageClient
      */
-    public function __construct($categoryClient)
+    public function __construct($categoryStorageClient)
     {
-        $this->categoryClient = $categoryClient;
+        $this->categoryStorageClient = $categoryStorageClient;
     }
 
     /**
      * @param int $idCategoryNode
      * @param string $localeName
+     * @param string|null $storeName
      *
      * @return \Generated\Shared\Transfer\CategoryNodeStorageTransfer
      */
-    public function getCategoryNodeById($idCategoryNode, $localeName)
+    public function getCategoryNodeById($idCategoryNode, $localeName, ?string $storeName = null)
     {
-        return $this->categoryClient->getCategoryNodeById($idCategoryNode, $localeName);
+        return $this->categoryStorageClient->getCategoryNodeById($idCategoryNode, $localeName, $storeName);
     }
 }
