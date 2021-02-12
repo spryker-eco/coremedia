@@ -14,7 +14,6 @@ use Generated\Shared\Transfer\CurrentProductPriceTransfer;
 use Generated\Shared\Transfer\MoneyTransfer;
 use Generated\Shared\Transfer\MoneyValueTransfer;
 use Generated\Shared\Transfer\PriceProductTransfer;
-use Spryker\Zed\Search\Dependency\Service\SearchToUtilEncodingInterface;
 use SprykerEco\Client\Coremedia\CoremediaClientInterface;
 use SprykerEco\Yves\Coremedia\CoremediaConfig;
 use SprykerEco\Yves\Coremedia\CoremediaFactory;
@@ -23,6 +22,7 @@ use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToMoneyClientInterface;
 use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductClientInterface;
 use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductStorageClientInterface;
 use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToProductStorageClientInterface;
+use SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToStoreClientInterface;
 use SprykerEco\Yves\Coremedia\Dependency\Service\CoremediaToUtilEncodingServiceInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -153,6 +153,7 @@ class ApiResponsePreparatorTest extends Unit
         ]);
 
         $categoryNodeStorageTransfer = $this->tester->getCategoryNodeStorageTransfer([]);
+        $categoryNodeStorageTransfer->setUrl(null);
 
         $coreMediaApiResponseTransfer = $this->prepare(
             $unprocessedCoremediaApiResponseTransfer,
@@ -197,6 +198,7 @@ class ApiResponsePreparatorTest extends Unit
         $priceProductClient = $this->getPriceProductClientMock();
         $moneyClient = $this->getMoneyClientMock();
         $urlGenerator = $this->getUrlGeneratorMock($externalSeoSegment);
+        $storeClient = $this->getStoreClientMock();
 
         $apiResponsePreparator = $this->getCoremediaFactoryMock(
             $productStorageClient,
@@ -204,7 +206,8 @@ class ApiResponsePreparatorTest extends Unit
             $priceProductStorageClient,
             $priceProductClient,
             $moneyClient,
-            $urlGenerator
+            $urlGenerator,
+            $storeClient
         )->createApiResponsePreparator();
 
         return $apiResponsePreparator->prepare(
@@ -216,9 +219,9 @@ class ApiResponsePreparatorTest extends Unit
     }
 
     /**
-     * @return \Spryker\Zed\Search\Dependency\Service\SearchToUtilEncodingInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return \SprykerEco\Yves\Coremedia\Dependency\Service\CoremediaToUtilEncodingServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    protected function getUtilEncodingMock(): SearchToUtilEncodingInterface
+    protected function getUtilEncodingMock(): CoremediaToUtilEncodingServiceInterface
     {
         $utilEncodingMock = $this->getMockBuilder(CoremediaToUtilEncodingServiceInterface::class)
             ->disableOriginalConstructor()
@@ -329,12 +332,27 @@ class ApiResponsePreparatorTest extends Unit
     }
 
     /**
+     * @return \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToStoreClientInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected function getStoreClientMock(): CoremediaToStoreClientInterface
+    {
+        $storeClientMock = $this->getMockBuilder(CoremediaToStoreClientInterface::class)->getMock();
+
+        $storeClientMock
+            ->method('getCurrentStore')
+            ->willReturn($this->tester->getLocator()->store()->client()->getCurrentStore());
+
+        return $storeClientMock;
+    }
+
+    /**
      * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToProductStorageClientInterface $productStorageClient
      * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToCategoryStorageClientInterface $categoryStorageClient
      * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductStorageClientInterface $priceProductStorageClient
      * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToPriceProductClientInterface $priceProductClient
      * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToMoneyClientInterface $moneyClient
      * @param \Symfony\Component\Routing\Generator\UrlGeneratorInterface $urlGenerator
+     * @param \SprykerEco\Yves\Coremedia\Dependency\Client\CoremediaToStoreClientInterface $storeClient
      *
      * @return \PHPUnit\Framework\MockObject\MockObject|\SprykerEco\Yves\Coremedia\CoremediaFactory
      */
@@ -344,7 +362,8 @@ class ApiResponsePreparatorTest extends Unit
         CoremediaToPriceProductStorageClientInterface $priceProductStorageClient,
         CoremediaToPriceProductClientInterface $priceProductClient,
         CoremediaToMoneyClientInterface $moneyClient,
-        UrlGeneratorInterface $urlGenerator
+        UrlGeneratorInterface $urlGenerator,
+        CoremediaToStoreClientInterface $storeClient
     ): CoremediaFactory {
         $coreMediaFactoryMock = $this->getMockBuilder(CoremediaFactory::class)
             ->setMethods([
@@ -356,6 +375,7 @@ class ApiResponsePreparatorTest extends Unit
                 'getPriceProductClient',
                 'getMoneyClient',
                 'getUrlGenerator',
+                'getStoreClient',
             ])->getMock();
 
         $coreMediaFactoryMock->method('getConfig')->willReturn(
@@ -370,6 +390,7 @@ class ApiResponsePreparatorTest extends Unit
         $coreMediaFactoryMock->method('getPriceProductClient')->willReturn($priceProductClient);
         $coreMediaFactoryMock->method('getMoneyClient')->willReturn($moneyClient);
         $coreMediaFactoryMock->method('getUrlGenerator')->willReturn($urlGenerator);
+        $coreMediaFactoryMock->method('getStoreClient')->willReturn($storeClient);
 
         return $coreMediaFactoryMock;
     }
